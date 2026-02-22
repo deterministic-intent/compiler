@@ -4,7 +4,7 @@ A deterministic, reproducible pipeline for prompt compilation, knowledge managem
 
 ## Overview
 
-DCS is a deterministic compiler system that treats LLM interactions as untrusted adapters. The system enforces strict reproducibility, snapshot-based knowledge management, and automated repair loops with monotonic improvement guarantees.
+DCS is a deterministic compiler system that treats external model interactions as untrusted adapters. The system enforces strict reproducibility, snapshot-based knowledge management, and automated repair loops with monotonic improvement guarantees.
 
 ## Repo Root Policy (Ultra-Strict)
 
@@ -79,7 +79,7 @@ For more control, use the CLI subcommands. The repo shim is located at `scripts/
 # Repair on failure
 ./scripts/bin/dcs repair <request_id>
 
-# Replay deterministically (no LLM, no network)
+# Replay deterministically (no external model, no network)
 ./scripts/bin/dcs replay <request_id> <gate_name>
 
 # Inspect request artifacts
@@ -98,7 +98,7 @@ For more control, use the CLI subcommands. The repo shim is located at `scripts/
 ### Replay Mode (Deterministic)
 
 Replay mode (`dcs replay`) enforces strict determinism:
-- **No LLM calls** - Uses cached artifacts only
+- **No external model calls** - Uses cached artifacts only
 - **No network access** - All inputs must be pinned in snapshots
 - **No UX effects** - Banner, spinner, and color are forcibly disabled
 - **Byte-identical outputs** - Replay must produce identical verifier outputs
@@ -178,7 +178,7 @@ Replay mode (`dcs replay`) enforces strict determinism:
 - **Snapshot-based knowledge** - Immutable, versioned knowledge snapshots
 - **Structured verification** - Machine-consumable verifier outputs with canonical failures
 - **Automated repair** - Bounded repair loop with monotonic improvement
-- **Replay mode** - Byte-identical deterministic reproduction (no LLM, no network)
+- **Replay mode** - Byte-identical deterministic reproduction (no external model, no network)
 - **Contract enforcement** - Machine-checkable contract rules prevent drift
 - **External snapshotting** - Deterministic raw input capture for offline replay
 

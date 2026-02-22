@@ -2,7 +2,7 @@
 
 ## 1) What DCS Is (now)
 
-DCS is a deterministic compiler system that converts natural language requests into verified, runnable software artifacts. The system enforces strict reproducibility, treats LLM interactions as untrusted adapters, and provides automated repair with monotonic improvement guarantees.
+DCS is a deterministic compiler system that converts natural language requests into verified, runnable software artifacts. The system enforces strict reproducibility, treats external model interactions as untrusted adapters, and provides automated repair with monotonic improvement guarantees.
 
 The term "compiler" in DCS means: prompt parsing, knowledge-based planning, code generation, compilation validation, runtime smoke testing, verification, and optional automated repair. The output is a packaged artifact (e.g., `artifact.zip`) with checksums and entrypoint documentation.
 
@@ -11,7 +11,7 @@ Guarantees enforced today:
 - Snapshot immutability: knowledge snapshots are read-only during request execution
 - Knowledge-based planning: all planning decisions derive from snapshot-pinned knowledge database, not live lookups
 - Single-writer artifacts: verifier, repair, and replay runners are the sole writers of their respective outputs
-- Replay determinism: replay mode produces byte-identical outputs without LLM calls or network access
+- Replay determinism: replay mode produces byte-identical outputs without external model calls or network access
 - Runtime truth: produced artifacts are validated via runtime smoke tests (for supported artifact classes)
 - Repair determinism: repair accept/reject decisions are deterministic and monotonic
 
@@ -26,7 +26,7 @@ Commands:
 - `dcs run <file.dcs>` - Execute full pipeline (compile → plan → gen → verify → repair if needed)
 - `dcs verify <request_id>` - Run verifier on existing request
 - `dcs repair <request_id>` - Run repair loop (if verifier FAIL)
-- `dcs replay <request_id> <gate>` - Replay deterministically (no LLM, no network)
+- `dcs replay <request_id> <gate>` - Replay deterministically (no external model, no network)
 - `dcs inspect <request_id> [cat|list|last]` - Inspect request artifacts
 - `dcs debug --request-id <request_id>` - Generate debug report
 
@@ -73,10 +73,10 @@ Repair (`workers/run_repair.py`):
 - Bounded loop: policy-defined max iterations, budgets, scope allowlists
 - Monotonic improvement: patch accepted only if failure score strictly decreases
 - Atomic apply + rollback: workspace hashes recorded before/after, rollback on rejection
-- LLM patch adapter: optional, diff-only, untrusted (recorded under `repair/iter_<n>/llm/`)
+- model patch adapter: optional, diff-only, untrusted (recorded under `repair/iter_<n>/llm/`)
 
 Replay (`scripts/run_replay.py`):
-- Reads cached artifacts only (no LLM calls, no network)
+- Reads cached artifacts only (no external model calls, no network)
 - Enforces snapshot/toolchain pin verification
 - Produces byte-identical outputs to original run
 - Replay clamp: no banner, spinner, color, or animation
@@ -119,8 +119,8 @@ Request state: `state/requests/<request_id>/`
 - `answer/` - Deterministic answer artifact (`answer.json`)
 - `index/` - Request-local SQLite index DB
 - `validation/` - Validation artifacts (compile/test, runtime smoke)
-- `llm_parse/` - LLM parse adapter I/O (if used)
-- `llm_parse_cache/` - LLM parse cache
+- `llm_parse/` - external model parse adapter I/O (if used)
+- `llm_parse_cache/` - external model parse cache
 
 Job state: `state/jobs/<job_id>/`
 - `job.json` - Job metadata, state transitions
@@ -144,7 +144,7 @@ API logs: `state/api_logs/` - Deterministic request/response logs with hashes
 
 Deterministic replay:
 - Evidence: `scripts/verify_step7.py`, `scripts/verify_step18.py`
-- Enforcement: Replay runner refuses LLM calls and network access, verifies snapshot/toolchain pins, produces byte-identical outputs
+- Enforcement: Replay runner refuses external model calls and network access, verifies snapshot/toolchain pins, produces byte-identical outputs
 
 Artifact compilation validity:
 - Evidence: `scripts/e2e/run_e2e0.py` (E2E0-A: PASS path)
@@ -158,9 +158,9 @@ Repair accept/reject determinism:
 - Evidence: `scripts/verify_milestone_2_1.py`, `scripts/verify_step5a.py`
 - Enforcement: Monotonic improvement gate, atomic apply/rollback, deterministic stop reasons
 
-LLM non-oracle behavior:
+external model non-oracle behavior:
 - Evidence: `scripts/verify_milestone_4_0.py`, `scripts/verify_milestone_4_1.py`
-- Enforcement: LLM adapters are diff-only (patch) or proposal-only (parse), verifier remains sole authority, LLM I/O recorded deterministically
+- Enforcement: external model adapters are diff-only (patch) or proposal-only (parse), verifier remains sole authority, model I/O recorded deterministically
 
 Job isolation:
 - Evidence: `scripts/verify_milestone_5_0.py`
@@ -211,7 +211,7 @@ Inspect, debug, replay:
 - `dcs inspect <request_id> list` - List all artifacts
 - `dcs inspect <request_id> last` - Show last gate result
 - `dcs debug --request-id <request_id>` - Generate debug report
-- `dcs replay <request_id> <gate>` - Replay deterministically (no LLM, no network)
+- `dcs replay <request_id> <gate>` - Replay deterministically (no external model, no network)
 
 Download artifacts:
 - CLI: artifacts in `state/requests/<id>/dist/artifact.zip`
@@ -248,7 +248,7 @@ Advanced features:
 - No multi-artifact builds
 - No artifact dependencies
 - No incremental compilation
-- No cross-request caching beyond LLM adapters
+- No cross-request caching beyond external model adapters
 
 ## 6) Current Version Line
 
@@ -258,13 +258,13 @@ Completed phases:
 - Phase 1: Policy spine, snapshot manifests, deterministic selection, structured verifier, repair loop, contract enforcement, replay, external snapshots, snapshot resolution, index DB, index-backed answering, answer artifact
 - Phase 2: DCS CLI productization, human interface validation, first real PASS usage, natural-language compiler, full pipeline E2E harness
 - Phase 3: Compile/test validation, debug report UX, contract cleanup
-- Phase 4: LLM as patch suggester (diff-only), optional LLM intent proposals, runtime smoke validation, single-user acceptance pack
+- Phase 4: external model as patch suggester (diff-only), optional external model intent proposals, runtime smoke validation, single-user acceptance pack
 - Phase 5: Job queue + isolation, API v1
 
 System stops at:
 - Multi-user backend with job queue and API v1
 - Runtime smoke validation for python_cli
-- Deterministic repair loop with LLM patch adapter
+- Deterministic repair loop with model patch adapter
 - Replay mode with byte-identical guarantees
 - Single-user and multi-job workflows via CLI and API
 

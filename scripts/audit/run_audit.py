@@ -225,7 +225,7 @@ def main():
     global AUDIT_CLOSURE_SNAPSHOT
     # AUDIT_ENV=container|host (default host). No auto-fallback to dev policy.
     audit_env = os.environ.get("AUDIT_ENV", "host")
-    # AUDIT_SCOPE=v1: v1 structured path only; skip Phase 4/5 (LLM, API, auth) outside v1 scope.
+    # AUDIT_SCOPE=v1: v1 structured path only; skip Phase 4/5 (model adapters, API, auth) outside v1 scope.
     audit_policy_val = _audit_policy()
     audit_scope = os.environ.get("AUDIT_SCOPE", "").strip().lower() or ("v1" if audit_policy_val == "v1" else "")
     # v1: require AUDIT_CLOSURE_SNAPSHOT from run_proof.sh; no implicit fallback (masks misconfiguration/drift).
@@ -239,7 +239,7 @@ def main():
     if (audit_policy_val == "v1" or audit_scope == "v1") and os.environ.get("AUDIT_ALLOW_MISSING_TOOLCHAINS", "").strip().lower() in ("1", "true", "yes"):
         sys.stderr.write("POLICY.AUDIT.INVALID_ENV: AUDIT_ALLOW_MISSING_TOOLCHAINS is disallowed for v1 scope. Reclassify unsupported languages or install toolchains.\n")
         sys.exit(1)
-    # v1 claim: skip Phase 4/5 (LLM, API, auth) - outside structured intake scope.
+    # v1 claim: skip Phase 4/5 (model adapters, API, auth) - outside structured intake scope.
     # AUDIT_SCOPE=proof: run through step18 only, create proof_bundles, skip language tiers.
     _scope_proof = os.environ.get("AUDIT_SCOPE") == "proof"
     _skip_phase45 = (
@@ -305,7 +305,7 @@ def main():
         print("Audit battery completed.")
         return 0
 
-    # Phase 4/5 (LLM, API, auth): outside v1 structured scope. Skip when policy=v1 (v1 claim path).
+    # Phase 4/5 (model adapters, API, auth): outside v1 structured scope. Skip when policy=v1 (v1 claim path).
     phase45_scripts = [
         "verify_milestone_4_0.py",
         "verify_milestone_4_1.py",
@@ -319,9 +319,9 @@ def main():
         sys.stderr.write("(Skipping Phase 4/5 milestones: v1 scope)\n")
         sys.stderr.flush()
     else:
-        # Milestone 4.0 proof: LLM patch suggester (diff-only, replay-safe).
+        # Milestone 4.0 proof: model patch suggester (diff-only, replay-safe).
         run([sys.executable, "scripts/verify_milestone_4_0.py"])
-        # Milestone 4.1 proof: Optional LLM intent proposals (deterministic acceptance).
+        # Milestone 4.1 proof: Optional model intent proposals (deterministic acceptance).
         run([sys.executable, "scripts/verify_milestone_4_1.py"])
         # Milestone 4.2 proof: Runtime smoke validation + single-user acceptance pack.
         run([sys.executable, "scripts/verify_milestone_4_2.py"])
@@ -451,7 +451,7 @@ def main():
         print(f"  Closure snapshot: {AUDIT_CLOSURE_SNAPSHOT}")
         print(f"  Support set: {support_count} languages (tier2_executable: {tier2_count}, required: 19)")
         print("  Skipped (v1 scope): " + ", ".join(phase45_scripts))
-        print("  Reason: Phase 4/5 (LLM, API, auth) outside v1 structured intake scope.")
+        print("  Reason: Phase 4/5 (model adapters, API, auth) outside v1 structured intake scope.")
 
     print("\nAudit battery completed.")
 

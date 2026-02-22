@@ -229,3 +229,14 @@ proof_run_*/
 v1_kit/
 dcs-v1-proof-kit-*.tar.gz
 scraper_audit_staging/
+
+# hard ban: model artifacts / weights / tooling
+models/
+*.gguf
+*.ggml
+*.safetensors
+*.pt
+*.pth
+*.onnx
+llama.cpp/
+ollama/

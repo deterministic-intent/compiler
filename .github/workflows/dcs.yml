@@ -1,0 +1,47 @@
+name: dcs-proof-enforcement
+
+on:
+  push:
+    branches: ["phase4/ci-wedge"]
+  pull_request:
+    branches: ["phase4/ci-wedge"]
+  workflow_dispatch: {}
+
+concurrency:
+  group: dcs-proof-enforcement
+  cancel-in-progress: false
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+
+    container:
+      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:d3a200e9943221fecd9cd5b88185866817a80621019975ba40a129647ba36e63
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preflight (repo must be clean)
+        run: |
+          test -z "$(git status --porcelain)"
+
+      - name: Policy guard — no model artifacts/references
+        run: |
+          bash scripts/ci/verify_no_llm_artifacts.sh
+
+      - name: Proof run (canonical v1 entrypoint, no cache)
+        run: |
+          rm -rf out
+          mkdir -p out
+          echo "AUDIT_SCOPE=v1"
+          AUDIT_SCOPE=v1 bash proof/run_proof.sh
+
+      - name: Compare proof hashes (atomic)
+        run: |
+          diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
+
+      - name: Postflight (no mutation)
+        run: |
+          git diff --exit-code
+          test -z "$(git status --porcelain)"

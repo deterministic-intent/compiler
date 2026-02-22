@@ -1,6 +1,6 @@
-# LLM-Hub Project Map (Repo + Directories + Step Proofs)
+# DCS Project Map (Repo + Directories + Step Proofs)
 
-This is a living map of the **canonical directories, entrypoints, and proof scripts** used by the LLM-Hub “finished product” pipeline. Update this as new steps land.
+This is a living map of the **canonical directories, entrypoints, and proof scripts** used by the DCS “finished product” pipeline. Update this as new steps land.
 
 ## Canonical Roots (Do Not Drift)
 
@@ -36,7 +36,7 @@ This is a living map of the **canonical directories, entrypoints, and proof scri
 ### Compiler / Clarification (Step 3)
 - **`nlc/prompt_compiler.py`**: prompt → deterministic `REQ.json` or `CLARIFY.json`
 - **`nlc/clarification.py`**: `CLARIFY.json` schema + helpers
-- **`nlc/llm_parse_adapter.py`**: untrusted parse adapter stub (LLM optional)
+- **`nlc/llm_parse_adapter.py`**: untrusted parse adapter stub (external model optional)
 
 ### Orchestration / Gate Flow (Pipeline control plane)
 - **`orchestrator/`**
@@ -58,7 +58,7 @@ This is a living map of the **canonical directories, entrypoints, and proof scri
 - **`workers/contract_checker.py`**: contract enforcement engine (invoked by verifier)
 
 ### Replay (Step 7)
-- **`scripts/run_replay.py`**: replay runner (pins verification + deterministic reproduction without LLM)
+- **`scripts/run_replay.py`**: replay runner (pins verification + deterministic reproduction without external model)
 
 ### Scripts (Proof harnesses + audits)
 - **`scripts/`**
@@ -113,7 +113,7 @@ This is a living map of the **canonical directories, entrypoints, and proof scri
   - `scripts/test_manifest_determinism.py`
   - `scripts/verify_step2.py`
 
-### Step 3 — Deterministic selection + clarification artifact (LLM optional)
+### Step 3 — Deterministic selection + clarification artifact (external model optional)
 - **Core**
   - `nlc/prompt_compiler.py`
   - `nlc/clarification.py`
@@ -149,7 +149,7 @@ This is a living map of the **canonical directories, entrypoints, and proof scri
 - **Proof**
   - `scripts/verify_step6.py`
 
-### Step 7 — Replay mode (no LLM, pin verification, byte-identical)
+### Step 7 — Replay mode (no external model, pin verification, byte-identical)
 - **Core**
   - `scripts/run_replay.py`
 - **Artifacts**

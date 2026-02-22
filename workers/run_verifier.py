@@ -9,7 +9,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from typing import Optional, List, Tuple, Dict, Any
 
-# Deterministic verifier: NO LLM CALLS.
+# Deterministic verifier: NO external model calls.
 # It only inspects REQUEST_DIR artifacts and reports PASS/FAIL/BLOCKED.
 
 # Ensure repository root is on sys.path when run as a script.
@@ -174,7 +174,7 @@ def gate_requirements(request_dir: Path, gate: str) -> tuple[list[str], list[str
     return (["REQUEST.md"], [])
 
 def build_prompt_dump(request_id: str, gate: str, request_dir: Path) -> str:
-    # Deterministic “what I checked” record (NOT an LLM prompt).
+    # Deterministic “what I checked” record (NOT an external model prompt).
     reqs, opts = gate_requirements(request_dir, gate)
     lines = []
     lines.append(f"REQUEST_ID: {request_id}")
