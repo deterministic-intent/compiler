@@ -1,0 +1,11 @@
+{
+  "intent_type": "print_sequence",
+  "description": "Print a sequence of numbers",
+  "params_schema": {
+    "from": {"type": "integer", "required": true},
+    "to": {"type": "integer", "required": true},
+    "step": {"type": "integer", "required": false}
+  },
+  "python_code": "start = {from}\nend = {to}\nstep = {step}\n# Handle inclusive end for positive/negative steps\nif step == 0:\n    raise SystemExit('step cannot be 0')\nif step > 0:\n    rng = range(start, end + 1, step)\nelse:\n    rng = range(start, end - 1, step)\nfor i in rng:\n    print(i)\n"
+}
+

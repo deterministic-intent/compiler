@@ -1,0 +1,9 @@
+{
+  "intent_type": "sum_numbers",
+  "description": "Sum a list of numbers and print the result",
+  "params_schema": {
+    "numbers": {"type": "array", "items": {"type": "integer"}, "required": true}
+  },
+  "python_code": "nums = {numbers}\ntry:\n    total = sum(nums)\nexcept TypeError:\n    total = 0\nprint(total)\n"
+}
+

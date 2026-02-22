@@ -1,0 +1,35 @@
+{
+  "description": "Filter lines or items that contain a substring",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "filter_contains",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "case_sensitive": {
+      "default": false,
+      "type": "bool"
+    },
+    "items": {
+      "required": true,
+      "type": "list"
+    },
+    "substring": {
+      "required": true,
+      "type": "string"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "a",
+    "contain",
+    "contains",
+    "filter",
+    "items",
+    "lines",
+    "or",
+    "substring",
+    "that"
+  ]
+}

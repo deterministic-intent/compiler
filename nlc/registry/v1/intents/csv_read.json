@@ -1,0 +1,25 @@
+{
+  "description": "Read CSV file",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "csv_read",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "file_path": {
+      "required": true,
+      "type": "string"
+    },
+    "has_header": {
+      "default": true,
+      "type": "bool"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "csv",
+    "file",
+    "read"
+  ]
+}

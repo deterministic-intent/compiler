@@ -1,0 +1,17 @@
+{
+  "intent_type": "output_format",
+  "description": "Format output as JSON, text, or CSV",
+  "params_schema": {
+    "data": {
+      "type": "any",
+      "required": true
+    },
+    "format": {
+      "type": "string",
+      "enum": ["json", "text", "csv"],
+      "default": "text"
+    }
+  },
+  "python_code": "    # Format output as {format}\n    import json\n    import csv\n    import sys\n    data = {data}\n    format_type = '{format}'\n    \n    if format_type == 'json':\n        print(json.dumps(data, indent=2))\n    elif format_type == 'csv':\n        if isinstance(data, list):\n            writer = csv.writer(sys.stdout)\n            for row in data:\n                if isinstance(row, (list, tuple)):\n                    writer.writerow(row)\n                else:\n                    writer.writerow([row])\n        else:\n            print(str(data))\n    else:  # text\n        print(data)",
+  "validation": "output_formatted"
+}

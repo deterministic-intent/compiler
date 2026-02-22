@@ -1,0 +1,16 @@
+{
+  "intent_type": "csv_read",
+  "description": "Read CSV file",
+  "params_schema": {
+    "file_path": {
+      "type": "string",
+      "required": true
+    },
+    "has_header": {
+      "type": "bool",
+      "default": true
+    }
+  },
+  "python_code": "    # Read CSV file: {file_path}\n    import csv\n    with open('{file_path}', 'r', encoding='utf-8') as f:\n        reader = csv.reader(f)\n        rows = list(reader)\n    if {has_header} and rows:\n        header = rows[0]\n        data = rows[1:]\n        return {{'header': header, 'data': data}}\n    return {{'data': rows}}",
+  "validation": "csv_read_success"
+}

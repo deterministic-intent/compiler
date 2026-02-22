@@ -1,0 +1,54 @@
+{
+  "intent_id": "grep_regex",
+  "description": "Filter lines by regex pattern (/.../ required)",
+  "pipeline_type": "lines_filter",
+  "io": {
+    "consumes": ["lines"],
+    "produces": ["lines"]
+  },
+  "params": {
+    "items": {
+      "type": "string",
+      "description": "Source of lines (e.g., 'stdin', 'stage0')",
+      "required": true
+    },
+    "pattern": {
+      "type": "string",
+      "description": "Regex pattern between /.../",
+      "required": true
+    },
+    "ignore_case": {
+      "type": "boolean",
+      "description": "Case-insensitive match when true",
+      "required": false
+    }
+  },
+  "required_params": ["items", "pattern"],
+  "composability": {
+    "can_follow": ["stdin_support", "read_lines"],
+    "can_precede": ["output_format", "write_lines"]
+  },
+  "synonyms": [
+    "grep",
+    "regex",
+    "regular expression"
+  ],
+  "disambiguation": {
+    "conflicts_with": ["filter_contains"],
+    "priority": 82
+  },
+  "examples": [
+    {
+      "prompt": "Read lines from logs.txt, grep /^ERR/, and output json.",
+      "req_fragment": {
+        "intent_type": "grep_regex",
+        "params": {
+          "items": "stage0",
+          "pattern": "^ERR",
+          "ignore_case": false
+        }
+      }
+    }
+  ]
+}
+

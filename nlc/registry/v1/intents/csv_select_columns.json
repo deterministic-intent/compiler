@@ -1,0 +1,64 @@
+{
+  "intent_id": "csv_select_columns",
+  "description": "Select specific columns from CSV rows",
+  "pipeline_type": "csv_transform",
+  "io": {
+    "consumes": ["csv_rows"],
+    "produces": ["csv_rows"]
+  },
+  "params": {
+    "items": {
+      "type": "string",
+      "description": "Source of csv rows (e.g., 'stage0')",
+      "required": true
+    },
+    "columns": {
+      "type": "array",
+      "description": "List of column names (if header) or indices (if no header)",
+      "required": true
+    },
+    "has_header": {
+      "type": "boolean",
+      "description": "Whether the CSV has a header row",
+      "required": true
+    },
+    "delimiter": {
+      "type": "string",
+      "description": "CSV delimiter",
+      "required": false
+    },
+    "source_path": {
+      "type": "string",
+      "description": "Optional source path for header lookups",
+      "required": false
+    }
+  },
+  "required_params": ["items", "columns", "has_header"],
+  "composability": {
+    "can_follow": ["csv_read"],
+    "can_precede": ["csv_write", "output_format"]
+  },
+  "synonyms": [
+    "select columns",
+    "choose columns",
+    "extract columns"
+  ],
+  "disambiguation": {
+    "conflicts_with": [],
+    "priority": 83
+  },
+  "examples": [
+    {
+      "prompt": "Read csv from input.csv, select columns name,email, and write to output.csv.",
+      "req_fragment": {
+        "intent_type": "csv_select_columns",
+        "params": {
+          "items": "stage0",
+          "columns": ["name", "email"],
+          "has_header": true
+        }
+      }
+    }
+  ]
+}
+

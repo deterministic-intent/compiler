@@ -1,0 +1,36 @@
+{
+  "intent_type": "csv_select_columns",
+  "description": "Select specific columns from CSV rows",
+  "params_schema": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "array"
+      },
+      "description": "CSV rows",
+      "required": true
+    },
+    "columns": {
+      "type": "array",
+      "description": "Column names or indices",
+      "required": true
+    },
+    "has_header": {
+      "type": "boolean",
+      "description": "True if header is present",
+      "required": true
+    },
+    "delimiter": {
+      "type": "string",
+      "description": "CSV delimiter",
+      "required": false
+    },
+    "source_path": {
+      "type": "string",
+      "description": "Optional source path (for header lookup)",
+      "required": false
+    }
+  },
+  "python_code": ""
+}
+

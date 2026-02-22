@@ -1,0 +1,27 @@
+{
+  "description": "Read lines from a file",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "read_lines",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "encoding": {
+      "default": "utf-8",
+      "type": "string"
+    },
+    "file_path": {
+      "required": true,
+      "type": "string"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "a",
+    "file",
+    "from",
+    "lines",
+    "read"
+  ]
+}

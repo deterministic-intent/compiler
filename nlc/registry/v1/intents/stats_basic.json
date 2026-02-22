@@ -1,0 +1,37 @@
+{
+  "description": "Calculate basic statistics (min, max, average, count) for numbers",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "stats_basic",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "numbers": {
+      "required": true,
+      "type": "list"
+    },
+    "stats": {
+      "default": [
+        "min",
+        "max",
+        "avg",
+        "count"
+      ],
+      "type": "list"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "average",
+    "basic",
+    "calculate",
+    "count",
+    "for",
+    "max",
+    "min",
+    "numbers",
+    "statistics",
+    "stats"
+  ]
+}

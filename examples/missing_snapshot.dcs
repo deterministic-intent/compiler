@@ -1,0 +1,9 @@
+{
+  "policy_version": "v1",
+  "objective": "Make a CLI that counts from 1 to 3 by 1",
+  "constraints": ["Python 3.8+", "Standard library only"],
+  "non_goals": ["No GUI"],
+  "dod": ["Script runs successfully"]
+}
+
+

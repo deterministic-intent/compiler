@@ -1,0 +1,28 @@
+{
+  "description": "Read input from stdin",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "stdin_support",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "read_mode": {
+      "default": "lines",
+      "enum": [
+        "lines",
+        "all",
+        "json"
+      ],
+      "type": "string"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "from",
+    "input",
+    "read",
+    "stdin",
+    "support"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "description": "Remove duplicates from a list",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "unique",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "items": {
+      "required": true,
+      "type": "list"
+    },
+    "preserve_order": {
+      "default": true,
+      "type": "bool"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "a",
+    "duplicates",
+    "from",
+    "list",
+    "remove",
+    "unique"
+  ]
+}

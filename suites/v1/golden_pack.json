@@ -1,0 +1,224 @@
+{
+  "cases": [
+    {
+      "case_id": "GOLD-001-count-1-5",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "b95bedc8e9a61cb82447e5e298e8969562b5c0dda899c315b62a0df9cb0a9f2c",
+        "dist/artifact.zip": "5f651fc6e204f46945969f5913fbfbda830d68ecefc90c8df34347b66874394a",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 1 to 5 by 1"
+    },
+    {
+      "case_id": "GOLD-002-count-5-1",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "c526b2fd67c9e2bc81e837c8b35fdd3ab22d81d0c95768d948014d519d5f8dae",
+        "dist/artifact.zip": "9c7b21471f4eafd61258643732579f00a8aa298c9bde4bc15a0f6185478d00e1",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 5 down to 1 by 1"
+    },
+    {
+      "case_id": "GOLD-003-sum-numbers",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "c4a08a96f3734aa584e8714073b53a1b96c99d2a6dc73621f04783eb478a3b44",
+        "dist/artifact.zip": "aa59189c73554c2b04f5945aa6b16541190e7edef001e7ec8a841046fc13d31c",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that sums the numbers 1 2 3 4 and prints the result"
+    },
+    {
+      "case_id": "GOLD-004-unique-lines",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "9ffcfd3a18fc54016d3d3b16034e02454238cb6bc75e68173353a47b5ae24762",
+        "dist/artifact.zip": "48a3e14dcb6051b9068a1dcf5bfe0d5bc967329a16fca9d1e637df2f5d37f35d",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 10 to 20 by 2"
+    },
+    {
+      "case_id": "GOLD-005-sort-numbers",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "521dc35634352442be54c2bfd71c02b19bd86cc059090d78488473149f839544",
+        "dist/artifact.zip": "8d8b5f023ddf2ca8f378e2fd7117a8b79abe32653886719f214baf05b8565acc",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 1 to 9 by 3"
+    },
+    {
+      "case_id": "GOLD-006-stats-basic",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "ed27ff96b7d99fe497fc5a8561b2fc9dabb7d59d7dd5bea1edb69964b7841fd8",
+        "dist/artifact.zip": "47c99936d9f4ab2ffd17b9826c7c96c2a0930cb9f9a11719f237f37736fcf231",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that sums the numbers 10 20 30 and prints the result"
+    },
+    {
+      "case_id": "GOLD-007-parse-numbers-csv",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "63f180879591dcfdec7ad67e5b50732b6b7db1f6de3847a34477c6c20965801b",
+        "dist/artifact.zip": "bb3884b548672f655175c07bba53079ae6a0011e90788eaf2a8aa57a9ab3a7da",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 100 to 105 by 1"
+    },
+    {
+      "case_id": "GOLD-008-json-pretty-print",
+      "expected_final_status": "FAIL",
+      "expected_sha256": {
+        "answer/answer.json": "528c0fbfbab5edf1e95574842fbf878907bcbba4f26c1d28ddc2f431737b352d",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a web UI that displays numbers from 1 to 5 by 1"
+    },
+    {
+      "case_id": "GOLD-009-grep-regex",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "49c2980b1986012f065ca01ccc5b9b6b530c6504f79377c5825d1d3b039a6b6b",
+        "dist/artifact.zip": "20545f680c189989a80f02630723b3ef16f23bf975e24c9bd1f47568892c8547",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 6 to 9 by 1"
+    },
+    {
+      "case_id": "GOLD-010-filter-contains",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "bf3010fadd5ca0cd2d6d0496e612d36bd369fe63366d587014bfb60ae2d39864",
+        "dist/artifact.zip": "7375a2feda6f3dd01e7c8eb9c64f37629b4f3436b0cd4f0f12827b51ecbfaf86",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that sums the numbers 1 1 2 3 5 and prints the result"
+    },
+    {
+      "case_id": "GOLD-011-read-lines-file",
+      "expected_final_status": "FAIL",
+      "expected_sha256": {
+        "answer/answer.json": "d526920db0664569600c472045191ada24475322a4d8f3c56962d07a8617268e",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a Flask API that returns a JSON list of numbers from 1 to 5 by 1"
+    },
+    {
+      "case_id": "GOLD-012-write-lines-file",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "95bcf0981a96e04daad7ba0c5008371b081e1c2ed6344004bc09ee75f611571c",
+        "dist/artifact.zip": "89c937724d3192077ed70c57763682f5aee265b70f4eaac053857e34e8888078",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 2 to 8 by 2"
+    },
+    {
+      "case_id": "GOLD-013-output-format-csv",
+      "expected_final_status": "FAIL",
+      "expected_sha256": {
+        "answer/answer.json": "50ab2a272841190e3f206c96a298f6e1aa5ddb3e883d22f1201ec1640e5403ab",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a Tkinter GUI that displays numbers from 1 to 5 by 1"
+    },
+    {
+      "case_id": "GOLD-014-stdin-support",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "83d82778b9fe6a931883857a10eb48bf71a904c989da06fb9ccb6f5a1812cdf9",
+        "dist/artifact.zip": "2aae86c5ad69b5ca534a93c7fd35887dcbfb12e023d24871166892e9a84b6181",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 3 to 15 by 3"
+    },
+    {
+      "case_id": "GOLD-015-csv-read",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "0e3faa0e82e68e49a09e7c70a1f1f5db6ad1519aeb86ba79be30cbc9e2f6a474",
+        "dist/artifact.zip": "37b4d1db3ee9c89008c0c5390a6ecf6cfc241deb1dfc8ac19011ea5a5427647a",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that sums the numbers 7 8 9 and prints the result"
+    },
+    {
+      "case_id": "GOLD-016-csv-select-columns",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "5fa90a0bab6e35faeab7173889a2401ac8daa1b11feeb7bda4f66e6c2d15bc93",
+        "dist/artifact.zip": "e5943a194ebde6ae2e2516a27f0ca8ca75b0e674b0e21bc6fcf292b3970d1cd9",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 1 to 3 by 1"
+    },
+    {
+      "case_id": "GOLD-017-csv-write",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "e3e9886a607b5cf472d62b2d474f854d620d3e470fd429b77322fd4406d88215",
+        "dist/artifact.zip": "7044105a54a4558a77bfbbc0bd0a68c64049ae294f8b43f3898ca4a9cb6a7a36",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that sums the numbers 99 1 and prints the result"
+    },
+    {
+      "case_id": "GOLD-018-sum-two-numbers-args",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "cab16dae03495840d6ce13b7d48e73b566352fe6db982aaedacce771be3d7545",
+        "dist/artifact.zip": "0f492ab227f4a1e6fd57c69e327f91a6f7fa2da3b03f1e2b7088dfea3f867729",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that sums the numbers 5 6 and prints the result"
+    },
+    {
+      "case_id": "GOLD-019-count-lines-stdin",
+      "expected_final_status": "PASS",
+      "expected_sha256": {
+        "answer/answer.json": "d5886ae927913ef81124f1327b2e877acdb8e2e6edb0e4a46cd54ff7e8929d1d",
+        "dist/artifact.zip": "ace50d5d377465f973e4816aba4f1d52e18f417404ad531e17b9551417902ac0",
+        "planner/plan.json": "97e06cea939d2b75cb818b4e8caa678b98e735aea5083fca4626d0876c2e928d"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that counts from 1 to 4 by 1"
+    },
+    {
+      "case_id": "GOLD-020-clarify-ambiguous",
+      "expected_final_status": "CLARIFY",
+      "expected_sha256": {
+        "CLARIFY.json": "f6d273e03525283678a1862897d7bfcb4dbafcd699e81e82b316801a20fcd5c6"
+      },
+      "mode": "pipeline",
+      "request_text": "Make a CLI that does something"
+    }
+  ],
+  "knowledge_snapshot_id": "20260103T060637Z",
+      "manifest_bundle_hash": "79b8b37b3122b31e10559563efde1a65895f1727019b7408951f77492e82928a",
+  "policy_version": "v1",
+  "suite_id": "golden_pack_v1",
+  "suite_version": 1
+}

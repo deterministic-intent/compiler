@@ -1,0 +1,31 @@
+{
+  "description": "Write data to CSV file",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "csv_write",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "data": {
+      "required": true,
+      "type": "list"
+    },
+    "file_path": {
+      "required": true,
+      "type": "string"
+    },
+    "header": {
+      "default": null,
+      "type": "list"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "csv",
+    "data",
+    "file",
+    "to",
+    "write"
+  ]
+}

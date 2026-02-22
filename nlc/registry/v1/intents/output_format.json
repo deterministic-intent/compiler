@@ -1,0 +1,34 @@
+{
+  "description": "Format output as JSON, text, or CSV",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "output_format",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "data": {
+      "required": true,
+      "type": "any"
+    },
+    "format": {
+      "default": "text",
+      "enum": [
+        "json",
+        "text",
+        "csv"
+      ],
+      "type": "string"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "as",
+    "csv",
+    "format",
+    "json",
+    "or",
+    "output",
+    "text"
+  ]
+}

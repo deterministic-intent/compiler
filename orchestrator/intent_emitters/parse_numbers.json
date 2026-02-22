@@ -1,0 +1,12 @@
+{
+  "intent_type": "parse_numbers",
+  "description": "Parse lines (strings) to numbers (int/float), skipping non-numeric lines",
+  "params_schema": {
+    "items": {
+      "type": "list",
+      "required": true
+    }
+  },
+  "python_code": "    # Parse numbers from lines: {items}\n    items = {items}\n    numbers = []\n    for line in items:\n        s = str(line).strip()\n        if not s:\n            continue\n        try:\n            if '.' in s or 'e' in s.lower():\n                numbers.append(float(s))\n            else:\n                numbers.append(int(s))\n        except ValueError:\n            continue\n    return numbers",
+  "validation": "numeric_list"
+}

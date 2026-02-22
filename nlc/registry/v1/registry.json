@@ -1,0 +1,23 @@
+{
+  "intent_ids": [
+    "csv_read",
+    "csv_write",
+    "filter_contains",
+    "output_format",
+    "count_lines",
+    "json_pretty_print",
+    "grep_regex",
+    "csv_select_columns",
+    "parse_numbers",
+    "print_sequence",
+    "read_lines",
+    "sort_numbers",
+    "stats_basic",
+    "stdin_support",
+    "sum_numbers",
+    "unique",
+    "write_lines"
+  ],
+  "notes": "Phase-1 bootstrap: generated deterministically from orchestrator/intent_emitters.",
+  "registry_version": "v1"
+}

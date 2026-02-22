@@ -1,0 +1,13 @@
+{
+  "intent_type": "stdin_support",
+  "description": "Read input from stdin",
+  "params_schema": {
+    "read_mode": {
+      "type": "string",
+      "enum": ["lines", "all", "json"],
+      "default": "lines"
+    }
+  },
+  "python_code": "    # Read from stdin\n    import sys\n    read_mode = '{read_mode}'\n    \n    if read_mode == 'lines':\n        lines = [line.rstrip('\\n\\r') for line in sys.stdin]\n        return lines\n    elif read_mode == 'json':\n        import json\n        return json.load(sys.stdin)\n    else:  # all\n        return sys.stdin.read()",
+  "validation": "stdin_read"
+}

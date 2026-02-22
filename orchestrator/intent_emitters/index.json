@@ -1,0 +1,13 @@
+{
+  "available_intents": {
+    "print_sequence": "Print numeric sequences",
+    "sum_numbers": "Sum a list of numbers",
+    "read_file_lines": "Read and process file lines",
+    "http_get_json": "Fetch JSON from HTTP endpoint",
+    "render_list_to_dom": "Render list to DOM elements",
+    "print_text": "Print text to stdout",
+    "calculate": "Perform calculations",
+    "filter_items": "Filter items from a collection",
+    "transform_data": "Transform data structure"
+  }
+}

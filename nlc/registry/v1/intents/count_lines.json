@@ -1,0 +1,54 @@
+{
+  "composability": {
+    "can_follow": [
+      "stdin_support",
+      "read_lines"
+    ],
+    "can_precede": [
+      "output_format",
+      "write_lines"
+    ]
+  },
+  "description": "Count the number of lines from a text source",
+  "disambiguation": {
+    "conflicts_with": [],
+    "priority": 70
+  },
+  "examples": [
+    {
+      "prompt": "Count lines from stdin and output json",
+      "req_fragment": {
+        "intent_type": "count_lines",
+        "params": {
+          "items": "stage0"
+        }
+      }
+    }
+  ],
+  "intent_id": "count_lines",
+  "io": {
+    "consumes": [
+      "lines"
+    ],
+    "produces": [
+      "numbers"
+    ]
+  },
+  "params": {
+    "items": {
+      "required": true,
+      "type": "string",
+      "description": "Pipeline variable containing the source lines"
+    }
+  },
+  "pipeline_type": "lines",
+  "required_params": [
+    "items"
+  ],
+  "synonyms": [
+    "count lines",
+    "line count",
+    "number of lines"
+  ]
+}
+

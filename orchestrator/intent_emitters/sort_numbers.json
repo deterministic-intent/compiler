@@ -1,0 +1,16 @@
+{
+  "intent_type": "sort_numbers",
+  "description": "Sort a list of numbers",
+  "params_schema": {
+    "numbers": {
+      "type": "list",
+      "required": true
+    },
+    "reverse": {
+      "type": "bool",
+      "default": false
+    }
+  },
+  "python_code": "    # Sort numbers: {numbers}\n    numbers = {numbers}\n    sorted_nums = sorted(numbers, reverse={reverse})\n    return sorted_nums",
+  "validation": "sorted_output"
+}

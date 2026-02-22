@@ -1,0 +1,12 @@
+{
+  "answer_mode": "index_backed",
+  "artifact_class": "python_cli",
+  "constraints": [],
+  "goal": "Make a CLI that prints hello",
+  "knowledge_snapshot_id": "20260103T060637Z",
+  "manifest_bundle_hash": "test_hash",
+  "non_goals": [],
+  "policy_version": "v1",
+  "request_id": "M52-TEST-A",
+  "success_criteria": []
+}

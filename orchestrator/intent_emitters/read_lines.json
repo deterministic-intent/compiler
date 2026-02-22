@@ -1,0 +1,16 @@
+{
+  "intent_type": "read_lines",
+  "description": "Read lines from a file",
+  "params_schema": {
+    "file_path": {
+      "type": "string",
+      "required": true
+    },
+    "encoding": {
+      "type": "string",
+      "default": "utf-8"
+    }
+  },
+  "python_code": "    # Read lines from {file_path}\n    with open('{file_path}', 'r', encoding='{encoding}') as f:\n        lines = f.readlines()\n    return [line.rstrip('\\n\\r') for line in lines]",
+  "validation": "file_read_success"
+}

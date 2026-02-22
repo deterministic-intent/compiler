@@ -1,0 +1,54 @@
+{
+  "composability": {
+    "can_follow": [
+      "stdin_support",
+      "read_lines"
+    ],
+    "can_precede": [
+      "output_format",
+      "write_lines"
+    ]
+  },
+  "description": "Pretty-print JSON with fixed indentation",
+  "disambiguation": {
+    "conflicts_with": [],
+    "priority": 70
+  },
+  "examples": [
+    {
+      "prompt": "Pretty print json from stdin",
+      "req_fragment": {
+        "intent_type": "json_pretty_print",
+        "params": {
+          "items": "stage0"
+        }
+      }
+    }
+  ],
+  "intent_id": "json_pretty_print",
+  "io": {
+    "consumes": [
+      "lines"
+    ],
+    "produces": [
+      "lines"
+    ]
+  },
+  "params": {
+    "items": {
+      "required": true,
+      "type": "string",
+      "description": "Pipeline variable containing the raw JSON text"
+    }
+  },
+  "pipeline_type": "lines",
+  "required_params": [
+    "items"
+  ],
+  "synonyms": [
+    "pretty print json",
+    "format json",
+    "prettify json"
+  ]
+}
+

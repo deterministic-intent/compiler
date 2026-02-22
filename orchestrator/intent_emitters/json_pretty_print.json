@@ -1,0 +1,13 @@
+{
+  "intent_type": "json_pretty_print",
+  "description": "Pretty print JSON with fixed indentation",
+  "params_schema": {
+    "items": {
+      "type": "string",
+      "required": true,
+      "description": "Pipeline variable containing raw JSON text lines"
+    }
+  },
+  "python_code": "import json\n_text = '\\n'.join({items} if isinstance({items}, list) else []) if isinstance({items}, list) else str({items})\nobj = json.loads(_text)\npretty = json.dumps(obj, ensure_ascii=False, indent=2)\nreturn pretty\n"
+}
+

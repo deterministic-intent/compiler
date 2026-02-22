@@ -1,0 +1,26 @@
+{
+  "intent_type": "grep_regex",
+  "description": "Filter lines by regex pattern (/.../ required)",
+  "params_schema": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of lines to search",
+      "required": true
+    },
+    "pattern": {
+      "type": "string",
+      "description": "Regex pattern (without slashes)",
+      "required": true
+    },
+    "ignore_case": {
+      "type": "boolean",
+      "description": "Case-insensitive match",
+      "required": false
+    }
+  },
+  "python_code": "import re\n_flags = re.IGNORECASE if {ignore_case} else 0\ntry:\n    _re = re.compile(r'''{pattern}''', _flags)\nexcept re.error as e:\n    import sys\n    sys.stderr.write(f\"ERROR: Invalid regex pattern: {e}\\n\")\n    sys.exit(2)\n\n_out = []\nfor _line in {items}:\n    if _re.search(_line):\n        _out.append(_line)\nreturn _out\n"
+}
+

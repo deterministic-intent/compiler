@@ -1,0 +1,34 @@
+{
+  "suite_version": "v1",
+  "cases": [
+    {
+      "case_id": "ACCEPT-001-python-cli-pass",
+      "request_text": "Make a CLI that counts from 1 to 5 by 1",
+      "artifact_class": "python_cli",
+      "expected_status": "PASS",
+      "smoke_args": [],
+      "expected_runtime_status": "PASS",
+      "replay_proof": true
+    },
+    {
+      "case_id": "ACCEPT-002-python-cli-fail-runtime",
+      "request_text": "Make a CLI that counts from 1 to 5 by 1",
+      "artifact_class": "python_cli",
+      "expected_status": "PASS",
+      "smoke_args": ["--invalid-arg"],
+      "expected_runtime_status": "FAIL",
+      "replay_proof": true,
+      "inject_runtime_error": true
+    },
+    {
+      "case_id": "ACCEPT-003-python-cli-replay",
+      "request_text": "Make a CLI that counts from 1 to 3 by 1",
+      "artifact_class": "python_cli",
+      "expected_status": "PASS",
+      "smoke_args": [],
+      "expected_runtime_status": "PASS",
+      "replay_proof": true
+    }
+  ]
+}
+

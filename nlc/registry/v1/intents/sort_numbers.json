@@ -1,0 +1,27 @@
+{
+  "description": "Sort a list of numbers",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "sort_numbers",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "numbers": {
+      "required": true,
+      "type": "list"
+    },
+    "reverse": {
+      "default": false,
+      "type": "bool"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "a",
+    "list",
+    "numbers",
+    "of",
+    "sort"
+  ]
+}

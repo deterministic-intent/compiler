@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dev-knowledge-base"
+version = "0.1.0"
+description = "A knowledge base for programming languages and frameworks"
+authors = [{name = "Developer", email = "dev@example.com"}]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pyyaml",
+    "sqlalchemy",
+    "pydantic",
+    "httpx",
+    "beautifulsoup4",
+    "lxml",
+    "markdownify",
+    "fastapi",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "black",
+    "isort",
+    "flake8",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+line_length = 88

@@ -1,0 +1,201 @@
+{
+  "snapshot_id": "e253cad856ad",
+  "suggested": [
+    {
+      "evidence": {
+        "formats": {
+          "log": 1968,
+          "md": 36048,
+          "txt": 1914
+        },
+        "op_format_pairs": {},
+        "ops": {
+          "count": 388,
+          "head": 726,
+          "tail": 38
+        },
+        "resources": {
+          "file": 4432,
+          "stdin": 90
+        },
+        "tokens": {
+          "line": 12442,
+          "lines": 1038
+        }
+      },
+      "intent": "count_lines",
+      "rationale": "text files + count/head/tail cues imply line-level ops",
+      "risk": "low"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "log": 1968,
+          "md": 36048,
+          "txt": 1914
+        },
+        "op_format_pairs": {},
+        "ops": {
+          "count": 388
+        },
+        "resources": {
+          "file": 4432,
+          "stdin": 90
+        },
+        "tokens": {
+          "log": 2581,
+          "logs": 837,
+          "text": 65191
+        }
+      },
+      "intent": "count_words",
+      "rationale": "text/log corpus with count cues",
+      "risk": "low"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "log": 1968,
+          "md": 36048,
+          "txt": 1914
+        },
+        "op_format_pairs": {},
+        "ops": {
+          "head": 726
+        },
+        "resources": {
+          "file": 4432,
+          "stdin": 90
+        },
+        "tokens": {
+          "line": 12442,
+          "lines": 1038
+        }
+      },
+      "intent": "head_lines",
+      "rationale": "preview/inspect cues (head) over text files",
+      "risk": "low"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "log": 1968,
+          "md": 36048,
+          "txt": 1914
+        },
+        "op_format_pairs": {},
+        "ops": {
+          "tail": 38
+        },
+        "resources": {
+          "file": 4432,
+          "stdin": 90
+        },
+        "tokens": {
+          "log": 2581,
+          "logs": 837
+        }
+      },
+      "intent": "tail_lines",
+      "rationale": "log-style tail cues",
+      "risk": "low"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "log": 1968,
+          "md": 36048,
+          "txt": 1914
+        },
+        "op_format_pairs": {
+          "grep\u00d7txt": 1,
+          "regex\u00d7txt": 7
+        },
+        "ops": {
+          "grep": 28,
+          "regex": 96
+        },
+        "resources": {
+          "file": 4432,
+          "stdin": 90
+        },
+        "tokens": {
+          "line": 12442,
+          "text": 65191
+        }
+      },
+      "intent": "grep_regex",
+      "rationale": "regex/grep mentions over text sources",
+      "risk": "medium"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "csv": 142
+        },
+        "op_format_pairs": {
+          "select\u00d7csv": 27
+        },
+        "ops": {
+          "select": 661
+        },
+        "resources": {
+          "file": 4432
+        },
+        "tokens": {
+          "column": 7771,
+          "columns": 1126
+        }
+      },
+      "intent": "csv_select_columns",
+      "rationale": "csv + select/column patterns",
+      "risk": "medium"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "csv": 142
+        },
+        "op_format_pairs": {
+          "sort\u00d7csv": 8
+        },
+        "ops": {
+          "sort": 1402
+        },
+        "resources": {
+          "file": 4432
+        },
+        "tokens": {
+          "column": 7771,
+          "columns": 1126
+        }
+      },
+      "intent": "csv_sort_by_column",
+      "rationale": "csv + sort patterns",
+      "risk": "medium"
+    },
+    {
+      "evidence": {
+        "formats": {
+          "json": 5669
+        },
+        "op_format_pairs": {
+          "format\u00d7json": 201,
+          "pretty\u00d7json": 36
+        },
+        "ops": {
+          "format": 932,
+          "pretty": 134
+        },
+        "resources": {
+          "file": 4432,
+          "stdin": 90
+        },
+        "tokens": {}
+      },
+      "intent": "json_pretty_print",
+      "rationale": "json + format/pretty mentions",
+      "risk": "low"
+    }
+  ]
+}

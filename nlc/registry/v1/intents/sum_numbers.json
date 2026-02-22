@@ -1,0 +1,30 @@
+{
+  "description": "Sum a list of numbers and print the result",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "sum_numbers",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "numbers": {
+      "items": {
+        "type": "integer"
+      },
+      "required": true,
+      "type": "array"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "a",
+    "and",
+    "list",
+    "numbers",
+    "of",
+    "print",
+    "result",
+    "sum",
+    "the"
+  ]
+}

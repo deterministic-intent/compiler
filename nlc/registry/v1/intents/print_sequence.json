@@ -1,0 +1,31 @@
+{
+  "description": "Print a sequence of numbers",
+  "disambiguation_json": {},
+  "examples": [],
+  "intent_id": "print_sequence",
+  "io_json": {
+    "stdout": true
+  },
+  "params_json": {
+    "from": {
+      "required": true,
+      "type": "integer"
+    },
+    "step": {
+      "required": false,
+      "type": "integer"
+    },
+    "to": {
+      "required": true,
+      "type": "integer"
+    }
+  },
+  "pipeline_type": "unknown",
+  "synonyms": [
+    "a",
+    "numbers",
+    "of",
+    "print",
+    "sequence"
+  ]
+}

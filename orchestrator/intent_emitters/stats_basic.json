@@ -1,0 +1,16 @@
+{
+  "intent_type": "stats_basic",
+  "description": "Calculate basic statistics (min, max, average, count) for numbers",
+  "params_schema": {
+    "numbers": {
+      "type": "list",
+      "required": true
+    },
+    "stats": {
+      "type": "list",
+      "default": ["min", "max", "avg", "count"]
+    }
+  },
+  "python_code": "    # Calculate basic statistics\n    numbers = {numbers}\n    stats = {{}}\n    if 'count' in {stats}:\n        stats['count'] = len(numbers)\n    if 'min' in {stats} and numbers:\n        stats['min'] = min(numbers)\n    if 'max' in {stats} and numbers:\n        stats['max'] = max(numbers)\n    if 'avg' in {stats} and numbers:\n        stats['avg'] = sum(numbers) / len(numbers)\n    return stats",
+  "validation": "stats_calculated"
+}

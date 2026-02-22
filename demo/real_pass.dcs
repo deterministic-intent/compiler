@@ -1,0 +1,12 @@
+{
+  "request_id": "REAL_PASS",
+  "policy_version": "v1",
+  "knowledge_snapshot_id": "20260103T060637Z",
+  "manifest_bundle_hash": "79b8b37b3122b31e10559563efde1a65895f1727019b7408951f77492e82928a",
+  "objective": "Make a CLI that counts from 1 to 5 by 1",
+  "constraints": ["Python 3.8+", "Standard library only"],
+  "non_goals": ["No GUI", "No web interface"],
+  "dod": ["Script runs successfully", "Outputs numbers 1 to 5"]
+}
+
+

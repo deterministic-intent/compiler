@@ -1,0 +1,20 @@
+{
+  "intent_type": "csv_write",
+  "description": "Write data to CSV file",
+  "params_schema": {
+    "file_path": {
+      "type": "string",
+      "required": true
+    },
+    "data": {
+      "type": "list",
+      "required": true
+    },
+    "header": {
+      "type": "list",
+      "default": null
+    }
+  },
+  "python_code": "    # Write CSV file: {file_path}\n    import csv\n    data = {data}\n    header = {header}\n    with open('{file_path}', 'w', newline='', encoding='utf-8') as f:\n        writer = csv.writer(f)\n        if header:\n            writer.writerow(header)\n        for row in data:\n            if isinstance(row, (list, tuple)):\n                writer.writerow(row)\n            else:\n                writer.writerow([row])",
+  "validation": "csv_write_success"
+}

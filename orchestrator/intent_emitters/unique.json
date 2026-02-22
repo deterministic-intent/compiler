@@ -1,0 +1,16 @@
+{
+  "intent_type": "unique",
+  "description": "Remove duplicates from a list",
+  "params_schema": {
+    "items": {
+      "type": "list",
+      "required": true
+    },
+    "preserve_order": {
+      "type": "bool",
+      "default": true
+    }
+  },
+  "python_code": "    # Remove duplicates from list\n    items = {items}\n    if {preserve_order}:\n        seen = set()\n        unique_items = []\n        for item in items:\n            if item not in seen:\n                seen.add(item)\n                unique_items.append(item)\n        return unique_items\n    else:\n        return list(set(items))",
+  "validation": "duplicates_removed"
+}

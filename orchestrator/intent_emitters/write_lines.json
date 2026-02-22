@@ -1,0 +1,20 @@
+{
+  "intent_type": "write_lines",
+  "description": "Write lines to a file",
+  "params_schema": {
+    "file_path": {
+      "type": "string",
+      "required": true
+    },
+    "lines": {
+      "type": "list",
+      "required": true
+    },
+    "encoding": {
+      "type": "string",
+      "default": "utf-8"
+    }
+  },
+  "python_code": "    # Write lines to {file_path}\n    with open('{file_path}', 'w', encoding='{encoding}') as f:\n        for line in {lines}:\n            f.write(str(line) + '\\n')",
+  "validation": "file_write_success"
+}

@@ -1,0 +1,13 @@
+{
+  "intent_type": "count_lines",
+  "description": "Count the number of lines from a text source",
+  "params_schema": {
+    "items": {
+      "type": "string",
+      "required": true,
+      "description": "Pipeline variable containing lines"
+    }
+  },
+  "python_code": "    _lines = {items}\n    _count = len(list(_lines))\n    return {\"line_count\": _count}\n"
+}
+

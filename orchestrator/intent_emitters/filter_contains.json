@@ -1,0 +1,20 @@
+{
+  "intent_type": "filter_contains",
+  "description": "Filter lines or items that contain a substring",
+  "params_schema": {
+    "items": {
+      "type": "list",
+      "required": true
+    },
+    "substring": {
+      "type": "string",
+      "required": true
+    },
+    "case_sensitive": {
+      "type": "bool",
+      "default": false
+    }
+  },
+  "python_code": "    # Filter items containing '{substring}'\n    items = {items}\n    substring = '{substring}'\n    case_sensitive = {case_sensitive}\n    if not case_sensitive:\n        substring = substring.lower()\n        filtered = [item for item in items if substring in (item.lower() if isinstance(item, str) else str(item).lower())]\n    else:\n        filtered = [item for item in items if substring in (item if isinstance(item, str) else str(item))]\n    return filtered",
+  "validation": "filter_applied"
+}
