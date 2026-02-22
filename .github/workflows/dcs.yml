@@ -14,9 +14,9 @@ concurrency:
 jobs:
   proof:
     runs-on: ubuntu-24.04
-    # Use runner (no pre-built container): proof/run_proof.sh builds tier3 + runs audit.
-    # To use pre-built digest: add container: image: ghcr.io/deterministic-intent/dcs-tier3@sha256:<digest>
-    # after publishing via: bash scripts/publish_tier3_ghcr.sh
+
+    container:
+      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:d3a200e9943221fecd9cd5b88185866817a80621019975ba40a129647ba36e63
 
     steps:
       - name: Checkout
