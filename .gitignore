@@ -240,3 +240,22 @@ models/
 *.onnx
 llama.cpp/
 ollama/
+
+# hard ban: cursor/editor metadata
+.cursor/
+.vscode/
+.idea/
+
+# hard ban: scrapers (not public)
+scraper/
+scrapers/
+scraper_audit_staging/
+
+# hard ban: agents/prompts (not public)
+agents/
+agent/
+prompts/
+
+# hard ban: db / mined artifacts (not public)
+db/
+nlc/db/

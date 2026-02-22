@@ -8,13 +8,15 @@ if git ls-files | grep -Eiq "$banned_ext_regex"; then
   exit 2
 fi
 
-if git ls-files | grep -Eiq '^(models/|llama\.cpp/|ollama/)'; then
-  echo "FAIL: banned directory tracked (models/ or llama.cpp/ or ollama/)."
-  git ls-files | grep -Ei '^(models/|llama\.cpp/|ollama/)' || true
+if git ls-files | grep -Eiq '^(\.cursor/|agents/|agent/|prompts/|scraper/|scrapers/|scraper_audit_staging/|db/|nlc/db/|models/|llama\.cpp/|ollama/)'; then
+  echo "FAIL: banned directory tracked."
+  git ls-files | grep -Ei '^(\.cursor/|agents/|agent/|prompts/|scraper/|scrapers/|scraper_audit_staging/|db/|nlc/db/|models/|llama\.cpp/|ollama/)' || true
   exit 2
 fi
 
 banned_terms=(
+  "cursor"
+  "Cursor"
   "LLM"
   "OpenAI"
   "GPT"
@@ -33,8 +35,8 @@ banned_terms=(
   "LangChain"
 )
 
-# Exclude policy doc and verifier; exclude v1 architectural paths (adapters, policy schema)
-exclude_pattern='^policy/NO_LLM_RULE\.md$|^scripts/ci/|^nlc/llm_|^nlc/prompt_compiler\.py|^policy/policy|^scripts/verify_milestone_4_|^scripts/verify_step7\.py|^scripts/run_replay\.py|^workers/run_repair\.py'
+# Exclude policy doc and verifier; exclude v1 architectural paths (adapters, policy schema); exclude SQL cursor usage
+exclude_pattern='^policy/NO_LLM_RULE\.md$|^scripts/ci/|^nlc/llm_|^nlc/prompt_compiler\.py|^policy/policy|^scripts/verify_milestone_4_|^scripts/verify_step7\.py|^scripts/run_replay\.py|^workers/run_repair\.py|^nlc/index/index_builder\.py$|^nlc/db_miner\.py$|^nlc/regression_suite\.py$|^scripts/migrate_delta_schema\.py$|^workers/run_generator\.py$|^\.github/'
 files=$(git ls-files | grep -E '\.(md|txt|py|js|ts|tsx|json|yml|yaml|sh|bash|toml)$' | grep -vE "$exclude_pattern" || true)
 
 for term in "${banned_terms[@]}"; do

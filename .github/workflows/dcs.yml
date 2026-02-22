@@ -30,6 +30,14 @@ jobs:
         run: |
           bash scripts/ci/verify_no_llm_artifacts.sh
 
+      - name: Hard guard — banned dirs must not exist
+        run: |
+          test ! -d scraper
+          test ! -d agents
+          test ! -d .cursor
+          test ! -d db
+          test ! -d nlc/db
+
       - name: Proof run (canonical v1 entrypoint, no cache)
         run: |
           rm -rf out
