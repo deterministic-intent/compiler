@@ -28,6 +28,7 @@ jobs:
 
       - name: Preflight (tracked files must be clean)
         run: |
+          cd "$GITHUB_WORKSPACE"
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=no)"
 
@@ -84,5 +85,6 @@ jobs:
 
       - name: Postflight (no tracked mutation)
         run: |
+          cd "$GITHUB_WORKSPACE"
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=no)"
