@@ -48,7 +48,7 @@ jobs:
           cd "$REPO_ROOT"
           bash scripts/ci/verify_no_llm_artifacts.sh
 
-      - name: Hard guard — banned dirs must not exist (repo)
+      - name: Hard guard — banned dirs/data must not exist (repo)
         shell: bash
         run: |
           cd "$REPO_ROOT"
@@ -56,6 +56,11 @@ jobs:
           test ! -d agents
           test ! -d .cursor
           test ! -d db
+          # allow nlc/db code, forbid db data
+          test ! -d nlc/db/snapshots
+          test ! -e nlc/db/latest
+          test ! -f nlc/db/intents_mined.json
+          test ! -f nlc/db/intents_mined.ndjson
 
       - name: Provision snapshot (immutable, hash-checked)
         shell: bash
