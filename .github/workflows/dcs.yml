@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     container:
-      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:efce061bfb991c039e8ccbe434f7873bd068d30d292844b129d7ddc3a62af00f
+      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:d3a200e9943221fecd9cd5b88185866817a80621019975ba40a129647ba36e63
 
     permissions:
       contents: read
@@ -66,7 +66,7 @@ jobs:
 
           (cd dcs/snapshots && sha256sum -c "${SNAPSHOT_ID}.sha256")
 
-          gunzip -c "dcs/snapshots/${ASSET_NAME}" | tar -C "nlc/db/snapshots" -xf -
+          tar -C nlc/db/snapshots -xzf "dcs/snapshots/${ASSET_NAME}"
 
           test -d "nlc/db/snapshots/${SNAPSHOT_ID}"
 
