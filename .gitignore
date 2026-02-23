@@ -162,6 +162,7 @@ scraper/temp/
 !schemas/req_v1.schema.json
 !suites/**/*.json
 !scripts/e2e/fixtures/e2e0.json
+!versions/repro_versions.json
 
 # Database snapshots (keep structure, ignore content)
 db/snapshots/**
