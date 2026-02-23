@@ -42,6 +42,7 @@ jobs:
       - name: Provision snapshot (immutable, hash-checked)
         env:
           SNAPSHOT_ID: 20260208T190113Z
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
