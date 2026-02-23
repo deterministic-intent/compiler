@@ -1,5 +1,8 @@
 # Official docs + upstream repos allowlist (hostnames only).
 # Add/Remove intentionally. No wildcards. Subdomains are allowed automatically.
+# 127.0.0.1 and localhost: required for verify_step9 (local fixture server)
+127.0.0.1
+localhost
 openai.com
 platform.openai.com
 github.com
