@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     container:
-      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:d3a200e9943221fecd9cd5b88185866817a80621019975ba40a129647ba36e63
+      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:efce061bfb991c039e8ccbe434f7873bd068d30d292844b129d7ddc3a62af00f
 
     steps:
       - name: Checkout
