@@ -106,6 +106,7 @@ jobs:
         shell: bash
         env:
           DCS_SKIP_TIER3_BUILD: "1"   # already in tier3 container; skip build
+          PYTHONPATH: ${{ github.workspace }}   # tier3 expects /workspace; Actions mounts at workspace path
         run: |
           cd "$REPO_ROOT"
           rm -rf out
