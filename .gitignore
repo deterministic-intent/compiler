@@ -161,6 +161,7 @@ scraper/temp/
 !schemas/ir_v1.schema.json
 !schemas/req_v1.schema.json
 !suites/**/*.json
+!scripts/e2e/fixtures/e2e0.json
 
 # Database snapshots (keep structure, ignore content)
 db/snapshots/**
