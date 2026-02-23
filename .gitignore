@@ -260,8 +260,8 @@ agents/
 agent/
 prompts/
 
-# hard ban: db / mined artifacts (not public)
-db/
+# hard ban: db / mined artifacts (not public) — top-level only; nlc/db code allowed
+/db/
 nlc/db/**
 !nlc/db/__init__.py
 !nlc/db/manifest_builder.py

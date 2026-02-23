@@ -341,7 +341,7 @@ def main():
         print(f"WARN: AUDIT_POLICY={audit_policy} unknown, using v1")
         audit_policy = "v1"
     print(f"\n--- Language Tiers (policy={audit_policy}) ---")
-    run([sys.executable, "scripts/env/ensure_toolchains.py"])
+    run([sys.executable, "scripts/toolchain/ensure_toolchains.py"])
     run([sys.executable, "scripts/report_language_closure.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--policy", audit_policy])
     run([sys.executable, "scripts/verify_language_exists_closure.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT])
     run([sys.executable, "scripts/verify_language_executable_closure.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT])

@@ -94,6 +94,14 @@ jobs:
 
           test -d "nlc/db/snapshots/${SNAPSHOT_ID}"
 
+      - name: Proof fixtures guard (fail fast if required inputs missing)
+        shell: bash
+        run: |
+          cd "$REPO_ROOT"
+          test -f scripts/e2e/fixtures/e2e0.json || { echo "FAIL: scripts/e2e/fixtures/e2e0.json missing"; exit 1; }
+          test -f scripts/toolchain/ensure_toolchains.py || { echo "FAIL: scripts/toolchain/ensure_toolchains.py missing"; exit 1; }
+          python3 -c "import nlc.db.manifest_builder" || { echo "FAIL: nlc.db.manifest_builder not importable"; exit 1; }
+
       - name: Proof run (canonical v1 entrypoint, no cache)
         shell: bash
         env:
