@@ -18,23 +18,23 @@ jobs:
     container:
       image: ghcr.io/deterministic-intent/dcs-tier3@sha256:6991cf87d8f199dc9c91f9f77a5b880c639473058c462f344b921d3928258330
 
-    # Workaround: defaults.run.working-directory is IGNORED for container jobs.
-    # Inject workspace path and cd explicitly in steps that need git.
     env:
-      REPO_ROOT: ${{ format('/__w/{0}/{0}', github.event.repository.name) }}
+      REPO_ROOT: ${{ github.workspace }}
 
     permissions:
       contents: read
-      packages: read   # pull ghcr.io container
+      packages: read
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - name: Preflight (tracked files must be clean)
+      - name: Preflight (repo must be clean)
         run: |
           cd "$REPO_ROOT"
-          git diff --exit-code
+          test -d .git
           test -z "$(git status --porcelain --untracked-files=no)"
 
       - name: Policy guard — no model artifacts/references
@@ -96,7 +96,7 @@ jobs:
           cd "$REPO_ROOT"
           diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
 
-      - name: Postflight (no tracked mutation)
+      - name: Postflight (no mutation)
         run: |
           cd "$REPO_ROOT"
           git diff --exit-code
