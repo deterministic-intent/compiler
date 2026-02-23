@@ -118,7 +118,7 @@ jobs:
         shell: bash
         run: |
           cd "$REPO_ROOT"
-          diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
+          git diff --no-index --exit-code dcs/expected_proof_hashes_v1.json out/proof_hashes.json
 
       - name: Postflight (no mutation)
         shell: bash
