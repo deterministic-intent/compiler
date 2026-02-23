@@ -34,12 +34,14 @@ if [[ -e "$CLEAN_DIR" ]]; then
   fi
 fi
 
-# 1) Verify host prerequisites
-if ! command -v docker &>/dev/null; then
-  echo "FAIL: docker not found. Install Docker and confirm 'docker version'."
-  exit 1
+# 1) Verify host prerequisites (skip when already in tier3 container)
+if [[ -z "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
+  if ! command -v docker &>/dev/null; then
+    echo "FAIL: docker not found. Install Docker and confirm 'docker version'."
+    exit 1
+  fi
+  docker version &>/dev/null || { echo "FAIL: docker not runnable"; exit 1; }
 fi
-docker version &>/dev/null || { echo "FAIL: docker not runnable"; exit 1; }
 
 # 2) Clean state/requests for deterministic run (ownership guard: no sudo dependency)
 if [[ -d "$CLEAN_DIR" ]]; then
@@ -53,15 +55,24 @@ fi
 rm -rf "$CLEAN_DIR"/*
 mkdir -p "$CLEAN_DIR"
 
-# 3) Build Tier3 image (no cache)
-echo "Building Tier3 image..."
-docker build --no-cache -t dcs-tier3 -f "$KIT_ROOT/Dockerfile.tier3" "$KIT_ROOT" || { echo "FAIL: docker build failed"; exit 1; }
+# 3) Build Tier3 image (no cache) — skip when already in tier3 (e.g. CI job container)
+if [[ -z "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
+  echo "Building Tier3 image..."
+  docker build --no-cache -t dcs-tier3 -f "$KIT_ROOT/Dockerfile.tier3" "$KIT_ROOT" || { echo "FAIL: docker build failed"; exit 1; }
+fi
 
 # 4) Run v1 audit inside container (--user so host mount writes are owned by current user)
 # AUDIT_SCOPE: v1 (default, full battery) | proof (reduced, non-v1).
 # Proof hashes (step 5-6) are written ONLY on successful audit; || exit 1 prevents fallthrough on failure.
 SCOPE="${AUDIT_SCOPE:-v1}"
 echo "Running audit (scope=$SCOPE)..."
+if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
+  # Already in tier3 container (CI); run audit in-process with same env as docker run
+  (cd "$KIT_ROOT" && HOME=/tmp AUDIT_SCOPE="$SCOPE" AUDIT_POLICY=v1 \
+    AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
+    NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
+    python3 scripts/audit/run_audit.py --policy v1) || { echo "FAIL: audit exited non-zero"; exit 1; }
+else
 docker run --rm \
   --user "$(id -u):$(id -g)" \
   -v "$KIT_ROOT:/workspace" \
@@ -75,6 +86,7 @@ docker run --rm \
   -e NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
   dcs-tier3 \
   python3 scripts/audit/run_audit.py --policy v1 || { echo "FAIL: audit exited non-zero"; exit 1; }
+fi
 
 # 5) Compute three SHA256 values
 mkdir -p "$OUT_DIR"

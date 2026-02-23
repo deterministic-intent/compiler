@@ -14,10 +14,19 @@ concurrency:
 jobs:
   proof:
     runs-on: ubuntu-24.04
-    # No container: job runs on host so git/checkout work; proof/run_proof.sh uses docker for tier3
+
+    container:
+      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:6991cf87d8f199dc9c91f9f77a5b880c639473058c462f344b921d3928258330
+
+    # Workaround: container jobs have a bug where steps can start in wrong cwd.
+    # Explicitly set working-directory to the workspace path (/__w/<repo>/<repo>).
+    defaults:
+      run:
+        working-directory: ${{ format('/__w/{0}/{0}', github.event.repository.name) }}
 
     permissions:
       contents: read
+      packages: read   # pull ghcr.io container
 
     steps:
       - name: Checkout
@@ -70,6 +79,8 @@ jobs:
           test -d "nlc/db/snapshots/${SNAPSHOT_ID}"
 
       - name: Proof run (canonical v1 entrypoint, no cache)
+        env:
+          DCS_SKIP_TIER3_BUILD: "1"   # already in tier3 container; skip build
         run: |
           rm -rf out
           mkdir -p out
