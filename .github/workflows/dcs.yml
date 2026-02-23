@@ -18,11 +18,10 @@ jobs:
     container:
       image: ghcr.io/deterministic-intent/dcs-tier3@sha256:6991cf87d8f199dc9c91f9f77a5b880c639473058c462f344b921d3928258330
 
-    # Workaround: container jobs have a bug where steps can start in wrong cwd.
-    # Explicitly set working-directory to the workspace path (/__w/<repo>/<repo>).
-    defaults:
-      run:
-        working-directory: ${{ format('/__w/{0}/{0}', github.event.repository.name) }}
+    # Workaround: defaults.run.working-directory is IGNORED for container jobs.
+    # Inject workspace path and cd explicitly in steps that need git.
+    env:
+      REPO_ROOT: ${{ format('/__w/{0}/{0}', github.event.repository.name) }}
 
     permissions:
       contents: read
@@ -34,15 +33,18 @@ jobs:
 
       - name: Preflight (tracked files must be clean)
         run: |
+          cd "$REPO_ROOT"
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=no)"
 
       - name: Policy guard — no model artifacts/references
         run: |
+          cd "$REPO_ROOT"
           bash scripts/ci/verify_no_llm_artifacts.sh
 
       - name: Hard guard — banned dirs must not exist (repo)
         run: |
+          cd "$REPO_ROOT"
           test ! -d scraper
           test ! -d agents
           test ! -d .cursor
@@ -54,6 +56,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+          cd "$REPO_ROOT"
 
           mkdir -p dcs/snapshots nlc/db/snapshots
 
@@ -82,6 +85,7 @@ jobs:
         env:
           DCS_SKIP_TIER3_BUILD: "1"   # already in tier3 container; skip build
         run: |
+          cd "$REPO_ROOT"
           rm -rf out
           mkdir -p out
           echo "AUDIT_SCOPE=v1"
@@ -89,9 +93,11 @@ jobs:
 
       - name: Compare proof hashes (atomic)
         run: |
+          cd "$REPO_ROOT"
           diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
 
       - name: Postflight (no tracked mutation)
         run: |
+          cd "$REPO_ROOT"
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=no)"
