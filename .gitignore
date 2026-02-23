@@ -259,3 +259,7 @@ prompts/
 # hard ban: db / mined artifacts (not public)
 db/
 nlc/db/
+
+# snapshot tarballs (downloaded at CI runtime, never committed)
+dcs/snapshots/*.tar.zst
+dcs/snapshots/*.tar.gz

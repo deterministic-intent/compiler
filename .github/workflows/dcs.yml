@@ -18,25 +18,57 @@ jobs:
     container:
       image: ghcr.io/deterministic-intent/dcs-tier3@sha256:efce061bfb991c039e8ccbe434f7873bd068d30d292844b129d7ddc3a62af00f
 
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Preflight (repo must be clean)
+      - name: Preflight (tracked files must be clean)
         run: |
-          test -z "$(git status --porcelain)"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=no)"
 
       - name: Policy guard — no model artifacts/references
         run: |
           bash scripts/ci/verify_no_llm_artifacts.sh
 
-      - name: Hard guard — banned dirs must not exist
+      - name: Hard guard — banned dirs must not exist (repo)
         run: |
           test ! -d scraper
           test ! -d agents
           test ! -d .cursor
           test ! -d db
-          test ! -d nlc/db
+
+      - name: Provision snapshot (immutable, hash-checked)
+        env:
+          SNAPSHOT_ID: 20260208T190113Z
+        run: |
+          set -euo pipefail
+
+          mkdir -p dcs/snapshots nlc/db/snapshots
+
+          ASSET_NAME="${SNAPSHOT_ID}.tar.gz"
+          RELEASE_TAG="snapshot-${SNAPSHOT_ID}"
+
+          ASSET_ID="$(curl -fsSL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" \
+            | python3 -c "import sys,json; r=json.load(sys.stdin); print([a['id'] for a in r['assets'] if a['name']=='${ASSET_NAME}'][0])")"
+
+          curl -fsSL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/octet-stream" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/assets/${ASSET_ID}" \
+            -o "dcs/snapshots/${ASSET_NAME}"
+
+          (cd dcs/snapshots && sha256sum -c "${SNAPSHOT_ID}.sha256")
+
+          gunzip -c "dcs/snapshots/${ASSET_NAME}" | tar -C "nlc/db/snapshots" -xf -
+
+          test -d "nlc/db/snapshots/${SNAPSHOT_ID}"
 
       - name: Proof run (canonical v1 entrypoint, no cache)
         run: |
@@ -49,7 +81,7 @@ jobs:
         run: |
           diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
 
-      - name: Postflight (no mutation)
+      - name: Postflight (no tracked mutation)
         run: |
           git diff --exit-code
-          test -z "$(git status --porcelain)"
+          test -z "$(git status --porcelain --untracked-files=no)"
