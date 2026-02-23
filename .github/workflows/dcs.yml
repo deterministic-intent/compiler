@@ -32,6 +32,12 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Git safe.directory (container ownership)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Workspace sanity
         shell: bash
         run: |
