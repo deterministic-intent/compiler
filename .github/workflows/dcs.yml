@@ -20,6 +20,7 @@ jobs:
 
     permissions:
       contents: read
+      packages: read   # required to pull ghcr.io private container
 
     steps:
       - name: Checkout
