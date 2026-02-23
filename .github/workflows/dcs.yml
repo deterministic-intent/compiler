@@ -18,6 +18,10 @@ jobs:
     container:
       image: ghcr.io/deterministic-intent/dcs-tier3@sha256:6991cf87d8f199dc9c91f9f77a5b880c639473058c462f344b921d3928258330
 
+    defaults:
+      run:
+        shell: bash
+
     env:
       REPO_ROOT: ${{ github.workspace }}
 
@@ -32,17 +36,20 @@ jobs:
           fetch-depth: 1
 
       - name: Preflight (repo must be clean)
+        shell: bash
         run: |
           cd "$REPO_ROOT"
           test -d .git
           test -z "$(git status --porcelain --untracked-files=no)"
 
       - name: Policy guard — no model artifacts/references
+        shell: bash
         run: |
           cd "$REPO_ROOT"
           bash scripts/ci/verify_no_llm_artifacts.sh
 
       - name: Hard guard — banned dirs must not exist (repo)
+        shell: bash
         run: |
           cd "$REPO_ROOT"
           test ! -d scraper
@@ -51,6 +58,7 @@ jobs:
           test ! -d db
 
       - name: Provision snapshot (immutable, hash-checked)
+        shell: bash
         env:
           SNAPSHOT_ID: 20260208T190113Z
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,6 +90,7 @@ jobs:
           test -d "nlc/db/snapshots/${SNAPSHOT_ID}"
 
       - name: Proof run (canonical v1 entrypoint, no cache)
+        shell: bash
         env:
           DCS_SKIP_TIER3_BUILD: "1"   # already in tier3 container; skip build
         run: |
@@ -92,11 +101,13 @@ jobs:
           AUDIT_SCOPE=v1 bash proof/run_proof.sh
 
       - name: Compare proof hashes (atomic)
+        shell: bash
         run: |
           cd "$REPO_ROOT"
           diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
 
       - name: Postflight (no mutation)
+        shell: bash
         run: |
           cd "$REPO_ROOT"
           git diff --exit-code
