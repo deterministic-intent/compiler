@@ -303,7 +303,7 @@ def _resolve_manifest_bundle_hash(snapshot_id: str) -> Tuple[Optional[str], Opti
 
 def _infer_artifact_class(text: str) -> Tuple[Optional[str], Optional[dict]]:
     """
-    Deterministic, minimal v1 classifier. No external model. No guessing.
+    Deterministic, minimal v1 classifier. No LLM. No guessing.
     """
     t = _normalize_ws(text).lower()
     if "python" in t and "cli" in t:

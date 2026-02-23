@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""E2E-0 Test Suite: Core deterministic pipeline without replay or live external model."""
+"""E2E-0 Test Suite: Core deterministic pipeline without replay or live LLM."""
 
 import sys
 import json

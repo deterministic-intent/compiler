@@ -88,7 +88,7 @@ def main() -> int:
         _fail("FAIL suite:invalid_suite_format", 2)
 
     env = os.environ.copy()
-    # Replay clamp: no network, no external model. (Verifier has additional replay checks based on env.)
+    # Replay clamp: no network, no LLM. (Verifier has additional replay checks based on env.)
     env["DCS_REPRO"] = "1"
 
     for c in cases:

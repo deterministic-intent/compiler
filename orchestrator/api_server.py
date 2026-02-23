@@ -474,7 +474,7 @@ def run_api_server(host: str = "127.0.0.1", port: int = 8080) -> None:
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="DCS API Server")
+    parser = argparse.ArgumentParser(description="LLM-Hub API Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host to bind to")
     parser.add_argument("--port", type=int, default=8080, help="Port to bind to")
     args = parser.parse_args()
