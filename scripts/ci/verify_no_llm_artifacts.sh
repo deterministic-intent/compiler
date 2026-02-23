@@ -8,9 +8,13 @@ if git ls-files | grep -Eiq "$banned_ext_regex"; then
   exit 2
 fi
 
-if git ls-files | grep -Eiq '^(\.cursor/|agents/|agent/|prompts/|scraper/|scrapers/|scraper_audit_staging/|db/|nlc/db/|models/|llama\.cpp/|ollama/)'; then
+banned_matches=$(git ls-files | grep -Ei '^(\.cursor/|agents/|agent/|prompts/|scraper/|scrapers/|scraper_audit_staging/|db/|nlc/db/|models/|llama\.cpp/|ollama/)' || true)
+# Allow proof-critical nlc/db code (__init__.py, manifest_builder.py)
+allowed_nlc_db='^nlc/db/__init__\.py$|^nlc/db/manifest_builder\.py$'
+remaining=$(echo "$banned_matches" | grep -vE "$allowed_nlc_db" || true)
+if [ -n "$remaining" ]; then
   echo "FAIL: banned directory tracked."
-  git ls-files | grep -Ei '^(\.cursor/|agents/|agent/|prompts/|scraper/|scrapers/|scraper_audit_staging/|db/|nlc/db/|models/|llama\.cpp/|ollama/)' || true
+  echo "$remaining"
   exit 2
 fi
 
