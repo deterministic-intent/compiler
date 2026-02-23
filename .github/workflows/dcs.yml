@@ -14,13 +14,10 @@ concurrency:
 jobs:
   proof:
     runs-on: ubuntu-24.04
-
-    container:
-      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:6991cf87d8f199dc9c91f9f77a5b880c639473058c462f344b921d3928258330
+    # No container: job runs on host so git/checkout work; proof/run_proof.sh uses docker for tier3
 
     permissions:
       contents: read
-      packages: read   # required to pull ghcr.io private container
 
     steps:
       - name: Checkout
@@ -28,7 +25,6 @@ jobs:
 
       - name: Preflight (tracked files must be clean)
         run: |
-          cd "$GITHUB_WORKSPACE"
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=no)"
 
@@ -85,6 +81,5 @@ jobs:
 
       - name: Postflight (no tracked mutation)
         run: |
-          cd "$GITHUB_WORKSPACE"
           git diff --exit-code
           test -z "$(git status --porcelain --untracked-files=no)"
