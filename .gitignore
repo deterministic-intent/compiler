@@ -157,6 +157,7 @@ scraper/temp/
 !nlc/regression/suite.json
 !contracts/contract_rules.json
 !policy/policy_v1.json
+!governance/freeze_manifest_v1.json
 !schemas/ir_v1.schema.json
 !schemas/req_v1.schema.json
 !suites/**/*.json

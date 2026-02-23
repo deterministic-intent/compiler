@@ -1,0 +1,15 @@
+{
+  "adapter_version": "v1",
+  "artifact_contract_version": "v1",
+  "failure_taxonomy_version": "v1",
+  "hashes": {
+    "artifact_contract_sha256": "e3da9991057cfb1fd9ec8dfb1083ca2ea5f2b27094a8f1771d3c109082f86a6c",
+    "failure_taxonomy_sha256": "a954a4e2f81a199a2ca5f097a35ad5ed2bb777bfc1a5b49aa37ed5b9259c9dbc",
+    "ir_schema_sha256": "b7e1d42d23e28fc962a25c84e35e62958c6f35b3ea997acbf34fada4a758d233",
+    "req_schema_sha256": "60bcc7ec054be6bd6b0b4f5352cec66e4f7ca2f405a51a6323e13a4f4563e45b"
+  },
+  "ir_schema_version": "ir_v1",
+  "policy_version": "v1",
+  "req_schema_version": "req_v1",
+  "schema_version": "freeze_manifest_v1"
+}
