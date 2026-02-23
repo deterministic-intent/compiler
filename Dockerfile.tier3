@@ -41,6 +41,7 @@ RUN echo "deb http://snapshot.debian.org/archive/debian/${APT_SNAPSHOT}/ bookwor
 # ---- Core build/runtime deps (from snapshot; deterministic) ----
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     ca-certificates \
+    git \
     curl \
     wget \
     gnupg \
