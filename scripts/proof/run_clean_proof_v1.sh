@@ -68,10 +68,10 @@ NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=
   || { echo "E2E0 FAIL"; exit 2; }
 echo ""
 
-# 4) Golden suite surface verify
-echo "--- verify_golden_suite_surface ---"
+# 4) Binding matrix surface verify (19 LANG + NEG dirs; not Golden Suite 20-50)
+echo "--- verify_binding_matrix_surface ---"
 python3 scripts/verify_golden_suite_surface.py --suite-dir suites/golden/v1/requests --snapshot-id "$SNAPSHOT_ID" \
-  || { echo "verify_golden_suite_surface FAIL"; exit 2; }
+  || { echo "verify_binding_matrix_surface FAIL"; exit 2; }
 echo ""
 
 # 5) Proof run 1
@@ -117,10 +117,10 @@ if [[ -d "$FORBIDDEN_STATE" ]] && [[ "$(ls -A "$FORBIDDEN_STATE" 2>/dev/null | w
 fi
 
 # 10) Summary
-REQ_COUNT="$(find suites/golden/v1/requests -mindepth 1 -maxdepth 1 -type d \( -name 'LANG_*' -o -name 'NEG_*' \) 2>/dev/null | wc -l)"
+BINDING_COUNT="$(find suites/golden/v1/requests -mindepth 1 -maxdepth 1 -type d \( -name 'LANG_*' -o -name 'NEG_*' \) 2>/dev/null | wc -l)"
 echo "=== SUMMARY ==="
 echo "snapshot_id: $SNAPSHOT_ID"
-echo "suite_req_count: $REQ_COUNT"
+echo "binding_matrix_dirs: $BINDING_COUNT"
 echo "proof_hash_run1: $HASH1"
 echo "proof_hash_run2: $HASH2"
 echo "PASS"

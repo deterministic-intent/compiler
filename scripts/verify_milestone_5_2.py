@@ -124,9 +124,12 @@ def _start_api_server(port: int = 8888, api_key: Optional[str] = None) -> tuple[
 def main() -> int:
     env = os.environ.copy()
     env["NLC_POLICY_VERSION"] = "v1"
-    env.setdefault("NLC_DB_SNAPSHOT_ID", "20260103T060637Z")
-    env.setdefault("NLC_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
-    env.setdefault("NLC_KB_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
+    snapshot_id = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        _fail("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or NLC_DB_SNAPSHOT_ID")
+    env["NLC_DB_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_KB_SNAPSHOT_ID"] = snapshot_id
 
     # Clean up state
     if TENANTS_ROOT.exists():

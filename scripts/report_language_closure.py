@@ -12,19 +12,21 @@ import json
 import sys
 from pathlib import Path
 
+import os
+
 BASE = Path(__file__).resolve().parents[1]
-ACTIVE_SNAPSHOT = "20260208T190113Z"
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Report language closure (tier0..tier3)")
-    ap.add_argument("--snapshot-id", default=ACTIVE_SNAPSHOT, help="Snapshot ID")
+    ap.add_argument("--snapshot-id", default="", help="Snapshot ID")
     ap.add_argument("--policy", default="v1", help="Policy version")
     args = ap.parse_args()
 
-    snapshot_id = str(args.snapshot_id).strip()
+    snapshot_id = (args.snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
     if not snapshot_id:
-        snapshot_id = ACTIVE_SNAPSHOT
+        sys.stderr.write("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --snapshot-id\n")
+        sys.exit(2)
 
     snap_root = (BASE / "nlc" / "db" / "snapshots" / snapshot_id).resolve()
     if not snap_root.exists():

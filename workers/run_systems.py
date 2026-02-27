@@ -3,6 +3,7 @@
 Deterministic systems runner: NO model.
 Packages workspace/project/ into dist/ artifacts with checksums and entrypoint docs.
 """
+import os
 import sys
 import json
 import hashlib
@@ -35,8 +36,11 @@ def write_text(p: Path, s: str) -> None:
     p.write_text(s, encoding="utf-8")
 
 def _repro_mode() -> bool:
-    from dcs_core.repro_env import is_repro_mode
-    return is_repro_mode()
+    """True when DCS_REPRO=1 or NLC_REPRO=1 (replay/deterministic mode). No external deps."""
+    return (
+        os.environ.get("DCS_REPRO", "").strip() == "1"
+        or os.environ.get("NLC_REPRO", "").strip() == "1"
+    )
 
 
 def now_utc() -> str:

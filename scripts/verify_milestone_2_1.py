@@ -150,11 +150,14 @@ def _read_repair_status(request_id: str) -> Dict[str, Any]:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--snapshot-id", default="20260103T060637Z")
+    ap.add_argument("--snapshot-id", default="")
     ap.add_argument("--policy", default="v1")
     args = ap.parse_args()
 
-    snapshot_id = str(args.snapshot_id).strip()
+    snapshot_id = (args.snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if not snapshot_id:
+        sys.stderr.write("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --snapshot-id\n")
+        sys.exit(2)
     policy = str(args.policy).strip() or "v1"
 
     env = os.environ.copy()

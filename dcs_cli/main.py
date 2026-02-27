@@ -1782,9 +1782,11 @@ def cmd_capabilities(args) -> int:
     _print_banner(args)
     try:
         from policy import get_default_snapshot_id
-        snapshot_id = os.environ.get("NLC_DB_SNAPSHOT_ID") or get_default_snapshot_id() or "20260208T190113Z"
+        snapshot_id = (os.environ.get("NLC_DB_SNAPSHOT_ID") or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or get_default_snapshot_id() or "").strip()
     except ImportError:
-        snapshot_id = os.environ.get("NLC_DB_SNAPSHOT_ID", "20260208T190113Z")
+        snapshot_id = (os.environ.get("NLC_DB_SNAPSHOT_ID") or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        return _err("bad_args", "MISSING_SNAPSHOT_ID: set NLC_DB_SNAPSHOT_ID or DCS_PROOF_SNAPSHOT_ID")
     caps_path = _snapshot_root() / snapshot_id / "capabilities.json"
     if not caps_path.exists():
         return _err("bad_args", f"capabilities.json missing for snapshot {snapshot_id}")

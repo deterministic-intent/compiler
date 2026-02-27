@@ -807,8 +807,9 @@ def load_req(rd: Path) -> dict:
     try:
         obj = json.loads(read_text(req_path))
         if obj:
-            from verifier.schema_validate import validate_req
-            validate_req(obj)
+            is_valid, err = validate_req(obj)
+            if not is_valid:
+                die(err)
         return obj
     except Exception as e:
         die(str(e))

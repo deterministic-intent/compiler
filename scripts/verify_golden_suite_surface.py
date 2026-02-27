@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
 import json
 import sys
 from pathlib import Path
@@ -19,7 +20,6 @@ if str(BASE) not in sys.path:
 from scripts._repo_guard import require_repo_root
 require_repo_root()
 
-SNAPSHOT_ID = "20260215T120000Z"
 OUT_REPORT = BASE / "out" / "golden_suite_surface_report.json"
 
 
@@ -30,8 +30,12 @@ def sha256_file(p: Path) -> str:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--suite-dir", default="suites/golden/v1/requests")
-    ap.add_argument("--snapshot-id", default=SNAPSHOT_ID)
+    ap.add_argument("--snapshot-id", default="")
     args = ap.parse_args()
+    snapshot_id = (args.snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if not snapshot_id:
+        print("ERROR: MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --snapshot-id", file=sys.stderr)
+        return 2
 
     if str(BASE) not in sys.path:
         sys.path.insert(0, str(BASE))
@@ -43,8 +47,8 @@ def main() -> int:
         return 2
 
     try:
-        expected_langs = get_v1_languages_from_snapshot(args.snapshot_id)
-        supported_ac = get_v1_supported_artifact_classes_from_snapshot(args.snapshot_id)
+        expected_langs = get_v1_languages_from_snapshot(snapshot_id)
+        supported_ac = get_v1_supported_artifact_classes_from_snapshot(snapshot_id)
     except (FileNotFoundError, ValueError) as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 2
@@ -136,7 +140,7 @@ def main() -> int:
 
     OUT_REPORT.parent.mkdir(parents=True, exist_ok=True)
     OUT_REPORT.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print("golden_suite_surface: PASS (19/19 languages)")
+    print("binding_matrix_surface: PASS (19/19 language bindings)")
     return 0
 
 

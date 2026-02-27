@@ -63,9 +63,12 @@ def _debug(rid: str, env: dict[str, str]) -> bytes:
 def main() -> int:
     env = os.environ.copy()
     env["NLC_POLICY_VERSION"] = "v1"
-    env["NLC_DB_SNAPSHOT_ID"] = "20260103T060637Z"
-    env["NLC_SNAPSHOT_ID"] = "20260103T060637Z"
-    env["NLC_KB_SNAPSHOT_ID"] = "20260103T060637Z"
+    snapshot_id = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        _fail("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or NLC_DB_SNAPSHOT_ID")
+    env["NLC_DB_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_KB_SNAPSHOT_ID"] = snapshot_id
 
     # Ensure fixture requests exist by running the milestone proofs (they are deterministic and pinned).
     _run([sys.executable, "scripts/verify_milestone_3_0.py"], env=env)

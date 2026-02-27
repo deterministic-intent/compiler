@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-DEFAULT_SNAPSHOT = "20260103T060637Z"
 
 
 def _fail() -> None:
@@ -19,7 +19,11 @@ def _read_json(p: Path) -> dict:
 
 
 def main() -> int:
-    snapshot_id = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_SNAPSHOT
+    snapshot_id = (sys.argv[1] if len(sys.argv) > 1 else None) or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or ""
+    snapshot_id = (snapshot_id or "").strip()
+    if not snapshot_id:
+        print("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass snapshot_id as argv[1]", file=sys.stderr)
+        raise SystemExit(1)
     caps_path = BASE / "nlc" / "db" / "snapshots" / snapshot_id / "capabilities.json"
     if not caps_path.exists():
         _fail()

@@ -40,14 +40,16 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request-id", default="STEP12-AUDIT")
     ap.add_argument("--external-snapshot-id", default="STEP12-EXT-AUDIT")
-    ap.add_argument("--knowledge-snapshot-id", default=os.environ.get("DCS_PROOF_SNAPSHOT_ID", "20260103T060637Z"))
+    ap.add_argument("--knowledge-snapshot-id", default="")
     ap.add_argument("--policy", default="v1")
     ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
 
     req_id = args.request_id
     ext_id = args.external_snapshot_id
-    know_id = args.knowledge_snapshot_id or os.environ.get("AUDIT_CLOSURE_SNAPSHOT", "20260103T060637Z")
+    know_id = (args.knowledge_snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if not know_id:
+        die("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --knowledge-snapshot-id")
     policy = args.policy
     req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 

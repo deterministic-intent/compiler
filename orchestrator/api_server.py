@@ -283,7 +283,9 @@ class APIHandler(BaseHTTPRequestHandler):
         # Extract request parameters
         request_text = data.get("request_text", "")
         dcs_content = data.get("dcs_content", "")
-        snapshot_id = data.get("snapshot_id", os.environ.get("NLC_DB_SNAPSHOT_ID", "20260103T060637Z"))
+        snapshot_id = (data.get("snapshot_id") or os.environ.get("NLC_DB_SNAPSHOT_ID") or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or "").strip()
+        if not snapshot_id:
+            return self._send_error(400, "MISSING_SNAPSHOT_ID: set NLC_DB_SNAPSHOT_ID or pass snapshot_id")
         policy_version = data.get("policy_version", "v1")
         
         # Create .dcs content if request_text provided
