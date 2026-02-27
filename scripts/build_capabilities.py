@@ -213,6 +213,28 @@ def _derive_from_snapshot(snapshot_id: str, policy_version: str = "v1") -> Dict[
         else:
             languages.add(ac)
 
+    # language_artifact_matrix from contracts (v1). Matrix keys = snapshot languages.
+    matrix_path = BASE / "contracts" / "v1_language_artifact_matrix.json"
+    language_artifact_matrix: Dict[str, List[str]] = {}
+    if matrix_path.exists():
+        try:
+            m = _read_json(matrix_path)
+            language_artifact_matrix = dict(m.get("mapping", {}))
+            language_artifact_matrix = dict(sorted(language_artifact_matrix.items()))
+            for lang, acs in language_artifact_matrix.items():
+                if not acs:
+                    _fail(f"LANG_MATRIX_EMPTY_BINDING:{lang}")
+            if language_artifact_matrix:
+                languages = set(language_artifact_matrix.keys())
+                for acs in language_artifact_matrix.values():
+                    for ac in acs:
+                        if isinstance(ac, str) and ac.strip():
+                            supported_artifact_classes.add(ac.strip())
+        except SystemExit:
+            raise
+        except Exception:
+            pass
+
     # Extract classified intents (NOT executable - no per-intent module binding)
     classified_intents_list = classified_obj.get("intents", []) if isinstance(classified_obj, dict) else []
     if not isinstance(classified_intents_list, list):
@@ -268,6 +290,7 @@ def _derive_from_snapshot(snapshot_id: str, policy_version: str = "v1") -> Dict[
             "intents_mined_relpath": "manifest/intents_mined.json" if mined_path.exists() else "",
             "intents_classified_relpath": "manifest/intents_classified.json" if classified_path.exists() else "",
         },
+        "language_artifact_matrix": language_artifact_matrix,
     }
 
 
@@ -342,6 +365,7 @@ def main() -> int:
         "reachability_mode": derived.get("reachability_mode", "union"),
         "classified_intents": derived.get("classified_intents", {"count": 0, "artifact_classes": [], "intent_ids": []}),
         "intent_level_executable_count": derived.get("intent_level_executable_count", 0),
+        "language_artifact_matrix": derived.get("language_artifact_matrix", {}),
         "evidence": {
             **derived["evidence"],
             "index_sha256": index_sha256,

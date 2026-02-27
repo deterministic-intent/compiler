@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 # v1 Proof Kit: one-command repro runner.
-# Requires: Docker. Run from extracted kit root.
+# Requires: Docker. Run from extracted kit root. Never run as root.
 set -euo pipefail
+
+if [[ "$(id -u)" -eq 0 ]]; then
+  echo "PROOF_ROOT_FORBIDDEN" >&2
+  exit 2
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -47,7 +52,7 @@ fi
 if [[ -d "$CLEAN_DIR" ]]; then
   bad=$(find "$CLEAN_DIR" -not -user "$(id -u)" -print -quit 2>/dev/null || true)
   if [[ -n "$bad" ]]; then
-    echo "FAIL: state/requests contains files not owned by current user (rerun needs sudo). First: $bad"
+    echo "FAIL: state/requests contains files not owned by current user. Run: chown -R \$(whoami):\$(id -gn) $CLEAN_DIR"
     echo "PROOF_RUN_STATE_REQUESTS_OWNERSHIP_VIOLATION"
     exit 1
   fi

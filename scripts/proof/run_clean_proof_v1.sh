@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Clean-room proof v1: refuses dirty trees, runs full battery in order.
-# Must run from /opt/dcs-public only.
+# Must run from /opt/dcs-public only. Never run as root.
 set -euo pipefail
 export LC_ALL=C
 export LANG=C
@@ -8,6 +8,27 @@ export PYTHONHASHSEED=0
 
 REQUIRED_ROOT="/opt/dcs-public"
 SNAPSHOT_ID="20260215T120000Z"
+STATE_REQUESTS="$REQUIRED_ROOT/state/requests"
+
+# 0) Forbid root; proof must run as normal user
+if [[ "$(id -u)" -eq 0 ]]; then
+  echo "PROOF_ROOT_FORBIDDEN" >&2
+  exit 2
+fi
+
+# 0b) state/requests must be writable (no privileged lane; user must repair ownership)
+if [[ -e "$STATE_REQUESTS" ]] && [[ ! -w "$STATE_REQUESTS" ]]; then
+  echo "PROOF_STATE_NOT_WRITABLE" >&2
+  exit 2
+fi
+if [[ -d "$STATE_REQUESTS" ]]; then
+  test_file="$STATE_REQUESTS/.proof_write_test_$$"
+  if ! touch "$test_file" 2>/dev/null; then
+    echo "PROOF_STATE_NOT_WRITABLE" >&2
+    exit 2
+  fi
+  rm -f "$test_file"
+fi
 
 # 1) Verify repo root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -49,7 +70,9 @@ echo ""
 # 5) Proof run 1
 echo "--- proof run 1 ---"
 DCS_SKIP_TIER3_BUILD=1 proof/run_proof.sh || { echo "proof run 1 FAIL"; exit 2; }
+# Composite: COMPOSITE_SHA256 if present, else sha256 of proof_hashes.json
 HASH1="$(jq -r '.COMPOSITE_SHA256 // empty' out/proof_hashes.json 2>/dev/null)"
+[[ -z "$HASH1" ]] && HASH1="$(sha256sum out/proof_hashes.json 2>/dev/null | cut -d' ' -f1)"
 echo "run1 hash: ${HASH1:-unknown}"
 echo ""
 
@@ -57,6 +80,7 @@ echo ""
 echo "--- proof run 2 ---"
 DCS_SKIP_TIER3_BUILD=1 proof/run_proof.sh || { echo "proof run 2 FAIL"; exit 2; }
 HASH2="$(jq -r '.COMPOSITE_SHA256 // empty' out/proof_hashes.json 2>/dev/null)"
+[[ -z "$HASH2" ]] && HASH2="$(sha256sum out/proof_hashes.json 2>/dev/null | cut -d' ' -f1)"
 echo "run2 hash: ${HASH2:-unknown}"
 echo ""
 
