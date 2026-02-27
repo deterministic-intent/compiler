@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "011892a0a098b2150041c023c7b8a8a437dc8732590900a7f6d3f7de6a9b99af",
+    "checksums.sha256": "38d5189c384a068a7833f2884c4da4835dc968b7510f51ec90c81711bdf42771",
+    "manifest.json": "1cb6368ffb2948411f741351bcf06c0e1c33b3a76aacc40392e93524019d1674"
+  },
+  "REQUEST_ID": "LANG_docker__docker_image",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

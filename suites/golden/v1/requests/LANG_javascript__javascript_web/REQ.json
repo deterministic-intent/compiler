@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "javascript_web",
+      "description": "Golden Suite javascript_web",
+      "intent_id": "golden_javascript_web",
+      "intent_type": "golden_javascript_web",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "javascript_web/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

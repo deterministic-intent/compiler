@@ -1,0 +1,78 @@
+{
+  "REQUEST_ID": "LANG_html__html_site",
+  "GATE": 7,
+  "ITERATION": 0,
+  "CREATED_AT_UTC": "2026-02-27T00:11:09+00:00Z",
+  "UPDATED_AT_UTC": "2026-02-27T00:11:10+00:00Z",
+  "ARTIFACTS": {
+    "REQUEST.md": {
+      "sha256": "8bc303d3857b42683679557370c9df0ff0f5890d69d2ca628ad2a05dc826347e"
+    },
+    "payload.json": {
+      "sha256": "ce5c9717ac2151d55fa61f7ccfbf41bcd538edb7b87f47aa5d925ebd7eb564bc"
+    },
+    "snapshot_resolution.json": {
+      "sha256": "a33688d3243c64a09f6f1398d52382237b822bae5f478db95305d0f15e33fc07"
+    },
+    "SPEC.md": {
+      "sha256": "35bde1c5d1134c5e760e3bf822b011ec16cc0bf9f16dabce106578464a9b56da"
+    },
+    "TASKS.json": {
+      "sha256": "0f8092e2ab78325b9a884a6e67ebbc5e19fa70128041a0b270e742fc7020e396"
+    },
+    "PLAN.md": {
+      "sha256": "63364ec2348ee8752980eade6af9eed6e4c9c455307db5fafb5b652ec06de3a1"
+    },
+    "NEEDS.json": {
+      "sha256": "d767a4c2ccdedd8ddaf163ecb65c2475b1820d4b5a61a702ac90b4c6b46ef5b1"
+    }
+  },
+  "HISTORY": [
+    {
+      "AT_UTC": "2026-02-27T00:11:09+00:00Z",
+      "EVENT": "GATE0_INIT"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:09+00:00Z",
+      "EVENT": "GATE0_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:09+00:00Z",
+      "EVENT": "GATE1_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:09+00:00Z",
+      "EVENT": "GATE2_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:09+00:00Z",
+      "EVENT": "GATE3_GENERATOR_RUN",
+      "ITERATION": 0
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:10+00:00Z",
+      "EVENT": "GATE3_RESULT_PASS",
+      "ITERATION": 0
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:10+00:00Z",
+      "EVENT": "GATE4_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:10+00:00Z",
+      "EVENT": "GATE5_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:10+00:00Z",
+      "EVENT": "GATE6_RESULT_PASS"
+    }
+  ],
+  "FAILURES": [],
+  "compilation_metadata": {
+    "intent_id": "golden_html_site",
+    "typed_args_hash": "44136fa355b3678a",
+    "knowledge_snapshot_id": "20260215T120000Z",
+    "manifest_bundle_hash": "efe1a3395221d7ecbd02cdc8bc19bd68857163ecd12db4aa1a512bcf8160e2a0",
+    "policy_version": "v1"
+  }
+}

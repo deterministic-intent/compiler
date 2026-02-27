@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "csharp_cli",
+      "description": "Golden Suite csharp_cli",
+      "intent_id": "golden_csharp_cli",
+      "intent_type": "golden_csharp_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "csharp_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

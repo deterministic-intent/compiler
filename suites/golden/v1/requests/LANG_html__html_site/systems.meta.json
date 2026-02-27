@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:10+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "663929e9b501af102cb7d4c10896112df5815f525b2600e9c57f6c4df516ede2",
+    "checksums.sha256": "8310398f9eff71494164f39422c1abf6cf600d513229bdb68cd6a0800168fd09",
+    "manifest.json": "cf93ff4dd2fd70b290cf62cd50633f05264552206342dbb991eee93b6a5e78a0",
+    "site.zip": "5cbe93c625dda02a21703165e796281cfabe170bd87b826d2911d8e84a74abe3"
+  },
+  "REQUEST_ID": "LANG_html__html_site",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "checksums.sha256",
+    "manifest.json",
+    "site.zip"
+  ]
+}

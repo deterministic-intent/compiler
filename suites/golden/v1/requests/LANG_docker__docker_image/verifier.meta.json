@@ -1,0 +1,13 @@
+{
+  "REQUEST_ID": "LANG_docker__docker_image",
+  "GATE": "gate6_complete",
+  "RESULT": "PASS",
+  "AT_UTC": "1970-01-01T00:00:00Z",
+  "LLAMA_RC": null,
+  "KILLED_REASON": "deterministic_python_verifier",
+  "HASHES": {
+    "verifier.prompt.txt": "cc549d0878ea691ec56d634f3ef6a5ac2fb8008baf98eb9ca2c7db80fd6e7569",
+    "verifier.out.txt": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508",
+    "VERIFY.md": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508"
+  }
+}

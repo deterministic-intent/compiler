@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_html__html_site",
+  "snapshot_resolution_sha256": "a33688d3243c64a09f6f1398d52382237b822bae5f478db95305d0f15e33fc07",
+  "sources": [],
+  "timestamp_fields_ignored": [
+    "sources.fetch_timestamp"
+  ]
+}

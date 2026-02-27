@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_c__c_cli",
+  "snapshot_resolution_sha256": "b422c131998a9ff5b6871f6f80a55ef72bbc4319fbae2080a559f86f78fb44c0",
+  "sources": [],
+  "timestamp_fields_ignored": [
+    "sources.fetch_timestamp"
+  ]
+}

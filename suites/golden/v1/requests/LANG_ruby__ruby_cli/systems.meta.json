@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:24+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "3a1df33a95b0046e177f58c31f3fd8d1da130cdfc736366133445f7546258d20",
+    "checksums.sha256": "27b507cd5cb107b2f79e817c9b96d13f8ecc6883f6f8274cc60f38b4baf4efa1",
+    "manifest.json": "3983e7531d04e78c4176c294a854b3367f5ec03d5ad746ce6abedbd67e604782"
+  },
+  "REQUEST_ID": "LANG_ruby__ruby_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

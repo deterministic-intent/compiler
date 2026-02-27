@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "type": "implementation",
+      "scope": "backend",
+      "description": "Golden Suite cpp_cli",
+      "intent_type": "golden_cpp_cli",
+      "touches": [
+        "main.py",
+        "cli.py"
+      ],
+      "acceptance_criteria": [
+        "CLI implements golden_cpp_cli intent",
+        "Code executes without errors"
+      ]
+    }
+  ]
+}

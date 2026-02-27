@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:08+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "ff31a5a7abf40f20885e3ca58db75aea55392755309ad60d6b22aa45113574f5",
+    "artifact.zip": "e3bb1211e0bfaa2d73b9a30af32917c20516441989480db73771a12e4366d53a",
+    "checksums.sha256": "4f89226272786906d0a418eed88b84aab12ec6e4c7619e2c042b06f84a4c258f",
+    "manifest.json": "ec37dcb7b701737606c3ac8ccb69c3bcbe7d0797bd601339c6f617240e0836c5"
+  },
+  "REQUEST_ID": "LANG_go__go_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

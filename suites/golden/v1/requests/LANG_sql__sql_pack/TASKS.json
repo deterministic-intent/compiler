@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "type": "implementation",
+      "scope": "backend",
+      "description": "Golden Suite sql_pack",
+      "intent_type": "golden_sql_pack",
+      "touches": [
+        "main.py",
+        "cli.py"
+      ],
+      "acceptance_criteria": [
+        "CLI implements golden_sql_pack intent",
+        "Code executes without errors"
+      ]
+    }
+  ]
+}

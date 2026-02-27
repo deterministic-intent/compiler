@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "docker_image",
+      "description": "Golden Suite docker_image",
+      "intent_id": "golden_docker_image",
+      "intent_type": "golden_docker_image",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "docker_image/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

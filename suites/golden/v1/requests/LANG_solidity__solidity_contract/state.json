@@ -1,0 +1,78 @@
+{
+  "REQUEST_ID": "LANG_solidity__solidity_contract",
+  "GATE": 7,
+  "ITERATION": 0,
+  "CREATED_AT_UTC": "2026-02-27T00:11:27+00:00Z",
+  "UPDATED_AT_UTC": "2026-02-27T00:11:29+00:00Z",
+  "ARTIFACTS": {
+    "REQUEST.md": {
+      "sha256": "acca83fb5f70cd67b048e53a7e2aae7ed818f3b9484c4bdea5553c7e79eca77b"
+    },
+    "payload.json": {
+      "sha256": "5daa2427d9f4af20a44088025d969618ff369b125faf54f9bd63144cceff62e5"
+    },
+    "snapshot_resolution.json": {
+      "sha256": "bb709175cabed527724ca156ba5ea22353021c46fefa7e0d75b9402ff46b8ace"
+    },
+    "SPEC.md": {
+      "sha256": "003d8869c8e6240688189d84eae887bd02e7d4d36981a6e7ae3d04e5b6be8fa5"
+    },
+    "TASKS.json": {
+      "sha256": "e4483c9b4456abd728ae58d0ecc9e19c3ec737179760f47234b1df1d16ce3cd9"
+    },
+    "PLAN.md": {
+      "sha256": "ddc97da2e7265dea170419d61ed5786475e2679a4d22d0b1e107f71e8dbbfacb"
+    },
+    "NEEDS.json": {
+      "sha256": "d767a4c2ccdedd8ddaf163ecb65c2475b1820d4b5a61a702ac90b4c6b46ef5b1"
+    }
+  },
+  "HISTORY": [
+    {
+      "AT_UTC": "2026-02-27T00:11:27+00:00Z",
+      "EVENT": "GATE0_INIT"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:27+00:00Z",
+      "EVENT": "GATE0_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:28+00:00Z",
+      "EVENT": "GATE1_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:28+00:00Z",
+      "EVENT": "GATE2_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:28+00:00Z",
+      "EVENT": "GATE3_GENERATOR_RUN",
+      "ITERATION": 0
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:28+00:00Z",
+      "EVENT": "GATE3_RESULT_PASS",
+      "ITERATION": 0
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:28+00:00Z",
+      "EVENT": "GATE4_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:29+00:00Z",
+      "EVENT": "GATE5_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:29+00:00Z",
+      "EVENT": "GATE6_RESULT_PASS"
+    }
+  ],
+  "FAILURES": [],
+  "compilation_metadata": {
+    "intent_id": "golden_solidity_contract",
+    "typed_args_hash": "44136fa355b3678a",
+    "knowledge_snapshot_id": "20260215T120000Z",
+    "manifest_bundle_hash": "efe1a3395221d7ecbd02cdc8bc19bd68857163ecd12db4aa1a512bcf8160e2a0",
+    "policy_version": "v1"
+  }
+}

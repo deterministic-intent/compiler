@@ -1,0 +1,9 @@
+{
+  "request_id": "LANG_csharp__csharp_cli",
+  "artifact_class": "csharp_cli",
+  "files_written": {
+    "main.csproj": "76b52c887de34cb2c90fe217b4ec212af09ce6f56eb0ba09a584e7cd7bc80fa2",
+    "src/Program.cs": "07b8fad256e4f32d1ae1a6fb995197b9dedea2f1a4f9188223a794420cfb9a44"
+  },
+  "generated_at": "2026-02-27T00:11:01+00:00Z"
+}

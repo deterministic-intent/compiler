@@ -1,0 +1,15 @@
+REQUEST_ID: LANG_docker__docker_image
+GATE: gate6_complete
+REQUEST_DIR: /workspace/state/requests/LANG_docker__docker_image
+
+REQUIRED_FILES:
+- REQUEST.md: OK
+- payload.json: OK
+
+OPTIONAL_FILES:
+- SPEC.md: OK
+- TASKS.json: OK
+- PLAN.md: OK
+- NEEDS.json: OK
+
+TASKS.json_json_valid: True

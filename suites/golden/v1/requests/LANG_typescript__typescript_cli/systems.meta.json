@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:34+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "763c2c9e3ccc9f11ffa3d3c036b73a6af51c035c6af6d271ae05d198bf01f9e0",
+    "artifact.zip": "27cb9c089ae154509861258bd41d0d946f834b5382ef34e96f60121b423b26ce",
+    "checksums.sha256": "56d5d48a626caf2ca5965ae4909c37f84eda58900d3beeab8601a3dd937c28af",
+    "manifest.json": "6e6f092148380b6566f2b2fcf7b8fcdb6a77ba48d4faef71573712916d0f8a66"
+  },
+  "REQUEST_ID": "LANG_typescript__typescript_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

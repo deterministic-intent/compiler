@@ -1,0 +1,9 @@
+{
+  "request_id": "LANG_java__java_cli",
+  "artifact_class": "java_cli",
+  "files_written": {
+    "src/Main.java": "14a201989ee34b7019d13a9a616dda06fa967c54aaf2e93730eeea81d421bfe2",
+    "README.md": "43d8ebacb96eb42c1c2b8fa2d4a5dd6b58713107c2e0836af1d002eae4ac0d87"
+  },
+  "generated_at": "2026-02-27T00:11:11+00:00Z"
+}

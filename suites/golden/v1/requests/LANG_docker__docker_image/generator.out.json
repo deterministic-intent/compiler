@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_docker__docker_image",
+  "artifact_class": "docker_image",
+  "files_written": {
+    "README.txt": "634bb32fcf854f2c2e4f726e91033e0adb65ad80307d89915133c7a70168e09d"
+  },
+  "generated_at": "2026-02-27T00:11:05+00:00Z"
+}

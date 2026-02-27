@@ -1,0 +1,18 @@
+{
+  "AT_UTC": "2026-02-27T00:11:23+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "48da19fe7a8062afaf9131b61308a1a85da4f8626aa833fd5fd70e6b801d424b",
+    "EXECUTE.json": "af520ea18921eb525aea27d0149c43506cc6b548f651b9dc2ea27a3b8bad2d7c",
+    "artifact.zip": "b89a0fd1433329e1a6d74c77a259967432ed4c983547a5e40516c3ce95a08e35",
+    "checksums.sha256": "2a11a075f7ebceb6d9c4181779b45aad90edebfd0264a7024d5e92f1f9fec94f",
+    "manifest.json": "ec6bb83fa3423877aa053aeca220345554dbbd4c7e019307ad210f5bf9db4957"
+  },
+  "REQUEST_ID": "LANG_python__python_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "EXECUTE.json",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

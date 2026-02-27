@@ -1,0 +1,2 @@
+# Factory manifest (pinned)
+requests==2.31.0

@@ -1,0 +1,78 @@
+{
+  "REQUEST_ID": "LANG_docker__docker_image",
+  "GATE": 7,
+  "ITERATION": 0,
+  "CREATED_AT_UTC": "2026-02-27T00:11:04+00:00Z",
+  "UPDATED_AT_UTC": "2026-02-27T00:11:05+00:00Z",
+  "ARTIFACTS": {
+    "REQUEST.md": {
+      "sha256": "50d298d3adc033975be9f229deb7d0a683167926d9f276b26766215a1531ffc5"
+    },
+    "payload.json": {
+      "sha256": "f78f55f70097351191f2bb5343cef4a32f16aaf3e1c9cfeb9a9b921d42f6805f"
+    },
+    "snapshot_resolution.json": {
+      "sha256": "52cd8c0172bcf91c47f9b5c7a157261e44ec7db208c90e2580871411f3e13558"
+    },
+    "SPEC.md": {
+      "sha256": "7026aad5d38178678b22fe8aa699551a62222f52e46f88bd3a135dd0118977f9"
+    },
+    "TASKS.json": {
+      "sha256": "d6bc91ba21092f2727c153fa7d1ff905b22f63af509f3db4e12c4bebeda110d7"
+    },
+    "PLAN.md": {
+      "sha256": "78b2558038944c77021b6659684bd3ab950ba9d396ab626849d1dcd049778d01"
+    },
+    "NEEDS.json": {
+      "sha256": "d767a4c2ccdedd8ddaf163ecb65c2475b1820d4b5a61a702ac90b4c6b46ef5b1"
+    }
+  },
+  "HISTORY": [
+    {
+      "AT_UTC": "2026-02-27T00:11:04+00:00Z",
+      "EVENT": "GATE0_INIT"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:04+00:00Z",
+      "EVENT": "GATE0_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE1_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE2_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE3_GENERATOR_RUN",
+      "ITERATION": 0
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE3_RESULT_PASS",
+      "ITERATION": 0
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE4_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE5_RESULT_PASS"
+    },
+    {
+      "AT_UTC": "2026-02-27T00:11:05+00:00Z",
+      "EVENT": "GATE6_RESULT_PASS"
+    }
+  ],
+  "FAILURES": [],
+  "compilation_metadata": {
+    "intent_id": "golden_docker_image",
+    "typed_args_hash": "44136fa355b3678a",
+    "knowledge_snapshot_id": "20260215T120000Z",
+    "manifest_bundle_hash": "efe1a3395221d7ecbd02cdc8bc19bd68857163ecd12db4aa1a512bcf8160e2a0",
+    "policy_version": "v1"
+  }
+}

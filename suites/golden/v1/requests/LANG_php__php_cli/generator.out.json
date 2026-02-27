@@ -1,0 +1,9 @@
+{
+  "request_id": "LANG_php__php_cli",
+  "artifact_class": "php_cli",
+  "files_written": {
+    "src/main.php": "e93e2a16546a0c99a77c7bd39811a3b248dfd9253bf3620cb4b55abe252ccfab",
+    "README.md": "6de852a2278802101b518dc39762e970716aa86ac11cec63ead3bd208fd5e6b4"
+  },
+  "generated_at": "2026-02-27T00:11:21+00:00Z"
+}

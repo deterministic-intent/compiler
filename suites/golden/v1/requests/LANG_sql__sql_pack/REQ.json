@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "sql_pack",
+      "description": "Golden Suite sql_pack",
+      "intent_id": "golden_sql_pack",
+      "intent_type": "golden_sql_pack",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "sql_pack/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

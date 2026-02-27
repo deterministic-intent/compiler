@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_go__go_cli",
+  "snapshot_resolution_sha256": "6081fda328dc7d79fb0f063a440fa89ca787fb8e483b1078687e572e36651de4",
+  "sources": [],
+  "timestamp_fields_ignored": [
+    "sources.fetch_timestamp"
+  ]
+}

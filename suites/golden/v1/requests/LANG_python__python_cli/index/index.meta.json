@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_python__python_cli",
+  "snapshot_resolution_sha256": "d2d40c95100613c6af94fd232951db55b2b41a108f7d60da024c13d017982b26",
+  "sources": [],
+  "timestamp_fields_ignored": [
+    "sources.fetch_timestamp"
+  ]
+}

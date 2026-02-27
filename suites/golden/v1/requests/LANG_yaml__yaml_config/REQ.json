@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "yaml_config",
+      "description": "Golden Suite yaml_config",
+      "intent_id": "golden_yaml_config",
+      "intent_type": "golden_yaml_config",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "yaml_config/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_mongodb__mongodb_pack",
+  "snapshot_resolution_sha256": "1444c278c13ab59c8c1641077be88cd13ebd842de249a21e554c23be51266d3f",
+  "sources": [],
+  "timestamp_fields_ignored": [
+    "sources.fetch_timestamp"
+  ]
+}

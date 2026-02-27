@@ -1,0 +1,50 @@
+{
+  "schema_version": "ir_v1",
+  "request_id": "NEG_BLOCKED_INVALID_ADAPTER",
+  "goal": "Request with invalid adapter.",
+  "artifact_class": "nonexistent",
+  "artifact_class_definition": {},
+  "policy_version": "v1",
+  "knowledge_snapshot_id": "20260215T120000Z",
+  "manifest_bundle_hash": "efe1a3395221d7ecbd02cdc8bc19bd68857163ecd12db4aa1a512bcf8160e2a0",
+  "inputs": {
+    "request_md": "# REQUEST NEG_BLOCKED_INVALID_ADAPTER\n\n## Objective\nRequest with invalid adapter.\n\n```json\n{\"artifact_class\": \"nonexistent\", \"module_refs\": [\"fake/module.json\"]}\n```\n\n## Constraints\n\n## Non-goals\n\n## Definition of Done\n",
+    "spec_outline": [
+      "Objective",
+      "Constraints",
+      "Non-goals",
+      "Definition of Done"
+    ]
+  },
+  "constraints": [],
+  "non_goals": [],
+  "success_criteria": [],
+  "deliverables": [
+    {
+      "path": "SPEC.md",
+      "format": "markdown"
+    },
+    {
+      "path": "TASKS.json",
+      "format": "json"
+    },
+    {
+      "path": "PLAN.md",
+      "format": "markdown"
+    },
+    {
+      "path": "NEEDS.json",
+      "format": "json"
+    }
+  ],
+  "tooling": {
+    "allowed_tools": [
+      "run_generator",
+      "run_verifier",
+      "run_systems",
+      "read_file",
+      "verify_state"
+    ],
+    "disallowed_tools": []
+  }
+}

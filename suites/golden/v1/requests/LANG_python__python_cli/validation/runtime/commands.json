@@ -1,0 +1,16 @@
+{
+  "commands": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/workspace/state/requests/LANG_python__python_cli/workspace/project/dist/main.py",
+        "--help"
+      ],
+      "cwd": "validation/runtime/work",
+      "exit_code": 0,
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "07e14c7f9fce61707852f84e4217bb1b72cbdd6e28f492d581c373ea84762856"
+    }
+  ]
+}

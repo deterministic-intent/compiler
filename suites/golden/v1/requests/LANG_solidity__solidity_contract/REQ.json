@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "solidity_contract",
+      "description": "Golden Suite solidity_contract",
+      "intent_id": "golden_solidity_contract",
+      "intent_type": "golden_solidity_contract",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "solidity_contract/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

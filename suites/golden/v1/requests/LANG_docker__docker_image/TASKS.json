@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "type": "implementation",
+      "scope": "backend",
+      "description": "Golden Suite docker_image",
+      "intent_type": "golden_docker_image",
+      "touches": [
+        "main.py",
+        "cli.py"
+      ],
+      "acceptance_criteria": [
+        "CLI implements golden_docker_image intent",
+        "Code executes without errors"
+      ]
+    }
+  ]
+}
