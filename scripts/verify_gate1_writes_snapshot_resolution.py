@@ -8,15 +8,16 @@ import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-REQUESTS_ROOT = BASE / "state" / "requests"
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Verify gate1 writes snapshot_resolution.json")
     ap.add_argument("--request-id", required=True, help="Request ID (e.g. E2E0-B-AUDIT)")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
+    req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
-    req_dir = REQUESTS_ROOT / args.request_id
+    req_dir = req_root / args.request_id
     if not req_dir.exists() or not req_dir.is_dir():
         print(f"ERROR: request dir not found: {req_dir}", file=sys.stderr)
         return 2

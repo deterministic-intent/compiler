@@ -91,10 +91,12 @@ def main() -> int:
     ap.add_argument("--text", default="build a python cli that counts from 1 to 5")
     ap.add_argument("--out-a", default="/tmp/step17_a.dcs")
     ap.add_argument("--out-b", default="/tmp/step17_b.dcs")
-    ap.add_argument("--snapshot-id", default="20260208T190113Z", help="Knowledge snapshot (must exist in proof kit)")
+    ap.add_argument("--snapshot-id", default=os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT", ""), help="Knowledge snapshot (must exist in proof kit)")
     args = ap.parse_args()
 
-    snapshot_id = args.snapshot_id
+    snapshot_id = args.snapshot_id or ""
+    if not snapshot_id:
+        die("--snapshot-id required (or set DCS_PROOF_SNAPSHOT_ID / AUDIT_CLOSURE_SNAPSHOT)")
     env = os.environ.copy()
     env["NLC_DB_SNAPSHOT_ID"] = snapshot_id
     env["NLC_SNAPSHOT_ID"] = snapshot_id
@@ -107,7 +109,7 @@ def main() -> int:
             p.unlink()
 
     # Ensure compile does not create request directories (intake only).
-    req_root = BASE / "state" / "requests"
+    req_root = Path(os.environ.get("NLC_REQUESTS_ROOT", "")) if os.environ.get("NLC_REQUESTS_ROOT") else BASE / "state" / "requests"
     before = sorted([p.name for p in req_root.iterdir() if p.is_dir()]) if req_root.exists() else []
 
     dcs_bin = str(BASE / "scripts" / "bin" / "dcs")

@@ -76,15 +76,18 @@ def _run(cmd: list[str], cwd: Path | None = None) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--spec", default="demo/real_pass.dcs")
-    ap.add_argument("--snapshot-id", default="20260208T190113Z", help="Knowledge snapshot (must exist in proof kit)")
+    ap.add_argument("--snapshot-id", default=os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT", ""), help="Knowledge snapshot (must exist in proof kit)")
     ap.add_argument("--policy", default="v1")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests); sets NLC_REQUESTS_ROOT")
     args = ap.parse_args()
 
     spec_path = (BASE / args.spec).resolve()
     if not spec_path.exists():
         die(f"missing spec: {spec_path}")
 
-    snapshot_id = args.snapshot_id
+    snapshot_id = args.snapshot_id or ""
+    if not snapshot_id:
+        die("--snapshot-id required (or set DCS_PROOF_SNAPSHOT_ID / AUDIT_CLOSURE_SNAPSHOT)")
     bundle_hash = ensure_snapshot_manifest_bundle(snapshot_id, args.policy)
 
     # Build spec with audit snapshot (spec file may reference legacy snapshot not in proof kit)
@@ -96,6 +99,8 @@ def main() -> int:
     env["NLC_DB_SNAPSHOT_ID"] = snapshot_id
     env["NLC_SNAPSHOT_ID"] = snapshot_id
     env["NLC_KB_SNAPSHOT_ID"] = snapshot_id
+    if args.requests_root:
+        env["NLC_REQUESTS_ROOT"] = args.requests_root
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".dcs", delete=False, dir=str(BASE)) as f:
         f.write(json.dumps(spec, indent=2, sort_keys=True) + "\n")

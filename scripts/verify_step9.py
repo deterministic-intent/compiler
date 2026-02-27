@@ -68,16 +68,21 @@ def run(cmd, env=None, cwd: Path | None = None, allow_fail: bool = False):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--snapshot-id", default="20260208T190113Z", help="Knowledge snapshot (must exist in proof kit)")
+    ap.add_argument("--snapshot-id", default=os.environ.get("DCS_PROOF_SNAPSHOT_ID", ""), help="Knowledge snapshot (must exist in proof kit)")
     ap.add_argument("--request-id", default="STEP9-AUDIT")
     ap.add_argument("--external-snapshot-id", default="STEP9-EXT-AUDIT", help="External capture storage id (for web_fetch snapshot)")
     ap.add_argument("--policy", default="v1")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
 
-    knowledge_snapshot_id = args.snapshot_id
+    knowledge_snapshot_id = args.snapshot_id or os.environ.get("AUDIT_CLOSURE_SNAPSHOT", "")
+    if not knowledge_snapshot_id:
+        print("ERROR: --snapshot-id required (or set DCS_PROOF_SNAPSHOT_ID / AUDIT_CLOSURE_SNAPSHOT)", file=sys.stderr)
+        sys.exit(2)
     ext_snapshot_id = args.external_snapshot_id
     request_id = args.request_id
     policy_version = args.policy
+    req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
     # Force all snapshot env vars to CLI value (proof kit only has this snapshot)
     os.environ["NLC_DB_SNAPSHOT_ID"] = knowledge_snapshot_id
@@ -85,7 +90,7 @@ def main() -> int:
     os.environ["NLC_SNAPSHOT_ID"] = knowledge_snapshot_id
 
     # Clean prior state
-    req_dir = BASE / "state" / "requests" / request_id
+    req_dir = req_root / request_id
     if req_dir.exists():
         shutil.rmtree(req_dir, ignore_errors=True)
 
@@ -106,6 +111,7 @@ def main() -> int:
         env_live = os.environ.copy()
         env_live["DCS_REPRO"] = "0"  # Capture stage: network allowed for web_fetch
         env_live.pop("NLC_REPRO", None)
+        env_live["NLC_REQUESTS_ROOT"] = str(req_root)
         env_live["NLC_POLICY_VERSION"] = policy_version
         env_live["NLC_DB_SNAPSHOT_ID"] = knowledge_snapshot_id
         env_live["NLC_KB_SNAPSHOT_ID"] = knowledge_snapshot_id

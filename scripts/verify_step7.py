@@ -40,11 +40,13 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("request_id")
     ap.add_argument("gate_name")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
     request_id = args.request_id
     gate = args.gate_name
+    req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
-    request_dir = BASE / "state" / "requests" / request_id
+    request_dir = req_root / request_id
     if not request_dir.exists():
         die(f"request dir not found: {request_dir}")
 
@@ -55,9 +57,15 @@ def main() -> int:
         die("original verifier outputs missing under request_dir/verifier/")
 
     # Replay run 1
-    run([sys.executable, str(BASE / "scripts" / "run_replay.py"), request_id, gate, "--replay-id", "run1"], BASE)
+    replay_cmd = [sys.executable, str(BASE / "scripts" / "run_replay.py"), request_id, gate, "--replay-id", "run1"]
+    if args.requests_root:
+        replay_cmd.extend(["--requests-root", str(req_root)])
+    run(replay_cmd, BASE)
     # Replay run 2
-    run([sys.executable, str(BASE / "scripts" / "run_replay.py"), request_id, gate, "--replay-id", "run2"], BASE)
+    replay_cmd2 = [sys.executable, str(BASE / "scripts" / "run_replay.py"), request_id, gate, "--replay-id", "run2"]
+    if args.requests_root:
+        replay_cmd2.extend(["--requests-root", str(req_root)])
+    run(replay_cmd2, BASE)
 
     r1 = request_dir / "replay" / "run1" / "verifier"
     r2 = request_dir / "replay" / "run2" / "verifier"
@@ -79,7 +87,7 @@ def main() -> int:
 
     # Negative pin mismatch: copy request dir and mutate manifest_bundle_hash, ensure replay fails.
     bad_id = f"{request_id}-REPLAY-BAD"
-    bad_dir = BASE / "state" / "requests" / bad_id
+    bad_dir = req_root / bad_id
     if bad_dir.exists():
         shutil.rmtree(bad_dir, ignore_errors=True)
     shutil.copytree(request_dir, bad_dir)
@@ -88,8 +96,11 @@ def main() -> int:
     payload["manifest_bundle_hash"] = "deadbeef" + (payload.get("manifest_bundle_hash", "")[8:] if isinstance(payload.get("manifest_bundle_hash"), str) else "")
     payload_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
+    replay_bad = [sys.executable, str(BASE / "scripts" / "run_replay.py"), bad_id, gate, "--replay-id", "run1"]
+    if args.requests_root:
+        replay_bad.extend(["--requests-root", str(req_root)])
     p = subprocess.run(
-        [sys.executable, str(BASE / "scripts" / "run_replay.py"), bad_id, gate, "--replay-id", "run1"],
+        replay_bad,
         cwd=str(BASE),
         stdin=subprocess.DEVNULL,
         capture_output=True,

@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 """Create proof_bundle.zip for requests that have artifact.zip but no proof_bundle.zip."""
+import argparse
+import os
 import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-REQUESTS_ROOT = BASE / "state" / "requests"
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
+    args = ap.parse_args()
+    REQUESTS_ROOT = Path(args.requests_root).resolve() if args.requests_root else BASE / "state" / "requests"
+    if args.requests_root:
+        os.environ["NLC_REQUESTS_ROOT"] = str(REQUESTS_ROOT)
     if str(BASE) not in sys.path:
         sys.path.insert(0, str(BASE))
     from dcs_cli.main import _create_proof_bundle

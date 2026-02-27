@@ -151,7 +151,9 @@ def _err(kind: str, msg: str) -> int:
 
 
 def _request_dir(request_id: str) -> Path:
-    return BASE / "state" / "requests" / request_id
+    root = os.environ.get("NLC_REQUESTS_ROOT", "").strip()
+    req_root = Path(root).resolve() if root else BASE / "state" / "requests"
+    return req_root / request_id
 
 
 def _read_text(p: Path) -> str:

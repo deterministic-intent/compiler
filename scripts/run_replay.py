@@ -118,13 +118,15 @@ def main() -> int:
     ap.add_argument("request_id")
     ap.add_argument("gate_name")
     ap.add_argument("--replay-id", default="replay1")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
 
     request_id = args.request_id
     gate = args.gate_name
     replay_id = args.replay_id
+    req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
-    request_dir = BASE / "state" / "requests" / request_id
+    request_dir = req_root / request_id
     replay_dir = request_dir / "replay" / replay_id
     if replay_dir.exists():
         shutil.rmtree(replay_dir, ignore_errors=True)

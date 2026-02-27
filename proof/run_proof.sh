@@ -11,11 +11,30 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 OUT_DIR="$KIT_ROOT/out"
-SNAPSHOT_ID="20260208T190113Z"
+
+# Snapshot + state root: env or positional args (from run_clean_proof_v1.sh)
+SNAPSHOT_ID="${DCS_PROOF_SNAPSHOT_ID:-${1:-}}"
+STATE_ROOT="${DCS_PROOF_STATE_ROOT:-${2:-}}"
+REQUESTS_DIR="${DCS_PROOF_REQUESTS_DIR:-}"
+
+if [[ -z "$SNAPSHOT_ID" ]]; then
+  echo "PROOF_MISSING_SNAPSHOT_ID" >&2
+  exit 2
+fi
+if [[ -z "$STATE_ROOT" ]]; then
+  echo "PROOF_MISSING_STATE_ROOT" >&2
+  exit 2
+fi
+[[ -z "$REQUESTS_DIR" ]] && REQUESTS_DIR="$STATE_ROOT/state/requests"
+
+if [[ ! -w "$REQUESTS_DIR" ]] 2>/dev/null; then
+  echo "PROOF_STATE_NOT_WRITABLE" >&2
+  exit 2
+fi
 
 # 0) DB destruction guard: path-based, unconditional. Never rely on git.
 NLC_DB="$KIT_ROOT/nlc/db"
-CLEAN_DIR="$KIT_ROOT/state/requests"
+CLEAN_DIR="$REQUESTS_DIR"
 if [[ ! -d "$NLC_DB" ]]; then
   echo "FAIL: nlc/db missing (proof-critical). Refusing to proceed."
   exit 1
@@ -74,9 +93,10 @@ echo "Running audit (scope=$SCOPE)..."
 if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
   # Already in tier3 container (CI); run audit in-process with same env as docker run
   (cd "$KIT_ROOT" && HOME=/tmp AUDIT_SCOPE="$SCOPE" AUDIT_POLICY=v1 \
-    AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
-    NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
-    python3 scripts/audit/run_audit.py --policy v1) || { echo "FAIL: audit exited non-zero"; exit 1; }
+    AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
+    DCS_PROOF_STATE_ROOT=$STATE_ROOT DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
+    NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
+    python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
 else
 docker run --rm \
   --user "$(id -u):$(id -g)" \
@@ -86,11 +106,14 @@ docker run --rm \
   -e AUDIT_SCOPE="$SCOPE" \
   -e AUDIT_POLICY=v1 \
   -e AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID \
+  -e DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
+  -e DCS_PROOF_STATE_ROOT=$STATE_ROOT \
+  -e DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
   -e NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
   -e NLC_SNAPSHOT_ID=$SNAPSHOT_ID \
   -e NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
   dcs-tier3 \
-  python3 scripts/audit/run_audit.py --policy v1 || { echo "FAIL: audit exited non-zero"; exit 1; }
+  python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT" || { echo "FAIL: audit exited non-zero"; exit 1; }
 fi
 
 # 5) Compute three SHA256 values
