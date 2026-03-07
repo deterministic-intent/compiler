@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "kotlin_cli",
+      "description": "Golden Suite kotlin_cli",
+      "intent_id": "golden_kotlin_cli",
+      "intent_type": "golden_kotlin_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "kotlin_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

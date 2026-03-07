@@ -62,6 +62,7 @@ ORCH_ALLOWED_FILES = {
     "gate1.result.json",
     "gate2.status",
     "gate3.status",
+    "gate3.result.json",
     "gate4.status",
     "gate5.status",
     "gate6.status",
@@ -184,6 +185,17 @@ def write_gate_status(rd: Path, gate_num: int, status: str) -> None:
     fn = f"gate{gate_num}.status"
     orch_write_guard(rd, fn)
     (rd / fn).write_text(status + "\n", encoding="utf-8")
+
+
+def write_gate3_result(rd: Path, status: str, reason_codes: list[str], details: str = "") -> None:
+    """Write deterministic gate3.result.json on PASS or FAIL."""
+    obj = {
+        "status": (status or "FAIL").strip().upper(),
+        "reason_codes": list(reason_codes) if reason_codes else [],
+        "details": (details or "").strip(),
+    }
+    orch_write_guard(rd, "gate3.result.json")
+    (rd / "gate3.result.json").write_text(json.dumps(obj, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def verifier_result(rd: Path, gate_name: str) -> str:
@@ -1290,14 +1302,16 @@ def gate3_execution(request_id: str) -> None:
             state = load_state(rd)
             state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_GENERATOR_FAILED", "ITERATION": current_iteration})
             state["FAILURES"] = state.get("FAILURES", [])
-            state["FAILURES"].append({
+            fail = {
                 "AT_UTC": now_utc(),
                 "GATE": "gate3_execution",
                 "REASON": "generator_runner_failed",
                 "EVIDENCE": p.stderr[:500] if p.stderr else "No error output"
-            })
+            }
+            state["FAILURES"].append(fail)
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["GENERATOR_RUNNER_FAILED"], fail.get("EVIDENCE", ""))
             return
 
     # Run Verifier
@@ -1311,6 +1325,7 @@ def gate3_execution(request_id: str) -> None:
             state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_PACKAGER_SKIP", "REASON": "generator output empty", "ITERATION": current_iteration})
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["PACKAGER_SKIP"], "workspace/project missing; packager not invoked")
             die("GATE3: verifier PASS but workspace/project missing; packager not invoked", 1)
         files_in_project = list(workspace_project.rglob("*"))
         file_count = sum(1 for p in files_in_project if p.is_file())
@@ -1319,15 +1334,18 @@ def gate3_execution(request_id: str) -> None:
             state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_PACKAGER_SKIP", "REASON": "generator output empty", "ITERATION": current_iteration})
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["PACKAGER_SKIP"], "workspace/project has no files")
             die("GATE3: verifier PASS but workspace/project has no files; packager not invoked", 1)
 
         cmd_systems = [sys.executable, str(RUN_SYSTEMS), rd.name, str(rd)]
         p_sys = subprocess.run(cmd_systems, capture_output=True, text=True)
         if p_sys.returncode != 0:
             state = load_state(rd)
-            state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_PACKAGER_FAILED", "ITERATION": current_iteration, "EVIDENCE": (p_sys.stderr or "")[:500]})
+            ev = (p_sys.stderr or "")[:500]
+            state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_PACKAGER_FAILED", "ITERATION": current_iteration, "EVIDENCE": ev})
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["PACKAGER_FAILED"], ev)
             die(f"GATE3: packager failed: {p_sys.stderr[:300] if p_sys.stderr else 'no stderr'}", 1)
 
         dist_dir = rd / "dist"
@@ -1341,18 +1359,21 @@ def gate3_execution(request_id: str) -> None:
             state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_DIST_MISSING", "REASON": "packager wrote to unexpected location", "ITERATION": current_iteration})
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["DIST_MISSING"], "packager wrote to unexpected location")
             die("GATE3: execution succeeded but dist/ missing; packager wrote to unexpected location", 1)
         if not (artifact_zip.exists() or site_zip.exists()):
             state = load_state(rd)
             state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_DIST_INCOMPLETE", "REASON": "artifact zip missing", "ITERATION": current_iteration})
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["DIST_INCOMPLETE"], "artifact.zip/site.zip missing")
             die("GATE3: dist/ present but artifact.zip/site.zip missing", 1)
         if not manifest_json.exists() or not checksums.exists() or not entrypoint_md.exists():
             state = load_state(rd)
             state["HISTORY"].append({"AT_UTC": now_utc(), "EVENT": "GATE3_DIST_INCOMPLETE", "REASON": "sidecars missing", "ITERATION": current_iteration})
             save_state(rd, state)
             write_gate_status(rd, 3, "FAIL")
+            write_gate3_result(rd, "FAIL", ["DIST_INCOMPLETE"], "manifest.json, checksums.sha256, or ENTRYPOINT.md missing")
             die("GATE3: dist/ incomplete (manifest.json, checksums.sha256, or ENTRYPOINT.md missing)", 1)
 
         state = load_state(rd)
@@ -1360,6 +1381,7 @@ def gate3_execution(request_id: str) -> None:
         state["GATE"] = 4
         save_state(rd, state)
         write_gate_status(rd, 3, res)
+        write_gate3_result(rd, res, [], "")
         print(f"GATE3: {res} (iteration {current_iteration})")
         return
     
@@ -1413,6 +1435,7 @@ def gate3_execution(request_id: str) -> None:
                                 state["GATE"] = 4
                                 save_state(rd, state)
                                 write_gate_status(rd, 3, res_after)
+                                write_gate3_result(rd, res_after, [], "")
                                 print(f"GATE3: {res_after} after repair (iteration {current_iteration})")
                                 return
                     except Exception:
@@ -1455,6 +1478,7 @@ def gate3_execution(request_id: str) -> None:
                 state["GATE"] = 4
                 save_state(rd, state)
                 write_gate_status(rd, 3, res)
+                write_gate3_result(rd, res, [], "")
                 print(f"GATE3: {res} after fix (iteration {current_iteration})")
                 return
     
@@ -1479,6 +1503,7 @@ def gate3_execution(request_id: str) -> None:
     })
     save_state(rd, state)
     write_gate_status(rd, 3, "FAIL")
+    write_gate3_result(rd, "FAIL", ["MISSING_MODULE"], f"Missing module for {failure_sig}. NEEDS.json written.")
     print(f"GATE3: FAIL - Missing module for {failure_sig}. NEEDS.json written. STOP.")
 
 def gate4_review(request_id: str) -> None:

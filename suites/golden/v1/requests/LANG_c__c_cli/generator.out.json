@@ -1,0 +1,9 @@
+{
+  "request_id": "LANG_c__c_cli",
+  "artifact_class": "c_cli",
+  "files_written": {
+    "src/main.c": "e31dfd0c7421c754256dab7bd142782f8ab4ae12b28844014f11157038f24497",
+    "README.md": "01d0573425203538d9851374dc59f89a4f139e474ad4ce707dfaded3369e62d6"
+  },
+  "generated_at": "2026-02-27T00:10:58+00:00Z"
+}

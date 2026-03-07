@@ -218,16 +218,20 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request-id", default="STEP18-E2E")
     ap.add_argument("--external-snapshot-id", default="STEP18-EXT")
-    ap.add_argument("--knowledge-snapshot-id", default="20260103T060637Z")
+    ap.add_argument("--knowledge-snapshot-id", default="")
     ap.add_argument("--policy", default="v1")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
 
     req_id = args.request_id
     ext_id = args.external_snapshot_id
-    know_id = args.knowledge_snapshot_id
+    know_id = (args.knowledge_snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if not know_id:
+        die("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --knowledge-snapshot-id")
     policy = args.policy
+    req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
-    req_dir = BASE / "state" / "requests" / req_id
+    req_dir = req_root / req_id
     ext_dir = BASE / "snapshots" / "external" / ext_id
 
     # A) Clean room
@@ -256,6 +260,7 @@ def main() -> int:
     env_live.pop("NLC_REPRO", None)
     env_live.pop("NLC_NET_LOG", None)
     env_live.pop("NLC_EXTERNAL_REPLAY", None)
+    env_live["NLC_REQUESTS_ROOT"] = str(req_root)
     env_live["NLC_POLICY_VERSION"] = policy
     env_live["NLC_DB_SNAPSHOT_ID"] = know_id
     env_live["NLC_SNAPSHOT_ID"] = know_id
@@ -310,7 +315,10 @@ def main() -> int:
     env_replay["DEV_DB_URL"] = "sqlite:////tmp/llmhub_step18_replay.db"
 
     # Run replay verifier (Step 7 runner) to enforce pins deterministically.
-    run([sys.executable, str(BASE / "scripts" / "run_replay.py"), req_id, "gate3_execution"], env=env_replay)
+    replay_cmd = [sys.executable, str(BASE / "scripts" / "run_replay.py"), req_id, "gate3_execution"]
+    if args.requests_root:
+        replay_cmd.extend(["--requests-root", str(req_root)])
+    run(replay_cmd, env=env_replay)
 
     if net_log.exists() and net_log.read_text(encoding="utf-8", errors="replace").strip():
         die("network access detected in replay (NLC_NET_LOG non-empty)")
@@ -327,7 +335,7 @@ def main() -> int:
 
     # F1) Delete external snapshot dir -> external:snapshot_missing
     neg1 = f"{req_id}-NEG1"
-    neg1_dir = BASE / "state" / "requests" / neg1
+    neg1_dir = req_root / neg1
     if neg1_dir.exists():
         shutil.rmtree(neg1_dir, ignore_errors=True)
     orch_gate0(neg1, "Make a CLI that counts from 1 to 5 by 1", env=env_neg)
@@ -372,7 +380,7 @@ def main() -> int:
     b[0] = (b[0] + 1) % 256
     fp.write_bytes(bytes(b))
     neg2 = f"{req_id}-NEG2"
-    neg2_dir = BASE / "state" / "requests" / neg2
+    neg2_dir = req_root / neg2
     if neg2_dir.exists():
         shutil.rmtree(neg2_dir, ignore_errors=True)
     orch_gate0(neg2, "Make a CLI that counts from 1 to 5 by 1", env=env_neg)
@@ -397,7 +405,7 @@ def main() -> int:
 
     # F3) Delete index/index.db before verifier -> index:missing
     neg3 = f"{req_id}-NEG3"
-    neg3_dir = BASE / "state" / "requests" / neg3
+    neg3_dir = req_root / neg3
     if neg3_dir.exists():
         shutil.rmtree(neg3_dir, ignore_errors=True)
     orch_gate0(neg3, "Make a CLI that counts from 1 to 5 by 1", env=env_neg)

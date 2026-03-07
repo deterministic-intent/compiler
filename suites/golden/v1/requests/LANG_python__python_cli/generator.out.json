@@ -1,0 +1,12 @@
+{
+  "request_id": "LANG_python__python_cli",
+  "artifact_class": "python_cli",
+  "files_written": {
+    "src/main.py": "742461f4673515d264405746018d85eeea2900ad227d64c198052dd2290c533d",
+    "src/lib.py": "f79bddb7be34573ec17ccbd4e2ba28d98f549d83abf6e88a3563fd6c4f0d7050",
+    "requirements.txt": "db1c1df3dd6acc6e20187a02abbe53ac70dc6e99e9ab8bba5e5e1365155c85f1",
+    "tests/test_main.py": "6a9bbdfa23eefca75c58dbfcad9219b6655c07064620014824a4cef9c2417f76",
+    "README.md": "59a2cba8bb74a0412c367c87f64992029838439033fbabc64990b91be4e4eb6d"
+  },
+  "generated_at": "2026-02-27T00:11:22+00:00Z"
+}

@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:30+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "43623f76f15121d500d1afe99262750b9c9ab5c454385b996c0a9007aaee56ee",
+    "checksums.sha256": "52f9282fd8b7db93f235ad283668b041e314b6dddd0985e47f640077b93b4d6b",
+    "manifest.json": "e4af301c3269297d882ec1b303fc8ffa300e44d4b7728663eeffc50ad30675fd"
+  },
+  "REQUEST_ID": "LANG_sql__sql_pack",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

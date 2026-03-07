@@ -1,0 +1,50 @@
+{
+  "schema_version": "ir_v1",
+  "request_id": "NEG_MISSING_SNAPSHOT_ID",
+  "goal": "Request without snapshot.",
+  "artifact_class": "python_cli",
+  "artifact_class_definition": {},
+  "policy_version": "v1",
+  "knowledge_snapshot_id": null,
+  "manifest_bundle_hash": null,
+  "inputs": {
+    "request_md": "# REQUEST NEG_MISSING_SNAPSHOT_ID\n\n## Objective\nRequest without snapshot.\n\n## Constraints\n\n## Non-goals\n\n## Definition of Done\n",
+    "spec_outline": [
+      "Objective",
+      "Constraints",
+      "Non-goals",
+      "Definition of Done"
+    ]
+  },
+  "constraints": [],
+  "non_goals": [],
+  "success_criteria": [],
+  "deliverables": [
+    {
+      "path": "SPEC.md",
+      "format": "markdown"
+    },
+    {
+      "path": "TASKS.json",
+      "format": "json"
+    },
+    {
+      "path": "PLAN.md",
+      "format": "markdown"
+    },
+    {
+      "path": "NEEDS.json",
+      "format": "json"
+    }
+  ],
+  "tooling": {
+    "allowed_tools": [
+      "run_generator",
+      "run_verifier",
+      "run_systems",
+      "read_file",
+      "verify_state"
+    ],
+    "disallowed_tools": []
+  }
+}

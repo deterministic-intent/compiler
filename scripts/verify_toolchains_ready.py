@@ -95,10 +95,15 @@ def check_tool(name: str, cfg: dict) -> tuple[bool, str, str]:
 
 
 def main() -> int:
+    import os
     ap = argparse.ArgumentParser(description="Verify toolchains per policy")
-    ap.add_argument("--snapshot-id", default="20260208T190113Z", help="Snapshot ID (for policy consistency)")
+    ap.add_argument("--snapshot-id", default="", help="Snapshot ID (for policy consistency)")
     ap.add_argument("--policy", default="v1", help="Policy version")
     args = ap.parse_args()
+    snapshot_id = (args.snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if not snapshot_id:
+        print("ERROR: MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --snapshot-id", file=sys.stderr)
+        sys.exit(2)
 
     tools = _load_toolchains_config()
     if not tools:

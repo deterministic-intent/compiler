@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IR v1 (payload.json)",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "policy_version",
+    "deliverables"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ir_v1"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "policy_version": {
+      "type": "string"
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "format"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "goal": {
+      "type": "string"
+    },
+    "artifact_class": {
+      "type": "string"
+    },
+    "artifact_class_definition": {
+      "type": "object"
+    },
+    "knowledge_snapshot_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manifest_bundle_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "req_sha256": {
+      "type": "string"
+    },
+    "module_refs": {
+      "type": "array"
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "array"
+    },
+    "non_goals": {
+      "type": "array"
+    },
+    "success_criteria": {
+      "type": "array"
+    },
+    "tooling": {
+      "type": "object"
+    },
+    "files": {
+      "type": "object"
+    },
+    "entrypoint": {
+      "type": "string"
+    },
+    "runtime_args": {
+      "type": "array"
+    },
+    "answer_mode": {
+      "type": "string"
+    },
+    "external_snapshot_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "external_sources_required": {
+      "type": "boolean"
+    },
+    "answer_queries": {
+      "type": "array"
+    }
+  }
+}

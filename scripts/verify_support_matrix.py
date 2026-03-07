@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-DEFAULT_SNAPSHOT = "20260103T060637Z"
 
 
 def _fail(msg: str) -> None:
@@ -113,7 +112,9 @@ def _build_matrix(snapshot_id: str) -> str:
 
 
 def main() -> int:
-    snapshot_id = os.environ.get("NLC_DB_SNAPSHOT_ID", DEFAULT_SNAPSHOT)
+    snapshot_id = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        _fail("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or NLC_DB_SNAPSHOT_ID")
     out = _build_matrix(snapshot_id)
     doc_path = BASE / "docs" / "SUPPORT_MATRIX.md"
     if not doc_path.exists():

@@ -1,0 +1,14 @@
+{
+  "REQUEST_ID": "LANG_python__python_cli",
+  "GATE": "gate6_complete",
+  "RESULT": "PASS",
+  "AT_UTC": "1970-01-01T00:00:00Z",
+  "LLAMA_RC": null,
+  "KILLED_REASON": "deterministic_python_verifier",
+  "HASHES": {
+    "verifier.prompt.txt": "fa37a182ffb17be8ad57ca3466f6017c815588917f72ba6f7382e0866c9025d3",
+    "verifier.out.txt": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508",
+    "VERIFY.md": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508",
+    "validation/bundle.json": "ced6fc75a86dffbbf99e7200ddc733422d7afd56aa551b019165d54d14883d4e"
+  }
+}

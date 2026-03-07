@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "c_cli",
+      "description": "Golden Suite c_cli",
+      "intent_id": "golden_c_cli",
+      "intent_type": "golden_c_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "c_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

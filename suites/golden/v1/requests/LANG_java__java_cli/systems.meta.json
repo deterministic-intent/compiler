@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:12+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "b2ea5638ebf9d156c24874745652f24bb3af06a5c018bf61fa30555188e91afa",
+    "checksums.sha256": "8508515abe044fecd253de7a7ab015148576b0abd6c922a9d365350d90e0e534",
+    "manifest.json": "5d1584496dcc9ca54429530e3563e16a83dfb660ac7242fb49929ecef789fd7a"
+  },
+  "REQUEST_ID": "LANG_java__java_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

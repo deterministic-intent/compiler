@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "type": "implementation",
+      "scope": "backend",
+      "description": "Golden Suite solidity_contract",
+      "intent_type": "golden_solidity_contract",
+      "touches": [
+        "main.py",
+        "cli.py"
+      ],
+      "acceptance_criteria": [
+        "CLI implements golden_solidity_contract intent",
+        "Code executes without errors"
+      ]
+    }
+  ]
+}

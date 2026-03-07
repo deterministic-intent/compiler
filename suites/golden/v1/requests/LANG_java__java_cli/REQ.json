@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "java_cli",
+      "description": "Golden Suite java_cli",
+      "intent_id": "golden_java_cli",
+      "intent_type": "golden_java_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "java_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

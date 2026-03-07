@@ -1,0 +1,15 @@
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/bin/Release/net8.0/main
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/bin/Release/net8.0/main.deps.json
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/bin/Release/net8.0/main.runtimeconfig.json
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/bin/Release/net8.0/main.dll
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/bin/Release/net8.0/main.pdb
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.GeneratedMSBuildEditorConfig.editorconfig
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.AssemblyInfoInputs.cache
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.AssemblyInfo.cs
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.csproj.CoreCompileInputs.cache
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.sourcelink.json
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.dll
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/refint/main.dll
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.pdb
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/main.genruntimeconfig.cache
+/workspace/state/requests/LANG_csharp__csharp_cli/workspace/project/obj/Release/net8.0/ref/main.dll

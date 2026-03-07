@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:28+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "2b4aa58529eee0e8c73f70c18d86d7d2e22ea08b39d3cd1abea28d251c42e198",
+    "checksums.sha256": "881a0ffbe8d79d37642891eda2b1a2f32d2367d4065cad013611a8a0ae9a4da1",
+    "manifest.json": "a36c904f7aa2d07d2bbf6a9d6ab2dccb7d50e257d58bb41d556b6da765308244"
+  },
+  "REQUEST_ID": "LANG_solidity__solidity_contract",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

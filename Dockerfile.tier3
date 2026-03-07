@@ -1,0 +1,139 @@
+# Tier3 audit image: pinned Debian base + deterministic pinned toolchains.
+# For policy/toolchains_v1.json audit only; not product runtime.
+#
+# Determinism: APT uses snapshot.debian.org; all remote tarballs verified via SHA256.
+FROM debian:bookworm@sha256:c94b2a0a8a238155981b960798b84a460c789eb48fe184df03812b39ee976325
+
+# ---- Pinned versions (ARG) ----
+ARG NODE_VERSION=20.19.0
+ARG NPM_VERSION=10.8.2
+ARG TYPESCRIPT_VERSION=5.6.3
+ARG GO_VERSION=1.22.4
+ARG DOTNET_SDK_VERSION=8.0.404
+ARG KOTLIN_VERSION=2.0.21
+ARG SOLC_VERSION=0.8.29
+ARG DOCKER_CLI_VERSION=27.3.1
+ARG DOCKER_COMPOSE_VERSION=2.29.7
+ARG RUBY_MAJOR_MINOR=3.1
+ARG OPENJDK_PACKAGE=openjdk-17-jdk-headless
+
+# ---- SHA256 checksums (must match downloaded artifacts; update if URL changes) ----
+ARG NODE_SHA256=b4e336584d62abefad31baecff7af167268be9bb7dd11f1297112e6eed3ca0d5
+ARG GO_SHA256=ba79d4526102575196273416239cca418a651e049c2b099f3159db85e7bade7d
+ARG DOTNET_SHA256=5bf340ba6acb314c703c2492a3a6e1530d7cdbfd3b5bf86788ee8b4afefd3573
+ARG KOTLIN_SHA256=0352c0a45bd22f80f6b26e485cd04da8047baa5de54865281fb9f89a4a7bcf2a
+ARG SOLC_SHA256=18d418a40dc04d17656b1b5c8a7b35cfbab8942b51f38d005d5b59e8aa6637e0
+ARG DOCKER_CLI_SHA256=9b4f6fe406e50f9085ee474c451e2bb5adb119a03591f467922d3b4e2ddf31d3
+ARG DOCKER_COMPOSE_SHA256=383ce6698cd5d5bbf958d2c8489ed75094e34a77d340404d9f32c4ae9e12baf0
+
+# Deterministic APT: snapshot.debian.org at fixed timestamp (2024-06-01 bookworm)
+ARG APT_SNAPSHOT=20240601T000000Z
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONHASHSEED=0
+ENV PATH="/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# ---- Wire APT to snapshot.debian.org (eliminates APT drift) ----
+RUN echo "deb http://snapshot.debian.org/archive/debian/${APT_SNAPSHOT}/ bookworm main" > /etc/apt/sources.list \
+    && echo "deb http://snapshot.debian.org/archive/debian-security/${APT_SNAPSHOT}/ bookworm-security main" >> /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
+
+# ---- Core build/runtime deps (from snapshot; deterministic) ----
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    curl \
+    wget \
+    gnupg \
+    xz-utils \
+    unzip \
+    tar \
+    python3 \
+    python3-pip \
+    build-essential \
+    pkg-config \
+    cargo \
+    rustc \
+    ${OPENJDK_PACKAGE} \
+    php \
+    ruby-full \
+    sqlite3 \
+    yamllint \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN javac -version
+
+# ---- Node.js + npm + TypeScript (SHA256-verified) ----
+# tsc must be on PATH: symlink from /opt/node/bin to /usr/local/bin
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; test "${arch}" = "amd64"; \
+    curl -fsSLo /tmp/node.tar.xz "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz"; \
+    echo "${NODE_SHA256}  /tmp/node.tar.xz" | sha256sum -c -; \
+    mkdir -p /opt/node; tar -xJf /tmp/node.tar.xz -C /opt/node --strip-components=1; \
+    ln -sf /opt/node/bin/node /usr/local/bin/node; ln -sf /opt/node/bin/npm /usr/local/bin/npm; ln -sf /opt/node/bin/npx /usr/local/bin/npx; \
+    /opt/node/bin/npm install -g "npm@${NPM_VERSION}" "typescript@${TYPESCRIPT_VERSION}"; \
+    ln -sf /opt/node/bin/tsc /usr/local/bin/tsc; \
+    ln -sf /opt/node/bin/tsserver /usr/local/bin/tsserver; \
+    command -v tsc; \
+    tsc -v; \
+    rm -f /tmp/node.tar.xz; node -v; npm -v
+
+# ---- Go (SHA256-verified) ----
+RUN set -eux; \
+    curl -fsSLo /tmp/go.tgz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz"; \
+    echo "${GO_SHA256}  /tmp/go.tgz" | sha256sum -c -; \
+    rm -rf /usr/local/go; tar -xzf /tmp/go.tgz -C /usr/local; \
+    ln -sf /usr/local/go/bin/go /usr/local/bin/go; ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt; \
+    rm -f /tmp/go.tgz; go version
+
+# ---- .NET SDK (SHA256-verified) ----
+RUN set -eux; \
+    curl -fsSLo /tmp/dotnet-sdk.tar.gz "https://builds.dotnet.microsoft.com/dotnet/Sdk/${DOTNET_SDK_VERSION}/dotnet-sdk-${DOTNET_SDK_VERSION}-linux-x64.tar.gz"; \
+    echo "${DOTNET_SHA256}  /tmp/dotnet-sdk.tar.gz" | sha256sum -c -; \
+    mkdir -p /usr/share/dotnet; tar -xzf /tmp/dotnet-sdk.tar.gz -C /usr/share/dotnet; \
+    ln -sf /usr/share/dotnet/dotnet /usr/local/bin/dotnet; rm -f /tmp/dotnet-sdk.tar.gz; \
+    dotnet --info >/dev/null
+
+# ---- Kotlin compiler (SHA256-verified) ----
+RUN set -eux; \
+    curl -fsSLo /tmp/kotlin.zip "https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_VERSION}/kotlin-compiler-${KOTLIN_VERSION}.zip"; \
+    echo "${KOTLIN_SHA256}  /tmp/kotlin.zip" | sha256sum -c -; \
+    rm -rf /opt/kotlinc; unzip -q /tmp/kotlin.zip -d /opt; \
+    ln -sf /opt/kotlinc/bin/kotlinc /usr/local/bin/kotlinc; ln -sf /opt/kotlinc/bin/kotlin /usr/local/bin/kotlin; \
+    rm -f /tmp/kotlin.zip; kotlinc -version
+
+# ---- Solidity compiler (SHA256-verified) ----
+RUN set -eux; \
+    curl -fsSLo /usr/local/bin/solc "https://github.com/ethereum/solidity/releases/download/v${SOLC_VERSION}/solc-static-linux"; \
+    echo "${SOLC_SHA256}  /usr/local/bin/solc" | sha256sum -c -; \
+    chmod +x /usr/local/bin/solc; solc --version
+
+# ---- Docker CLI + compose plugin (SHA256-verified) ----
+RUN set -eux; \
+    curl -fsSLo /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_CLI_VERSION}.tgz"; \
+    echo "${DOCKER_CLI_SHA256}  /tmp/docker.tgz" | sha256sum -c -; \
+    tar -xzf /tmp/docker.tgz -C /tmp; install -m 0755 /tmp/docker/docker /usr/local/bin/docker; \
+    mkdir -p /usr/local/lib/docker/cli-plugins; \
+    curl -fsSLo /usr/local/lib/docker/cli-plugins/docker-compose "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64"; \
+    echo "${DOCKER_COMPOSE_SHA256}  /usr/local/lib/docker/cli-plugins/docker-compose" | sha256sum -c -; \
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-compose; rm -rf /tmp/docker /tmp/docker.tgz; \
+    docker --version; docker compose version
+
+# ---- MongoDB shell (mongosh) - requires live repo; add after snapshot base ----
+RUN install -m 0755 -d /etc/apt/keyrings \
+    && wget -qO- https://www.mongodb.org/static/pgp/server-8.0.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/mongodb-org-8.0.gpg \
+    && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.0 main" > /etc/apt/sources.list.d/mongodb-org-8.0.list \
+    && apt-get update -qq \
+    && apt-get install -y --no-install-recommends mongodb-mongosh \
+    && rm -rf /var/lib/apt/lists/* \
+    && mongosh --version
+
+# ---- Verify Ruby from Debian base ----
+RUN set -eux; ruby -v | grep -E "^ruby ${RUBY_MAJOR_MINOR}\\."
+
+# ---- Python deps for audit ----
+RUN pip3 install --no-cache-dir --break-system-packages pyyaml
+
+ENV PYTHONPATH=/workspace
+WORKDIR /workspace
+CMD ["python3", "scripts/audit/run_audit.py", "--policy", "v1"]

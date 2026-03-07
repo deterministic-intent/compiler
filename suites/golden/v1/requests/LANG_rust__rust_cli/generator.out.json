@@ -1,0 +1,12 @@
+{
+  "request_id": "LANG_rust__rust_cli",
+  "artifact_class": "rust_cli",
+  "files_written": {
+    "src/main.rs": "6bdc028a7f0da2c9c952a68ccf6f2d6ab9e53f119dee355c1d158c3368dc1a95",
+    "src/lib.rs": "1a9666773726d4dcb666a7375e713fe8dc955162ea24ae75c42c1b8629f4909e",
+    "Cargo.toml": "51e0bc8e67c37c61549ed27e9c2b956bb227309bc226d7bea9a5fb7a64723724",
+    "Cargo.lock": "93089da74285ef24f6612db0f3851377b69806525076677566f2553db0df180b",
+    "README.md": "ecd8e5b5addc08b298c93a95a1e8669a49e871b006be0910bf84e25104664733"
+  },
+  "generated_at": "2026-02-27T00:11:25+00:00Z"
+}

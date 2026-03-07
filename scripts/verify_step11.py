@@ -43,17 +43,21 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request-id", default="STEP11-AUDIT")
     ap.add_argument("--external-snapshot-id", default="STEP11-EXT-AUDIT")
-    ap.add_argument("--knowledge-snapshot-id", default="20260103T060637Z")
+    ap.add_argument("--knowledge-snapshot-id", default="")
     ap.add_argument("--policy", default="v1")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests)")
     args = ap.parse_args()
 
     req_id = args.request_id
     ext_id = args.external_snapshot_id
-    know_id = args.knowledge_snapshot_id
+    know_id = (args.knowledge_snapshot_id or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if not know_id:
+        die("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or pass --knowledge-snapshot-id")
     policy = args.policy
+    req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
     # Clean
-    req_dir = BASE / "state" / "requests" / req_id
+    req_dir = req_root / req_id
     if req_dir.exists():
         shutil.rmtree(req_dir, ignore_errors=True)
     ext_dir = BASE / "snapshots" / "external" / ext_id
@@ -74,6 +78,7 @@ def main() -> int:
     )
 
     env = os.environ.copy()
+    env["NLC_REQUESTS_ROOT"] = str(req_root)
     env["NLC_POLICY_VERSION"] = policy
     env["NLC_DB_SNAPSHOT_ID"] = know_id
     env["NLC_SNAPSHOT_ID"] = know_id

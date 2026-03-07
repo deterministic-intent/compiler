@@ -115,11 +115,14 @@ def _check_db_path_policy() -> None:
 
 def _check_audits_still_pass() -> None:
     """Verify existing audits remain green."""
+    snapshot_id = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        _fail("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or NLC_DB_SNAPSHOT_ID")
     env = os.environ.copy()
     env["NLC_POLICY_VERSION"] = "v1"
-    env.setdefault("NLC_DB_SNAPSHOT_ID", "20260103T060637Z")
-    env.setdefault("NLC_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
-    env.setdefault("NLC_KB_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
+    env["NLC_DB_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_KB_SNAPSHOT_ID"] = snapshot_id
 
     # Base audit (must pass without deps).
     p = _run([sys.executable, "scripts/audit/run_audit.py"], env=env, allow_fail=True)
@@ -136,11 +139,14 @@ def _check_audits_still_pass() -> None:
 
 def _check_proofs_still_pass() -> None:
     """Verify representative deterministic proofs still pass."""
+    snapshot_id = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        _fail("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or NLC_DB_SNAPSHOT_ID")
     env = os.environ.copy()
     env["NLC_POLICY_VERSION"] = "v1"
-    env.setdefault("NLC_DB_SNAPSHOT_ID", "20260103T060637Z")
-    env.setdefault("NLC_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
-    env.setdefault("NLC_KB_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
+    env["NLC_DB_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_SNAPSHOT_ID"] = snapshot_id
+    env["NLC_KB_SNAPSHOT_ID"] = snapshot_id
 
     # Step 7 (replay) - proves path bootstrapping works.
     p = _run([sys.executable, "scripts/verify_step7.py", "E2E0-B-AUDIT", "gate3_execution"], env=env, allow_fail=True)

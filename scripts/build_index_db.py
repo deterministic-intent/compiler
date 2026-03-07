@@ -16,11 +16,19 @@ if str(BASE) not in sys.path:
 
 
 def main() -> int:
+    import os
     ap = argparse.ArgumentParser()
     ap.add_argument("request_id")
+    ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests or NLC_REQUESTS_ROOT)")
     args = ap.parse_args()
+    if args.requests_root:
+        req_root = Path(args.requests_root).resolve()
+    elif os.environ.get("NLC_REQUESTS_ROOT"):
+        req_root = Path(os.environ["NLC_REQUESTS_ROOT"]).resolve()
+    else:
+        req_root = BASE / "state" / "requests"
 
-    request_dir = BASE / "state" / "requests" / args.request_id
+    request_dir = req_root / args.request_id
     if not request_dir.exists():
         print(f"ERROR: request dir not found: {request_dir}", file=sys.stderr)
         return 2

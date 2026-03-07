@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "php_cli",
+      "description": "Golden Suite php_cli",
+      "intent_id": "golden_php_cli",
+      "intent_type": "golden_php_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "php_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

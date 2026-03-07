@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:18+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "c1a9e898773f4c86ab2c092f2c646dcd9c6fb838691814386f2726bfb9937502",
+    "checksums.sha256": "34a8b7a62b5e860486b90e8a22e7d3738cde36aa7a8e8393bdcde8211df6fe44",
+    "manifest.json": "07164fc3c3a568f2e869b119b95f774394c4d778649c38547130df9d87c7dcf7"
+  },
+  "REQUEST_ID": "LANG_kotlin__kotlin_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

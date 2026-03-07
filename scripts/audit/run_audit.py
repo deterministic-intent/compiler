@@ -9,6 +9,7 @@ Includes:
 Stops on first failing required check. No audit path skips closure checks unless explicitly "quick mode".
 """
 
+import argparse
 import os
 import sys
 import subprocess
@@ -20,6 +21,8 @@ BASE = Path(__file__).resolve().parents[2]
 
 # Pinned snapshot for Language Closure section. In v1 scope: MUST be set by run_proof.sh; no implicit fallback.
 AUDIT_CLOSURE_SNAPSHOT = ""  # Set in main() after scope check
+AUDIT_STATE_ROOT = None  # Set in main(); for --state-root (e.g. out/proof)
+AUDIT_REQUESTS_DIR = None  # state_root/state/requests; set in main()
 
 
 def _audit_policy() -> str:
@@ -115,8 +118,8 @@ def e2e_smoke():
     # E2E smoke: must PASS because Step 7/9 proofs depend on E2E0 artifacts.
     # Use AUDIT_CLOSURE_SNAPSHOT (has intents_executable + intents_v1) for module_refs resolution.
     snapshot = os.environ.get("NLC_DB_SNAPSHOT_ID") or AUDIT_CLOSURE_SNAPSHOT
+    req_root = AUDIT_REQUESTS_DIR
     # Ensure clean E2E request dirs
-    req_root = BASE / "state" / "requests"
     if req_root.exists():
         for p in req_root.glob("E2E0-*-AUDIT"):
             if p.is_dir():
@@ -131,7 +134,7 @@ def e2e_smoke():
         "--request-id",
         "AUDIT",
         "--state-root",
-        str(BASE),
+        str(AUDIT_STATE_ROOT),
     ]
     run(cmd)
     print("E2E0 smoke: PASS (exit 0)")
@@ -139,10 +142,10 @@ def e2e_smoke():
 
 def gate0_proof():
     # Gate0 must remain verifier-free: after gate0_init, no verifier dir should exist.
-    snapshot = os.environ.get("NLC_DB_SNAPSHOT_ID", "20260103T060637Z")
+    snapshot = os.environ.get("NLC_DB_SNAPSHOT_ID") or AUDIT_CLOSURE_SNAPSHOT
 
     def _run_gate0(proof_req: str, env: dict) -> Path:
-        proof_dir = BASE / "state" / "requests" / proof_req
+        proof_dir = AUDIT_REQUESTS_DIR / proof_req
         if proof_dir.exists():
             shutil.rmtree(proof_dir, ignore_errors=True)
         cmd = [
@@ -185,6 +188,7 @@ def gate0_proof():
 
     # BLOCKED case: no snapshot env vars -> should BLOCK deterministically, still verifier-free
     env_blocked = os.environ.copy()
+    env_blocked["NLC_REQUESTS_ROOT"] = str(AUDIT_REQUESTS_DIR)
     env_blocked.pop("NLC_DB_SNAPSHOT_ID", None)
     env_blocked.pop("NLC_SNAPSHOT_ID", None)
     env_blocked.pop("NLC_KB_SNAPSHOT_ID", None)
@@ -200,6 +204,7 @@ def gate0_proof():
 
     # PASS case: snapshot env vars set -> should PASS if snapshot manifests exist, still verifier-free
     env_pass = os.environ.copy()
+    env_pass["NLC_REQUESTS_ROOT"] = str(AUDIT_REQUESTS_DIR)
     env_pass["NLC_DB_SNAPSHOT_ID"] = snapshot
     env_pass["NLC_SNAPSHOT_ID"] = snapshot
     env_pass["NLC_KB_SNAPSHOT_ID"] = snapshot
@@ -222,7 +227,35 @@ def gate0_proof():
 
 
 def main():
-    global AUDIT_CLOSURE_SNAPSHOT
+    global AUDIT_CLOSURE_SNAPSHOT, AUDIT_STATE_ROOT, AUDIT_REQUESTS_DIR
+    # Parse --state-root and --snapshot-id (optional; env takes precedence)
+    i = 0
+    state_root_arg = None
+    snapshot_arg = None
+    while i < len(sys.argv):
+        if sys.argv[i] == "--state-root" and i + 1 < len(sys.argv):
+            state_root_arg = sys.argv[i + 1]
+            sys.argv.pop(i)
+            sys.argv.pop(i)
+        elif sys.argv[i] == "--snapshot-id" and i + 1 < len(sys.argv):
+            snapshot_arg = sys.argv[i + 1]
+            sys.argv.pop(i)
+            sys.argv.pop(i)
+        else:
+            i += 1
+    state_root = (state_root_arg or os.environ.get("DCS_PROOF_STATE_ROOT") or "").strip()
+    if state_root:
+        # Guard: inside container (workspace at /workspace) must not receive host path /opt/dcs-public
+        if str(BASE).startswith("/workspace") and state_root.startswith("/opt/dcs-public"):
+            sys.stderr.write("CONTAINER_HOST_PATH_FORBIDDEN\n")
+            sys.exit(2)
+        AUDIT_STATE_ROOT = Path(state_root).resolve()
+        AUDIT_REQUESTS_DIR = AUDIT_STATE_ROOT / "state" / "requests"
+        os.environ["NLC_REQUESTS_ROOT"] = str(AUDIT_REQUESTS_DIR)
+    else:
+        AUDIT_STATE_ROOT = BASE
+        AUDIT_REQUESTS_DIR = BASE / "state" / "requests"
+
     # AUDIT_ENV=container|host (default host). No auto-fallback to dev policy.
     audit_env = os.environ.get("AUDIT_ENV", "host")
     # AUDIT_SCOPE=v1: v1 structured path only; skip Phase 4/5 (LLM, API, auth) outside v1 scope.
@@ -230,11 +263,15 @@ def main():
     audit_scope = os.environ.get("AUDIT_SCOPE", "").strip().lower() or ("v1" if audit_policy_val == "v1" else "")
     # v1: require AUDIT_CLOSURE_SNAPSHOT from run_proof.sh; no implicit fallback (masks misconfiguration/drift).
     _is_v1 = audit_policy_val == "v1" or audit_scope == "v1"
-    snap = (os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    snap = (snapshot_arg or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("DCS_PROOF_SNAPSHOT_ID") or "").strip()
     if _is_v1 and not snap:
         sys.stderr.write("FAIL: AUDIT_CLOSURE_SNAPSHOT is required in v1. Set via run_proof.sh or -e AUDIT_CLOSURE_SNAPSHOT=...\n")
         sys.exit(1)
-    AUDIT_CLOSURE_SNAPSHOT = snap if _is_v1 else (snap or "20260208T190113Z")
+    # No hardcoded snapshot fallback
+    AUDIT_CLOSURE_SNAPSHOT = snap if snap else ""
+    if not AUDIT_CLOSURE_SNAPSHOT:
+        sys.stderr.write("FAIL: Snapshot ID required. Set AUDIT_CLOSURE_SNAPSHOT or DCS_PROOF_SNAPSHOT_ID or pass --snapshot-id.\n")
+        sys.exit(1)
     # PR7: Ban AUDIT_ALLOW_MISSING_TOOLCHAINS for v1. No constrained path; support set must be truthful.
     if (audit_policy_val == "v1" or audit_scope == "v1") and os.environ.get("AUDIT_ALLOW_MISSING_TOOLCHAINS", "").strip().lower() in ("1", "true", "yes"):
         sys.stderr.write("POLICY.AUDIT.INVALID_ENV: AUDIT_ALLOW_MISSING_TOOLCHAINS is disallowed for v1 scope. Reclassify unsupported languages or install toolchains.\n")
@@ -268,39 +305,42 @@ def main():
     e2e_smoke()
     gate0_proof()
 
+    def _req_root_args():
+        return ["--requests-root", str(AUDIT_REQUESTS_DIR)] if AUDIT_STATE_ROOT != BASE else []
+
     # Step 7 replay proof (requires E2E0 to have produced E2E0-B-AUDIT)
-    run([sys.executable, "scripts/verify_step7.py", "E2E0-B-AUDIT", "gate3_execution"])
+    run([sys.executable, "scripts/verify_step7.py", "E2E0-B-AUDIT", "gate3_execution"] + _req_root_args())
 
     # Step 9 proof: external input snapshotting + offline replay (must be deterministic).
-    run([sys.executable, "scripts/verify_step9.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP9-AUDIT"])
+    run([sys.executable, "scripts/verify_step9.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP9-AUDIT"] + _req_root_args())
 
     # Step 10 proof: deterministic snapshot resolution + replay pinning.
-    run([sys.executable, "scripts/verify_step10.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP10-AUDIT", "--external-snapshot-id", "STEP10-EXT-AUDIT", "--policy", "v1"])
+    run([sys.executable, "scripts/verify_step10.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP10-AUDIT", "--external-snapshot-id", "STEP10-EXT-AUDIT", "--policy", "v1"] + _req_root_args())
 
     # Gate1 contract: snapshot_resolution.json required when gate1 completes (hard FAIL if missing unless SNAPSHOT_RESOLUTION_FAILED).
-    run([sys.executable, "scripts/verify_gate1_writes_snapshot_resolution.py", "--request-id", "E2E0-B-AUDIT"])
+    run([sys.executable, "scripts/verify_gate1_writes_snapshot_resolution.py", "--request-id", "E2E0-B-AUDIT"] + _req_root_args())
 
     # Step 11 proof: deterministic index DB build + replay.
-    run([sys.executable, "scripts/verify_step11.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP11-AUDIT", "--policy", "v1"])
+    run([sys.executable, "scripts/verify_step11.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP11-AUDIT", "--policy", "v1"] + _req_root_args())
 
     # Step 12 proof: deterministic answering via index-only planner.
-    run([sys.executable, "scripts/verify_step12.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP12-AUDIT", "--policy", "v1"])
+    run([sys.executable, "scripts/verify_step12.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP12-AUDIT", "--policy", "v1"] + _req_root_args())
 
     # Step 13 proof: deterministic answer artifact + evidence lock.
-    run([sys.executable, "scripts/verify_step13.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP13-AUDIT", "--policy", "v1"])
+    run([sys.executable, "scripts/verify_step13.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP13-AUDIT", "--policy", "v1"] + _req_root_args())
 
     # Step 16 proof: first real PASS usage with a non-example .dcs request.
-    run([sys.executable, "scripts/verify_step16.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--spec", "demo/real_pass.dcs"])
+    run([sys.executable, "scripts/verify_step16.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--spec", "demo/real_pass.dcs"] + _req_root_args())
 
     # Step 17 proof: deterministic NL -> pinned .dcs intake compile (no gates).
     run([sys.executable, "scripts/verify_step17.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--text", "build a python cli that counts from 1 to 5", "--out-a", "/tmp/step17_audit_a.dcs", "--out-b", "/tmp/step17_audit_b.dcs"])
 
     # Step 18 proof: full pipeline E2E (fetch once, then replay pinned + byte-identical).
-    run([sys.executable, "scripts/verify_step18.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP18-E2E", "--policy", "v1"])
+    run([sys.executable, "scripts/verify_step18.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP18-E2E", "--policy", "v1"] + _req_root_args())
 
     # AUDIT_SCOPE=proof: create proof_bundle for requests with artifact.zip, then skip to end.
     if _scope_proof:
-        run([sys.executable, "scripts/create_proof_bundle_if_missing.py"])
+        run([sys.executable, "scripts/create_proof_bundle_if_missing.py"] + (["--requests-root", str(AUDIT_REQUESTS_DIR)] if AUDIT_STATE_ROOT != BASE else []))
         print("\n=== Audit (proof scope) completed through step18 ===")
         print("Audit battery completed.")
         return 0
@@ -341,7 +381,7 @@ def main():
         print(f"WARN: AUDIT_POLICY={audit_policy} unknown, using v1")
         audit_policy = "v1"
     print(f"\n--- Language Tiers (policy={audit_policy}) ---")
-    run([sys.executable, "scripts/env/ensure_toolchains.py"])
+    run([sys.executable, "scripts/toolchain/ensure_toolchains.py"])
     run([sys.executable, "scripts/report_language_closure.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--policy", audit_policy])
     run([sys.executable, "scripts/verify_language_exists_closure.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT])
     run([sys.executable, "scripts/verify_language_executable_closure.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT])
@@ -417,16 +457,16 @@ def main():
         run([sys.executable, "scripts/fill_v1_signoff_attestation.py"])
         run([sys.executable, "scripts/verify_negative_intent_not_executable.py"])
         run([sys.executable, "scripts/verify_no_module_refs_injection.py"])
-        run([sys.executable, "scripts/verify_manifest_has_repro_inputs.py", "--request-dir", str(BASE / "state" / "requests"), "--v1-only"])
+        run([sys.executable, "scripts/verify_manifest_has_repro_inputs.py", "--request-dir", str(AUDIT_REQUESTS_DIR), "--v1-only"])
         run([sys.executable, "scripts/verify_replay_enforces_req_byte_equality.py"])
         run([sys.executable, "scripts/smoke/test_v1_intent_req_equivalence.py"])
-        run([sys.executable, "scripts/backfill_ir_schema_version.py", "--request-dir", str(BASE / "state" / "requests")])
-        run([sys.executable, "scripts/verify_ir_schema_strict.py", "--request-dir", str(BASE / "state" / "requests")])
+        run([sys.executable, "scripts/backfill_ir_schema_version.py", "--request-dir", str(AUDIT_REQUESTS_DIR)])
+        run([sys.executable, "scripts/verify_ir_schema_strict.py", "--request-dir", str(AUDIT_REQUESTS_DIR)])
         run([sys.executable, "scripts/verify_clarify_contract.py"])
         run([sys.executable, "scripts/smoke/test_cli_intake_v1.py"])
 
     # Create proof_bundles for run_proof.sh hashing (v1 and proof scopes).
-    run([sys.executable, "scripts/create_proof_bundle_if_missing.py"])
+    run([sys.executable, "scripts/create_proof_bundle_if_missing.py"] + (["--requests-root", str(AUDIT_REQUESTS_DIR)] if AUDIT_STATE_ROOT != BASE else []))
 
     # Final v1 gate: evidence-derived signoff readiness (no boolean attestation bypass)
     if audit_policy == "v1":

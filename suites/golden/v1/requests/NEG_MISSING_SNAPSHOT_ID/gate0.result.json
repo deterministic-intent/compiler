@@ -1,0 +1,8 @@
+{
+  "details": "MISSING_SNAPSHOT_ID; MISSING_MANIFEST_BUNDLE_HASH",
+  "reason_codes": [
+    "MISSING_SNAPSHOT_ID",
+    "MISSING_MANIFEST_BUNDLE_HASH"
+  ],
+  "status": "BLOCKED"
+}

@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "mongodb_pack",
+      "description": "Golden Suite mongodb_pack",
+      "intent_id": "golden_mongodb_pack",
+      "intent_type": "golden_mongodb_pack",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "mongodb_pack/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

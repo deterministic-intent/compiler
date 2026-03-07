@@ -50,7 +50,7 @@ def _read_json(p: Path) -> dict:
 def main() -> int:
     env = os.environ.copy()
     env["NLC_POLICY_VERSION"] = "v1"
-    env.setdefault("NLC_DB_SNAPSHOT_ID", "20260103T060637Z")
+    env.setdefault("NLC_DB_SNAPSHOT_ID", os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "")
     env.setdefault("NLC_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
     env.setdefault("NLC_KB_SNAPSHOT_ID", env["NLC_DB_SNAPSHOT_ID"])
     

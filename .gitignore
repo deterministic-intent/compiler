@@ -157,7 +157,12 @@ scraper/temp/
 !nlc/regression/suite.json
 !contracts/contract_rules.json
 !policy/policy_v1.json
+!governance/freeze_manifest_v1.json
+!schemas/ir_v1.schema.json
+!schemas/req_v1.schema.json
 !suites/**/*.json
+!scripts/e2e/fixtures/e2e0.json
+!versions/repro_versions.json
 
 # Database snapshots (keep structure, ignore content)
 db/snapshots/**
@@ -229,3 +234,50 @@ proof_run_*/
 v1_kit/
 dcs-v1-proof-kit-*.tar.gz
 scraper_audit_staging/
+
+# hard ban: model artifacts / weights / tooling
+models/
+*.gguf
+*.ggml
+*.safetensors
+*.pt
+*.pth
+*.onnx
+llama.cpp/
+ollama/
+
+# hard ban: cursor/editor metadata
+.cursor/
+.vscode/
+.idea/
+
+# hard ban: scrapers (not public)
+scraper/
+scrapers/
+scraper_audit_staging/
+
+# hard ban: agents/prompts (not public)
+agents/
+agent/
+prompts/
+
+# hard ban: db / mined artifacts (not public) — top-level only; nlc/db code allowed
+/db/
+nlc/db/**
+!nlc/db/__init__.py
+!nlc/db/manifest_builder.py
+
+# snapshot tarballs (downloaded at CI runtime, never committed)
+dcs/snapshots/*.tar.zst
+dcs/snapshots/*.tar.gz
+
+# Local / non-sealing (excluded from clean proof)
+.cursorrules
+governance/no_fake_pass_policy.md
+scripts/audit/extract_audit_surface.py
+scripts/audit/run_negative_controls.py
+scripts/populate_golden_suite.sh
+scripts/verify_language_artifact_matrix_v1.py
+scripts/verify_no_stub_passes.py
+suites/audit-negative/
+verifier/strict.py

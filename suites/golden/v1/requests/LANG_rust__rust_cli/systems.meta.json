@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:27+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "0ad8f6289dcd8a5d3bce36add490278c72d1373a4ddb34195afc672b469a2657",
+    "artifact.zip": "6f80c1e4a8f84a135087c71eb173763be71a3d6822047e86425cb73a9993cdc2",
+    "checksums.sha256": "565c9163a13a75440c609e18ce577cbdf116d4eab4089e9a7f7c8ca1001469b4",
+    "manifest.json": "0a90c0e3030668c89e703ab7561bac00b6f0f2eb0cbb1856ca6123bf7e28f2a2"
+  },
+  "REQUEST_ID": "LANG_rust__rust_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

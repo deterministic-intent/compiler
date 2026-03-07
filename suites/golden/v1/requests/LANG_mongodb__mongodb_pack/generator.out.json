@@ -1,0 +1,9 @@
+{
+  "request_id": "LANG_mongodb__mongodb_pack",
+  "artifact_class": "mongodb_pack",
+  "files_written": {
+    "schema.json": "0e83fe47985026209e92469544c69f6abd82cbc4f678f570fb8531f0d57eb2d8",
+    "README.md": "f15cff1e2605a67bc38b18dd524afba7f156682ccd13b06fd029d03536aea4e9"
+  },
+  "generated_at": "2026-02-27T00:11:19+00:00Z"
+}

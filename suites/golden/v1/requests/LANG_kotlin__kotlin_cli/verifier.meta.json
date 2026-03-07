@@ -1,0 +1,13 @@
+{
+  "REQUEST_ID": "LANG_kotlin__kotlin_cli",
+  "GATE": "gate6_complete",
+  "RESULT": "PASS",
+  "AT_UTC": "1970-01-01T00:00:00Z",
+  "LLAMA_RC": null,
+  "KILLED_REASON": "deterministic_python_verifier",
+  "HASHES": {
+    "verifier.prompt.txt": "503c74709f71db77d380125a7d46085e8b419131faadf3d22de22bb4aa55ed7c",
+    "verifier.out.txt": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508",
+    "VERIFY.md": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508"
+  }
+}

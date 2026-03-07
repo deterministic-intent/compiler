@@ -3,6 +3,7 @@
 Deterministic systems runner: NO model.
 Packages workspace/project/ into dist/ artifacts with checksums and entrypoint docs.
 """
+import os
 import sys
 import json
 import hashlib
@@ -35,8 +36,11 @@ def write_text(p: Path, s: str) -> None:
     p.write_text(s, encoding="utf-8")
 
 def _repro_mode() -> bool:
-    from dcs_core.repro_env import is_repro_mode
-    return is_repro_mode()
+    """True when DCS_REPRO=1 or NLC_REPRO=1 (replay/deterministic mode). No external deps."""
+    return (
+        os.environ.get("DCS_REPRO", "").strip() == "1"
+        or os.environ.get("NLC_REPRO", "").strip() == "1"
+    )
 
 
 def now_utc() -> str:
@@ -324,6 +328,26 @@ def main():
     workspace_project = request_dir / "workspace" / "project"
     if not workspace_project.exists():
         die(f"workspace/project/ not found: {workspace_project}")
+    
+    # Run module build for python_cli (creates workspace/project/dist per build.py contract)
+    artifact_class = ""
+    payload_path = request_dir / "payload.json"
+    if payload_path.exists():
+        try:
+            payload = json.loads(read_text(payload_path))
+            artifact_class = str(payload.get("artifact_class", "")).strip()
+        except Exception:
+            pass
+    if artifact_class == "python_cli":
+        import subprocess
+        base = Path(__file__).resolve().parents[1]
+        build_py = base / "orchestrator" / "modules" / "python_cli" / "build.py"
+        if build_py.exists():
+            env = os.environ.copy()
+            env["PROJECT_ROOT"] = str(workspace_project)
+            p = subprocess.run([sys.executable, str(build_py)], cwd=str(workspace_project), env=env, capture_output=True, text=True)
+            if p.returncode != 0:
+                die(f"python_cli build failed: {p.stderr or p.stdout or 'no output'}")
     
     dist_dir = request_dir / "dist"
     

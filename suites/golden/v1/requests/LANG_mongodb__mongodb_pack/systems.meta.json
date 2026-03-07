@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:20+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "cfd452eecc4301ca3ee55605b2f04ca1445d65143d667f2a136b36dd46ab4651",
+    "checksums.sha256": "c036e939f66782d7d12879f4e95626a6a866a62c192582884cf621e391dfa600",
+    "manifest.json": "8ed06902f79b966e22c63b27112963cc9bb466c49f67063d3a8ac29cd4497694"
+  },
+  "REQUEST_ID": "LANG_mongodb__mongodb_pack",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

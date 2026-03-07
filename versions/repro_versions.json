@@ -1,0 +1,6 @@
+{
+  "policy_version": "v1",
+  "adapter_version": "v1",
+  "ir_schema_version": "ir_v1",
+  "req_schema_version": "req_v1"
+}

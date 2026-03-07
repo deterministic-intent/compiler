@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:00+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "dd5ee59fa56e95e97ebc1f566262e305989a9c0c70d0d8d60209313409bac739",
+    "checksums.sha256": "415fc0eecff12b9e9c93720c5a90c48a627b46ff03e3ab2e736af9bc680fd3b7",
+    "manifest.json": "47cbeee200e19b83e7897556a906caf2619b1ccff185f32dceab8c106a5a5b23"
+  },
+  "REQUEST_ID": "LANG_cpp__cpp_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

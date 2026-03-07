@@ -1,0 +1,13 @@
+{
+  "REQUEST_ID": "LANG_go__go_cli",
+  "GATE": "gate6_complete",
+  "RESULT": "PASS",
+  "AT_UTC": "1970-01-01T00:00:00Z",
+  "LLAMA_RC": null,
+  "KILLED_REASON": "deterministic_python_verifier",
+  "HASHES": {
+    "verifier.prompt.txt": "82d7098db6c075195ba9460360d54399c98571fb394b3f052ad44c46e1a58fe6",
+    "verifier.out.txt": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508",
+    "VERIFY.md": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508"
+  }
+}

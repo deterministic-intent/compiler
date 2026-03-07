@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:36+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "4d52b648bd8d481548ffee5f5d1f72ce3931d86c79a53fedd0dd96222fd7de44",
+    "checksums.sha256": "64daa19ef043cb82f1b0abbcc095c5c8756eeac53c965cdeef6e90f25fe9854f",
+    "manifest.json": "ae0cbcbcf7f0b5d04e0ef8d0c4071a36fc48e05c84a7685419b17123fe1db1d1"
+  },
+  "REQUEST_ID": "LANG_yaml__yaml_config",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

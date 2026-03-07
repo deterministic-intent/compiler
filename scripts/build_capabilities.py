@@ -213,6 +213,28 @@ def _derive_from_snapshot(snapshot_id: str, policy_version: str = "v1") -> Dict[
         else:
             languages.add(ac)
 
+    # language_artifact_matrix from contracts (v1). Matrix keys = snapshot languages.
+    matrix_path = BASE / "contracts" / "v1_language_artifact_matrix.json"
+    language_artifact_matrix: Dict[str, List[str]] = {}
+    if matrix_path.exists():
+        try:
+            m = _read_json(matrix_path)
+            language_artifact_matrix = dict(m.get("mapping", {}))
+            language_artifact_matrix = dict(sorted(language_artifact_matrix.items()))
+            for lang, acs in language_artifact_matrix.items():
+                if not acs:
+                    _fail(f"LANG_MATRIX_EMPTY_BINDING:{lang}")
+            if language_artifact_matrix:
+                languages = set(language_artifact_matrix.keys())
+                for acs in language_artifact_matrix.values():
+                    for ac in acs:
+                        if isinstance(ac, str) and ac.strip():
+                            supported_artifact_classes.add(ac.strip())
+        except SystemExit:
+            raise
+        except Exception:
+            pass
+
     # Extract classified intents (NOT executable - no per-intent module binding)
     classified_intents_list = classified_obj.get("intents", []) if isinstance(classified_obj, dict) else []
     if not isinstance(classified_intents_list, list):
@@ -268,6 +290,7 @@ def _derive_from_snapshot(snapshot_id: str, policy_version: str = "v1") -> Dict[
             "intents_mined_relpath": "manifest/intents_mined.json" if mined_path.exists() else "",
             "intents_classified_relpath": "manifest/intents_classified.json" if classified_path.exists() else "",
         },
+        "language_artifact_matrix": language_artifact_matrix,
     }
 
 
@@ -309,6 +332,20 @@ def main() -> int:
     if not derived["supported_artifact_classes"] or not derived["tools"] or not derived["languages"]:
         _fail("step21:capability_claim_without_evidence")
 
+    # docker_base_image_ref from governed surface only (toolchain_pins.json; no code default)
+    docker_base_image_ref: str | None = None
+    toolchain_path = SNAP_ROOT / snapshot_id / "manifest" / "toolchain_pins.json"
+    if toolchain_path.exists():
+        try:
+            tc = _read_json(toolchain_path)
+            ref = tc.get("docker_base_image_ref")
+            if isinstance(ref, str) and ref.strip() and re.match(r"^[^@]+@sha256:[a-f0-9]{64}$", ref.strip()):
+                docker_base_image_ref = ref.strip()
+        except Exception:
+            pass
+    if "docker_image" in derived["supported_artifact_classes"] and docker_base_image_ref is None:
+        _fail("DOCKER_BASE_REF_MISSING")
+
     # Preserve truth-backed classes if present in existing capabilities (deterministic fallback).
     truth_backed: List[str] = []
     existing_caps = SNAP_ROOT / snapshot_id / "capabilities.json"
@@ -328,6 +365,7 @@ def main() -> int:
         "snapshot_id": snapshot_id,
         "policy_version": policy_version,
         "manifest_bundle_hash": payload.get("manifest_bundle_hash"),
+        "docker_base_image_ref": docker_base_image_ref,
         "languages": derived["languages"],
         "tools": derived["tools"],
         "supported_artifact_classes": derived["supported_artifact_classes"],
@@ -342,6 +380,7 @@ def main() -> int:
         "reachability_mode": derived.get("reachability_mode", "union"),
         "classified_intents": derived.get("classified_intents", {"count": 0, "artifact_classes": [], "intent_ids": []}),
         "intent_level_executable_count": derived.get("intent_level_executable_count", 0),
+        "language_artifact_matrix": derived.get("language_artifact_matrix", {}),
         "evidence": {
             **derived["evidence"],
             "index_sha256": index_sha256,

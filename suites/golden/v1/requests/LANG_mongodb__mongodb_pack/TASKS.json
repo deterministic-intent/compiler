@@ -1,0 +1,19 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "type": "implementation",
+      "scope": "backend",
+      "description": "Golden Suite mongodb_pack",
+      "intent_type": "golden_mongodb_pack",
+      "touches": [
+        "main.py",
+        "cli.py"
+      ],
+      "acceptance_criteria": [
+        "CLI implements golden_mongodb_pack intent",
+        "Code executes without errors"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "go_cli",
+      "description": "Golden Suite go_cli",
+      "intent_id": "golden_go_cli",
+      "intent_type": "golden_go_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "go_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

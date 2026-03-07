@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
-SNAPSHOT = "20260103T060637Z"
 if str(BASE) not in sys.path:
     sys.path.insert(0, str(BASE))
 
@@ -17,7 +17,10 @@ def _fail(msg: str) -> None:
 
 
 def main() -> int:
-    intents_path = BASE / "nlc" / "db" / "snapshots" / SNAPSHOT / "manifest" / "intents.json"
+    snapshot_id = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or os.environ.get("NLC_DB_SNAPSHOT_ID") or "").strip()
+    if not snapshot_id:
+        _fail("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID or NLC_DB_SNAPSHOT_ID")
+    intents_path = BASE / "nlc" / "db" / "snapshots" / snapshot_id / "manifest" / "intents.json"
     if not intents_path.exists():
         _fail("FAIL intent_ranker: intents manifest missing")
     obj = json.loads(intents_path.read_text(encoding="utf-8", errors="replace"))

@@ -1,0 +1,8 @@
+{
+  "request_id": "LANG_csharp__csharp_cli",
+  "snapshot_resolution_sha256": "14b290223482d8c2d9fd091a0b8c98ba1d16bed381683ad3892682ce5211da46",
+  "sources": [],
+  "timestamp_fields_ignored": [
+    "sources.fetch_timestamp"
+  ]
+}

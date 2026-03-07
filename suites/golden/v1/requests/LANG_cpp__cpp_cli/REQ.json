@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "cpp_cli",
+      "description": "Golden Suite cpp_cli",
+      "intent_id": "golden_cpp_cli",
+      "intent_type": "golden_cpp_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "cpp_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

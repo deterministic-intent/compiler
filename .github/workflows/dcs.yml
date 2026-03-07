@@ -1,0 +1,141 @@
+name: dcs-proof-enforcement
+
+on:
+  push:
+    branches: ["phase4/ci-wedge"]
+  pull_request:
+    branches: ["phase4/ci-wedge"]
+  workflow_dispatch: {}
+
+concurrency:
+  group: dcs-proof-enforcement
+  cancel-in-progress: false
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+
+    container:
+      image: ghcr.io/deterministic-intent/dcs-tier3@sha256:6991cf87d8f199dc9c91f9f77a5b880c639473058c462f344b921d3928258330
+
+    defaults:
+      run:
+        shell: bash
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Git safe.directory (container ownership)
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Workspace sanity
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          pwd
+          ls -la "$GITHUB_WORKSPACE" | sed -n '1,80p'
+          cd "$GITHUB_WORKSPACE"
+          test -d .git || (echo "ERROR: .git missing in workspace" && exit 2)
+          git rev-parse --is-inside-work-tree
+          git log -1 --oneline
+
+      - name: Preflight (repo must be clean)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          test -z "$(git status --porcelain --untracked-files=no)"
+
+      - name: Policy guard — no model artifacts/references
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          bash scripts/ci/verify_no_llm_artifacts.sh
+
+      - name: Hard guard — banned dirs/data must not exist (repo)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          test ! -d scraper
+          test ! -d agents
+          test ! -d .cursor
+          test ! -d db
+          test ! -d nlc/db/snapshots
+          test ! -e nlc/db/latest
+          test ! -f nlc/db/intents_mined.json
+          test ! -f nlc/db/intents_mined.ndjson
+
+      - name: Provision snapshot (immutable, hash-checked)
+        shell: bash
+        env:
+          SNAPSHOT_ID: 20260208T190113Z
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          mkdir -p dcs/snapshots nlc/db/snapshots
+          ASSET_NAME="${SNAPSHOT_ID}.tar.gz"
+          RELEASE_TAG="snapshot-${SNAPSHOT_ID}"
+          ASSET_ID="$(curl -fsSL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" \
+            | python3 -c "import sys,json; r=json.load(sys.stdin); print([a['id'] for a in r['assets'] if a['name']=='${ASSET_NAME}'][0])")"
+          curl -fsSL \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/octet-stream" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/assets/${ASSET_ID}" \
+            -o "dcs/snapshots/${ASSET_NAME}"
+          (cd dcs/snapshots && sha256sum -c "${SNAPSHOT_ID}.sha256")
+          tar -C nlc/db/snapshots -xzf "dcs/snapshots/${ASSET_NAME}"
+          test -d "nlc/db/snapshots/${SNAPSHOT_ID}"
+
+      - name: Proof fixtures guard (fail fast if required inputs missing)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          test -f scripts/e2e/fixtures/e2e0.json || { echo "FAIL: scripts/e2e/fixtures/e2e0.json missing"; exit 1; }
+          test -f scripts/toolchain/ensure_toolchains.py || { echo "FAIL: scripts/toolchain/ensure_toolchains.py missing"; exit 1; }
+          python3 -c "import nlc.db.manifest_builder" || { echo "FAIL: nlc.db.manifest_builder not importable"; exit 1; }
+
+      - name: Proof run (canonical v1 entrypoint, no cache)
+        shell: bash
+        env:
+          DCS_SKIP_TIER3_BUILD: "1"
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          rm -rf out
+          mkdir -p out
+          echo "AUDIT_SCOPE=v1"
+          AUDIT_SCOPE=v1 bash proof/run_proof.sh
+
+      - name: Compare proof hashes (atomic)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
+
+      - name: Postflight (no mutation)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          git diff --exit-code
+          test -z "$(git status --porcelain --untracked-files=no)"

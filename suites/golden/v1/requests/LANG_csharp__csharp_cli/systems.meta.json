@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:04+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "5b3b2bf55a6c7ab0b1c256b5f13827b7742632190a9d831300a50f9115d7c344",
+    "artifact.zip": "4d9128f6be12e76deec826275a21d81c212b074c88d487f0dd7847599d862b44",
+    "checksums.sha256": "f20209bd78b04b8cb9f76bf2420f3a0401ec9fb57844d396ff77ba207abcebfe",
+    "manifest.json": "dda0588d47a2329047477a33c7036164d44b1e35a3846102ff262af780dc75b3"
+  },
+  "REQUEST_ID": "LANG_csharp__csharp_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

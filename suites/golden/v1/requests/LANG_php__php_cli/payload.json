@@ -1,0 +1,53 @@
+{
+  "schema_version": "ir_v1",
+  "request_id": "LANG_php__php_cli",
+  "goal": "Generate minimal php php_cli project for Golden Suite v1.",
+  "artifact_class": "php_cli",
+  "artifact_class_definition": {},
+  "policy_version": "v1",
+  "knowledge_snapshot_id": "20260215T120000Z",
+  "manifest_bundle_hash": "efe1a3395221d7ecbd02cdc8bc19bd68857163ecd12db4aa1a512bcf8160e2a0",
+  "inputs": {
+    "request_md": "# REQUEST LANG_php__php_cli\n\n## Objective\nGenerate minimal php php_cli project for Golden Suite v1.\n\n```json\n{\n  \"artifact_class\": \"php_cli\",\n  \"language\": \"php\",\n  \"module_refs\": [\n    \"php_cli/project_v1.json\"\n  ]\n}\n```\n\n## Constraints\n\n## Non-goals\n\n## Definition of Done\n",
+    "spec_outline": [
+      "Objective",
+      "Constraints",
+      "Non-goals",
+      "Definition of Done"
+    ]
+  },
+  "constraints": [],
+  "non_goals": [],
+  "success_criteria": [],
+  "deliverables": [
+    {
+      "path": "SPEC.md",
+      "format": "markdown"
+    },
+    {
+      "path": "TASKS.json",
+      "format": "json"
+    },
+    {
+      "path": "PLAN.md",
+      "format": "markdown"
+    },
+    {
+      "path": "NEEDS.json",
+      "format": "json"
+    }
+  ],
+  "tooling": {
+    "allowed_tools": [
+      "run_generator",
+      "run_verifier",
+      "run_systems",
+      "read_file",
+      "verify_state"
+    ],
+    "disallowed_tools": []
+  },
+  "module_refs": [
+    "php_cli/project_v1.json"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "html_site",
+      "description": "Golden Suite html_site",
+      "intent_id": "golden_html_site",
+      "intent_type": "golden_html_site",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "html_site/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

@@ -274,24 +274,16 @@ def run_runtime_smoke_validation(
     work_dir.mkdir(parents=True, exist_ok=True)
     
     if artifact_class == "python_cli":
-        # Find main entrypoint (prefer main.py, then first .py file)
-        main_py = None
-        main_py_path = workspace_project / "main.py"
-        if main_py_path.exists() and main_py_path.is_file():
-            main_py = main_py_path
-        else:
-            py_files = sorted([p for p in workspace_project.glob("*.py") if p.is_file()], key=lambda p: str(p))
-            if py_files:
-                main_py = py_files[0]
-        
-        if not main_py or not main_py.exists():
+        # Contract: build.py copies src/ to dist/; runtime smoke targets dist/main.py only
+        main_py = workspace_project / "dist" / "main.py"
+        if not main_py.exists() or not main_py.is_file():
             failures.append(
                 canonicalize_failure(
-                    kind=FailureKind.RUNTIME_EXCEPTION,
+                    kind=FailureKind.CONTRACT_VIOLATION,
                     artifact="validation:runtime_smoke",
-                    locator=str(workspace_project),
-                    message="No Python files found for runtime smoke",
-                    repro="validation:runtime_smoke:no_py_files",
+                    locator="dist/main.py",
+                    message="CONTRACT_OUTPUT_MISSING",
+                    repro="CONTRACT_OUTPUT_MISSING",
                     severity=FailureSeverity.BLOCKER,
                 ).to_dict()
             )
@@ -302,7 +294,7 @@ def run_runtime_smoke_validation(
             (runtime_dir / "stdout.sha256").write_text(_sha256_bytes(b""), encoding="utf-8")
             (runtime_dir / "stderr.sha256").write_text(_sha256_bytes(b""), encoding="utf-8")
             _write_json(runtime_dir / "exit_code.json", {"exit_code": 1})
-            _write_json(runtime_dir / "result.json", {"status": "FAIL", "reason": "no_py_files"})
+            _write_json(runtime_dir / "result.json", {"status": "FAIL", "reason": "CONTRACT_OUTPUT_MISSING"})
             return (False, failures)
         
         main_py_rel = str(main_py.relative_to(workspace_project))

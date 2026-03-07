@@ -1,0 +1,18 @@
+{
+  "intents": [
+    {
+      "artifact_class": "rust_cli",
+      "description": "Golden Suite rust_cli",
+      "intent_id": "golden_rust_cli",
+      "intent_type": "golden_rust_cli",
+      "io": {
+        "stdout": true
+      },
+      "module_refs": [
+        "rust_cli/project_v1.json"
+      ],
+      "params": {}
+    }
+  ],
+  "schema_version": "req_v1"
+}

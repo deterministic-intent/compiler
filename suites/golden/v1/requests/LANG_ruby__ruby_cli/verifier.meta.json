@@ -1,0 +1,13 @@
+{
+  "REQUEST_ID": "LANG_ruby__ruby_cli",
+  "GATE": "gate6_complete",
+  "RESULT": "PASS",
+  "AT_UTC": "1970-01-01T00:00:00Z",
+  "LLAMA_RC": null,
+  "KILLED_REASON": "deterministic_python_verifier",
+  "HASHES": {
+    "verifier.prompt.txt": "38766d63f17ed830d08bc1ec3eba59924ca5f47a965a88d2ea56c7ce4521ad99",
+    "verifier.out.txt": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508",
+    "VERIFY.md": "e49f4c231a518365e1a006e9e2aacdeb12475aa5344e3af62d3d4edd1caf8508"
+  }
+}

@@ -1,0 +1,2 @@
+-- Queries
+SELECT * FROM example;

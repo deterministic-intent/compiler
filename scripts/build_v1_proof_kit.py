@@ -15,8 +15,15 @@ from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
 DIST_DIR = BASE / "dist"
-SNAPSHOT_ID = "20260208T190113Z"
 STAGING = Path("/tmp") / "proof_kit_staging"
+
+
+def _get_snapshot_id() -> str:
+    sid = (os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "").strip()
+    if sid:
+        return sid
+    sys.stderr.write("MISSING_SNAPSHOT_ID: set DCS_PROOF_SNAPSHOT_ID for build_v1_proof_kit\n")
+    sys.exit(2)
 
 
 def _git_sha8() -> str:
@@ -66,8 +73,9 @@ def _copy_tree(src: Path, dst: Path, exclude: set[str] | None = None) -> None:
 
 
 def main() -> int:
+    snapshot_id = _get_snapshot_id()
     gitsha = _git_sha8()
-    tarball_name = f"dcs-v1-proof-kit-{SNAPSHOT_ID}-{gitsha}.tar.gz"
+    tarball_name = f"dcs-v1-proof-kit-{snapshot_id}-{gitsha}.tar.gz"
 
     # Clean staging; use repo root for tarball if dist not writable
     out_dir = DIST_DIR if (DIST_DIR.exists() and os.access(DIST_DIR, os.W_OK)) else BASE
@@ -85,13 +93,13 @@ def main() -> int:
         else:
             p.unlink()
 
-    snap_src = BASE / "nlc" / "db" / "snapshots" / SNAPSHOT_ID
+    snap_src = BASE / "nlc" / "db" / "snapshots" / snapshot_id
     if not snap_src.exists():
         sys.stderr.write(f"FAIL: snapshot not found: {snap_src}\n")
         return 1
 
     # Copy snapshot (exact structure)
-    snap_dst = STAGING / "nlc" / "db" / "snapshots" / SNAPSHOT_ID
+    snap_dst = STAGING / "nlc" / "db" / "snapshots" / snapshot_id
     snap_dst.mkdir(parents=True, exist_ok=True)
     for item in snap_src.iterdir():
         dst_item = snap_dst / item.name
@@ -107,7 +115,7 @@ def main() -> int:
         v1_script = BASE / "scripts" / "run_validation_hashes_v1.py"
         if v1_script.exists():
             rc = subprocess.run(
-                [sys.executable, str(v1_script), "--snapshot-id", SNAPSHOT_ID, "--out", str(vh_path)],
+                [sys.executable, str(v1_script), "--snapshot-id", snapshot_id, "--out", str(vh_path)],
                 cwd=str(BASE),
                 capture_output=True,
                 timeout=300,
@@ -170,7 +178,7 @@ def main() -> int:
 
     # Create run_proof.sh
     run_proof = proof_dir / "run_proof.sh"
-    run_proof.write_text(_RUN_PROOF_SH, encoding="utf-8")
+    run_proof.write_text(_RUN_PROOF_SH.replace("__SNAPSHOT_ID__", snapshot_id), encoding="utf-8")
     run_proof.chmod(0o755)
 
     # Create PROOF_INSTRUCTIONS.md
@@ -180,7 +188,7 @@ def main() -> int:
     files_with_sha = _collect_files(STAGING)
     manifest = {
         "commit_hash": gitsha,
-        "snapshot_id": SNAPSHOT_ID,
+        "snapshot_id": snapshot_id,
         "included_files": [{"path": p, "sha256": s} for p, s in files_with_sha],
     }
     (proof_dir / "manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -212,7 +220,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 OUT_DIR="$KIT_ROOT/out"
-SNAPSHOT_ID="20260208T190113Z"
+SNAPSHOT_ID="__SNAPSHOT_ID__"
 
 # 0) DB destruction guard: path-based, unconditional. Never rely on git.
 NLC_DB="$KIT_ROOT/nlc/db"

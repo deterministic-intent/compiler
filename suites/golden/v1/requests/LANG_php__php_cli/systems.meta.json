@@ -1,0 +1,16 @@
+{
+  "AT_UTC": "2026-02-27T00:11:21+00:00Z",
+  "HASHES": {
+    "ENTRYPOINT.md": "fe1d85cefa2cdad1902d1be8013204964be68144f16176abef6ff50a1fb2e917",
+    "artifact.zip": "7744ea73d3d2613d23cb775253610d909259019c82e96ab0c77adacacc959325",
+    "checksums.sha256": "13aa98d3b9275fc321ad90e1c47589b104619bc2753f4e886eac8be2a94f372f",
+    "manifest.json": "8750ca9a5320e59a3392406525c036388e7fbce9a07cad161d5b57b4461eaca7"
+  },
+  "REQUEST_ID": "LANG_php__php_cli",
+  "WROTE": [
+    "ENTRYPOINT.md",
+    "artifact.zip",
+    "checksums.sha256",
+    "manifest.json"
+  ]
+}

@@ -76,7 +76,7 @@ def main() -> int:
             str(vpy),
             "scripts/verify_suite_coverage.py",
             "--snapshot-id",
-            "20260103T060637Z",
+            os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT") or "",
             "--suite",
             str(BASE / "suites" / "v1" / "golden_pack.json"),
         ],
