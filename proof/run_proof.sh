@@ -14,17 +14,25 @@ OUT_DIR="$KIT_ROOT/out"
 
 # Snapshot + state root: env or positional args (from run_clean_proof_v1.sh)
 SNAPSHOT_ID="${DCS_PROOF_SNAPSHOT_ID:-${1:-}}"
-STATE_ROOT="${DCS_PROOF_STATE_ROOT:-${2:-}}"
+HOST_STATE_ROOT="${DCS_PROOF_STATE_ROOT:-${2:-}}"
 REQUESTS_DIR="${DCS_PROOF_REQUESTS_DIR:-}"
+
+# Host path for host-side ops; container path for docker (workspace mounted at /workspace)
+STATE_ROOT="$HOST_STATE_ROOT"
+REL="${HOST_STATE_ROOT#$KIT_ROOT}"
+REL="${REL#/}"
+CONTAINER_STATE_ROOT="/workspace/${REL:-out/proof}"
+CONTAINER_REQUESTS_DIR="$CONTAINER_STATE_ROOT/state/requests"
 
 if [[ -z "$SNAPSHOT_ID" ]]; then
   echo "PROOF_MISSING_SNAPSHOT_ID" >&2
   exit 2
 fi
-if [[ -z "$STATE_ROOT" ]]; then
+if [[ -z "$HOST_STATE_ROOT" ]]; then
   echo "PROOF_MISSING_STATE_ROOT" >&2
   exit 2
 fi
+STATE_ROOT="$HOST_STATE_ROOT"
 [[ -z "$REQUESTS_DIR" ]] && REQUESTS_DIR="$STATE_ROOT/state/requests"
 
 if [[ ! -w "$REQUESTS_DIR" ]] 2>/dev/null; then
@@ -107,13 +115,14 @@ docker run --rm \
   -e AUDIT_POLICY=v1 \
   -e AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID \
   -e DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
-  -e DCS_PROOF_STATE_ROOT=$STATE_ROOT \
-  -e DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
+  -e DCS_PROOF_STATE_ROOT="$CONTAINER_STATE_ROOT" \
+  -e DCS_PROOF_REQUESTS_DIR="$CONTAINER_REQUESTS_DIR" \
+  -e NLC_REQUESTS_ROOT="$CONTAINER_REQUESTS_DIR" \
   -e NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
   -e NLC_SNAPSHOT_ID=$SNAPSHOT_ID \
   -e NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
   dcs-tier3 \
-  python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT" || { echo "FAIL: audit exited non-zero"; exit 1; }
+  python3 scripts/audit/run_audit.py --policy v1 --state-root "$CONTAINER_STATE_ROOT" || { echo "FAIL: audit exited non-zero"; exit 1; }
 fi
 
 # 5) Compute three SHA256 values

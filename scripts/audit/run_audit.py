@@ -245,6 +245,10 @@ def main():
             i += 1
     state_root = (state_root_arg or os.environ.get("DCS_PROOF_STATE_ROOT") or "").strip()
     if state_root:
+        # Guard: inside container (workspace at /workspace) must not receive host path /opt/dcs-public
+        if str(BASE).startswith("/workspace") and state_root.startswith("/opt/dcs-public"):
+            sys.stderr.write("CONTAINER_HOST_PATH_FORBIDDEN\n")
+            sys.exit(2)
         AUDIT_STATE_ROOT = Path(state_root).resolve()
         AUDIT_REQUESTS_DIR = AUDIT_STATE_ROOT / "state" / "requests"
         os.environ["NLC_REQUESTS_ROOT"] = str(AUDIT_REQUESTS_DIR)

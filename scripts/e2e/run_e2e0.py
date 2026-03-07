@@ -33,6 +33,9 @@ def _get_requests_dir(state_root: Optional[str]) -> Tuple[Path, Optional[str]]:
     If state_root is set, use that/state/requests. Else use temp dir (caller retains for run).
     """
     if state_root:
+        # Guard: inside container (workspace at /workspace) must not receive host path /opt/dcs-public
+        if str(BASE).startswith("/workspace") and (state_root or "").strip().startswith("/opt/dcs-public"):
+            die("CONTAINER_HOST_PATH_FORBIDDEN")
         root = Path(state_root).resolve()
         requests_dir = root / "state" / "requests"
         requests_dir.mkdir(parents=True, exist_ok=True)
