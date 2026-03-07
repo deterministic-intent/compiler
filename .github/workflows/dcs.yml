@@ -2,9 +2,9 @@ name: dcs-proof-enforcement
 
 on:
   push:
-    branches: ["phase4/ci-wedge"]
+    branches: ["main", "phase4/ci-wedge"]
   pull_request:
-    branches: ["phase4/ci-wedge"]
+    branches: ["main", "phase4/ci-wedge"]
   workflow_dispatch: {}
 
 concurrency:
