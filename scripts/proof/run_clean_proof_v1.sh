@@ -107,7 +107,8 @@ echo ""
 echo "--- audit battery ---"
 AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID DCS_PROOF_STATE_ROOT=$STATE_ROOT DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
   NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
-  python3 scripts/audit/run_audit.py --state-root "$STATE_ROOT" --snapshot-id "$SNAPSHOT_ID" 2>/dev/null || true
+  python3 scripts/audit/run_audit.py --state-root "$STATE_ROOT" --snapshot-id "$SNAPSHOT_ID" \
+  || { echo "audit battery FAIL"; exit 2; }
 echo ""
 
 # 9) Final guard: repo state/requests must still be clean

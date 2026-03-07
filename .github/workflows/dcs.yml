@@ -116,7 +116,6 @@ jobs:
         shell: bash
         env:
           SNAPSHOT_ID: 20260215T120000Z
-          DCS_SKIP_TIER3_BUILD: "1"
           PYTHONPATH: ${{ github.workspace }}
         run: |
           set -euo pipefail
