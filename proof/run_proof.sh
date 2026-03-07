@@ -3,7 +3,8 @@
 # Requires: Docker. Run from extracted kit root. Never run as root.
 set -euo pipefail
 
-if [[ "$(id -u)" -eq 0 ]]; then
+# Forbid root on host (prevents permission issues); CI runs in container as root (ephemeral, allowed)
+if [[ "$(id -u)" -eq 0 ]] && [[ "${GITHUB_ACTIONS:-}" != "true" ]]; then
   echo "PROOF_ROOT_FORBIDDEN" >&2
   exit 2
 fi
