@@ -135,6 +135,8 @@ def e2e_smoke():
         "AUDIT",
         "--state-root",
         str(AUDIT_STATE_ROOT),
+        "--e2e0-report",
+        str(BASE / "out" / "e2e0_report.json"),
     ]
     run(cmd)
     print("E2E0 smoke: PASS (exit 0)")
