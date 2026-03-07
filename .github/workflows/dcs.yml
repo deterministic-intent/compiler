@@ -116,6 +116,8 @@ jobs:
         shell: bash
         env:
           SNAPSHOT_ID: 20260215T120000Z
+          # Docker -v needs host path; container sees /__w/... but host has /home/runner/work/...
+          DOCKER_HOST_WORKSPACE: /home/runner/work/compiler/compiler
           PYTHONPATH: ${{ github.workspace }}
         run: |
           set -euo pipefail

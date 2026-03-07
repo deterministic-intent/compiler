@@ -89,6 +89,8 @@ rm -rf "$CLEAN_DIR"/*
 mkdir -p "$CLEAN_DIR"
 
 # 3) Build Tier3 image (no cache) — skip when already in tier3 (e.g. CI job container)
+# DOCKER_HOST_WORKSPACE: when CI runs in a container, docker -v needs the host path (not /__w/...)
+DOCKER_MOUNT_SRC="${DOCKER_HOST_WORKSPACE:-$KIT_ROOT}"
 if [[ -z "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
   echo "Building Tier3 image..."
   docker build --no-cache -t dcs-tier3 -f "$KIT_ROOT/Dockerfile.tier3" "$KIT_ROOT" || { echo "FAIL: docker build failed"; exit 1; }
@@ -109,7 +111,7 @@ if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
 else
 docker run --rm \
   --user "$(id -u):$(id -g)" \
-  -v "$KIT_ROOT:/workspace" \
+  -v "$DOCKER_MOUNT_SRC:/workspace" \
   -w /workspace \
   -e HOME=/tmp \
   -e AUDIT_SCOPE="$SCOPE" \
