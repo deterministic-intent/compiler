@@ -1338,15 +1338,38 @@ def emit_code_for_intent(intent: dict) -> tuple[str, str]:
     command_name = intent_type.replace("_", "-")
     return command_name, handler_code
 
-def generate_python_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
-    """Generate Python CLI project from structured intents (REQ.json)"""
+def _generate_python_cli_factory(workspace_project: Path) -> dict:
+    """Deterministic factory for python_cli when module_refs absent. No planner, no prompt parsing."""
     files_written = {}
-    
-    # Require REQ.json - refuse prose-only requirements
+    try:
+        workspace_project.mkdir(parents=True, exist_ok=True)
+        src_dir = workspace_project / "src"
+        src_dir.mkdir(parents=True, exist_ok=True)
+        main_content = "from lib import count\n\nif __name__ == \"__main__\":\n    for n in count():\n        print(n)\n"
+        write_text(src_dir / "main.py", main_content)
+        files_written["src/main.py"] = sha256_bytes(main_content.encode("utf-8"))
+        lib_content = "def count():\n    return [1, 2, 3, 4, 5]\n"
+        write_text(src_dir / "lib.py", lib_content)
+        files_written["src/lib.py"] = sha256_bytes(lib_content.encode("utf-8"))
+        readme = "# python_cli\n\nDeterministic factory. Run: python src/main.py\n"
+        write_text(workspace_project / "README.md", readme)
+        files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    except OSError as e:
+        die(f"GENERATOR_FAILED: {e}", 1)
+    return files_written
+
+
+def generate_python_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """Generate Python CLI project. Deterministic factory when module_refs absent; intent-driven when present."""
+    files_written = {}
+    module_refs = load_module_refs(rd)
+    if not module_refs:
+        return _generate_python_cli_factory(workspace_project)
+
+    # Intent-driven path: require REQ.json
     req_obj = load_req(rd)
     is_valid, error_msg = validate_req(req_obj)
     if not is_valid:
-        # Write NEEDS.json to signal missing/invalid REQ.json
         needs_obj = {
             "needs": [
                 {
@@ -1358,36 +1381,25 @@ def generate_python_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
         }
         needs_path = rd / "NEEDS.json"
         needs_path.write_text(json.dumps(needs_obj, indent=2) + "\n", encoding="utf-8")
-        die(f"REQ.json required but {error_msg.lower()}", 1)
-    
-    intents = req_obj.get("intents", [])
+        die(f"GENERATOR_FAILED: REQ.json required but {error_msg.lower()}", 1)
 
-    # PIPELINE_MODE: if multiple intents, generate a single run command.
-    pipeline_mode = isinstance(intents, list) and len(intents) > 1
-    
-    # Intent-driven: load module_refs from payload, use only those modules
-    # HARD-FAIL: If REQ.json has module_refs (executable intent), payload.json MUST have them
+    intents = req_obj.get("intents", [])
     req_has_module_refs = any(
         isinstance(intent, dict) and intent.get("module_refs")
         for intent in intents
     )
-    module_refs = load_module_refs(rd)
     if req_has_module_refs and not module_refs:
-        die("Executable intent requires module_refs in payload.json but none found. This is a hard failure for intent-driven execution.", 1)
-    
-    # Get parameterized template
-    if module_refs:
-        # Use intent-specific modules
-        argparse_module = {}
-        for mod_ref in module_refs:
-            mod = get_module_by_ref(mod_ref)
-            if mod.get("name") == "argparse_setup" or "argparse" in mod_ref.lower():
-                argparse_module = mod
-                break
-        if not argparse_module:
-            argparse_module = get_module_by_ref(module_refs[0]) if module_refs else {}
-    if not module_refs:
-        die("BLOCKED: python_cli requires module_refs in payload.json. Evidence insufficient for factory generation.", 1)
+        die("GENERATOR_FAILED: Executable intent requires module_refs in payload.json but none found.", 1)
+
+    pipeline_mode = isinstance(intents, list) and len(intents) > 1
+    argparse_module = {}
+    for mod_ref in module_refs:
+        mod = get_module_by_ref(mod_ref)
+        if mod.get("name") == "argparse_setup" or "argparse" in mod_ref.lower():
+            argparse_module = mod
+            break
+    if not argparse_module:
+        argparse_module = get_module_by_ref(module_refs[0]) if module_refs else {}
     template = argparse_module.get("template", """#!/usr/bin/env python3
 import argparse
 

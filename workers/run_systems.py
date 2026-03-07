@@ -329,6 +329,26 @@ def main():
     if not workspace_project.exists():
         die(f"workspace/project/ not found: {workspace_project}")
     
+    # Run module build for python_cli (creates workspace/project/dist per build.py contract)
+    artifact_class = ""
+    payload_path = request_dir / "payload.json"
+    if payload_path.exists():
+        try:
+            payload = json.loads(read_text(payload_path))
+            artifact_class = str(payload.get("artifact_class", "")).strip()
+        except Exception:
+            pass
+    if artifact_class == "python_cli":
+        import subprocess
+        base = Path(__file__).resolve().parents[1]
+        build_py = base / "orchestrator" / "modules" / "python_cli" / "build.py"
+        if build_py.exists():
+            env = os.environ.copy()
+            env["PROJECT_ROOT"] = str(workspace_project)
+            p = subprocess.run([sys.executable, str(build_py)], cwd=str(workspace_project), env=env, capture_output=True, text=True)
+            if p.returncode != 0:
+                die(f"python_cli build failed: {p.stderr or p.stdout or 'no output'}")
+    
     dist_dir = request_dir / "dist"
     
     # Package project
