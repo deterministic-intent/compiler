@@ -19,9 +19,10 @@ ENV = {
 
 def main() -> int:
     DIST.mkdir(parents=True, exist_ok=True)
-    index = ROOT / "index.html"
+    index = ROOT / "src" / "index.html"
     if not index.exists():
-        index = ROOT / "src" / "index.html"
+        print("error: src/index.html not found", file=sys.stderr)
+        return 1
     shutil.copy2(index, DIST / "index.html")
     return 0
 

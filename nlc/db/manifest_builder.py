@@ -213,11 +213,15 @@ def build_toolchain_pins_manifest(base: Path, snapshot_id: str, policy_version: 
         
         # Extract pins from policy (or use empty structure if not defined)
         pins = toolchain_policy.get("pins", {})
-        
-        return {
+        out = {
             "policy_version": policy_version,  # Snapshot-bound: records policy version used
             "pins": pins if pins else {},
         }
+        # docker_base_image_ref from policy toolchain (governed; hashed in manifest)
+        ref = toolchain_policy.get("docker_base_image_ref")
+        if isinstance(ref, str) and ref.strip():
+            out["docker_base_image_ref"] = ref.strip()
+        return out
     except Exception:
         # If policy unavailable, return minimal valid structure with explicit policy_version
         return {

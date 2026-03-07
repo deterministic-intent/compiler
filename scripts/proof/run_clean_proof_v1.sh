@@ -49,7 +49,7 @@ fi
 
 cd "$REQUIRED_ROOT"
 KIT_ROOT="$REQUIRED_ROOT"
-export DCS_SKIP_TIER3_BUILD=1
+# Tier3 is default; set DCS_SKIP_TIER3_BUILD=1 to opt out
 export DCS_PROOF_SNAPSHOT_ID="$SNAPSHOT_ID"
 export DCS_PROOF_STATE_ROOT="$STATE_ROOT"
 export DCS_PROOF_REQUESTS_DIR="$REQUESTS_DIR"
@@ -76,7 +76,7 @@ echo ""
 
 # 5) Proof run 1
 echo "--- proof run 1 ---"
-DCS_SKIP_TIER3_BUILD=1 proof/run_proof.sh "$SNAPSHOT_ID" "$STATE_ROOT" || { echo "proof run 1 FAIL"; exit 2; }
+proof/run_proof.sh "$SNAPSHOT_ID" "$STATE_ROOT" || { echo "proof run 1 FAIL"; exit 2; }
 # Composite: COMPOSITE_SHA256 if present, else sha256 of proof_hashes.json
 HASH1="$(jq -r '.COMPOSITE_SHA256 // empty' out/proof_hashes.json 2>/dev/null)"
 [[ -z "$HASH1" ]] && HASH1="$(sha256sum out/proof_hashes.json 2>/dev/null | cut -d' ' -f1)"
@@ -85,7 +85,7 @@ echo ""
 
 # 6) Proof run 2
 echo "--- proof run 2 ---"
-DCS_SKIP_TIER3_BUILD=1 proof/run_proof.sh "$SNAPSHOT_ID" "$STATE_ROOT" || { echo "proof run 2 FAIL"; exit 2; }
+proof/run_proof.sh "$SNAPSHOT_ID" "$STATE_ROOT" || { echo "proof run 2 FAIL"; exit 2; }
 HASH2="$(jq -r '.COMPOSITE_SHA256 // empty' out/proof_hashes.json 2>/dev/null)"
 [[ -z "$HASH2" ]] && HASH2="$(sha256sum out/proof_hashes.json 2>/dev/null | cut -d' ' -f1)"
 echo "run2 hash: ${HASH2:-unknown}"

@@ -20,13 +20,19 @@ ENV = {
 
 def main() -> int:
     DIST.mkdir(parents=True, exist_ok=True)
-    # Copy all .yaml/.yml files from src or root
-    for base in [SRC, ROOT]:
-        if base.exists():
-            for p in base.glob("*.yaml"):
-                shutil.copy2(p, DIST / p.name)
-            for p in base.glob("*.yml"):
-                shutil.copy2(p, DIST / p.name)
+    if not SRC.exists():
+        print("error: src/ not found", file=sys.stderr)
+        return 1
+    copied = 0
+    for p in SRC.glob("*.yaml"):
+        shutil.copy2(p, DIST / p.name)
+        copied += 1
+    for p in SRC.glob("*.yml"):
+        shutil.copy2(p, DIST / p.name)
+        copied += 1
+    if copied == 0:
+        print("error: no .yaml/.yml in src/", file=sys.stderr)
+        return 1
     return 0
 
 

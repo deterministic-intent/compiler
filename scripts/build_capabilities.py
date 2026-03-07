@@ -332,6 +332,20 @@ def main() -> int:
     if not derived["supported_artifact_classes"] or not derived["tools"] or not derived["languages"]:
         _fail("step21:capability_claim_without_evidence")
 
+    # docker_base_image_ref from governed surface only (toolchain_pins.json; no code default)
+    docker_base_image_ref: str | None = None
+    toolchain_path = SNAP_ROOT / snapshot_id / "manifest" / "toolchain_pins.json"
+    if toolchain_path.exists():
+        try:
+            tc = _read_json(toolchain_path)
+            ref = tc.get("docker_base_image_ref")
+            if isinstance(ref, str) and ref.strip() and re.match(r"^[^@]+@sha256:[a-f0-9]{64}$", ref.strip()):
+                docker_base_image_ref = ref.strip()
+        except Exception:
+            pass
+    if "docker_image" in derived["supported_artifact_classes"] and docker_base_image_ref is None:
+        _fail("DOCKER_BASE_REF_MISSING")
+
     # Preserve truth-backed classes if present in existing capabilities (deterministic fallback).
     truth_backed: List[str] = []
     existing_caps = SNAP_ROOT / snapshot_id / "capabilities.json"
@@ -351,6 +365,7 @@ def main() -> int:
         "snapshot_id": snapshot_id,
         "policy_version": policy_version,
         "manifest_bundle_hash": payload.get("manifest_bundle_hash"),
+        "docker_base_image_ref": docker_base_image_ref,
         "languages": derived["languages"],
         "tools": derived["tools"],
         "supported_artifact_classes": derived["supported_artifact_classes"],

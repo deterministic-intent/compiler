@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Build mongodb_pack artifact: cp schema.json to dist"""
+"""Build python_debug_script artifact: cp src to dist (same contract as python_cli)"""
 import os
 import shutil
 import sys
 from pathlib import Path
 
 ROOT = Path(os.environ.get("PROJECT_ROOT", ".")).resolve()
+SRC = ROOT / "src"
 DIST = ROOT / "dist"
 
 ENV = {
@@ -18,12 +19,9 @@ ENV = {
 
 
 def main() -> int:
-    DIST.mkdir(parents=True, exist_ok=True)
-    schema = ROOT / "src" / "schema.json"
-    if not schema.exists():
-        print("error: src/schema.json not found", file=sys.stderr)
-        return 1
-    shutil.copy2(schema, DIST / "schema.json")
+    if DIST.exists():
+        shutil.rmtree(DIST)
+    shutil.copytree(SRC, DIST)
     return 0
 
 

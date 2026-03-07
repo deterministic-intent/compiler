@@ -556,6 +556,207 @@ def generate_yaml_pack(rd: Path, tasks: list, workspace_project: Path) -> dict:
     )
 
 
+def generate_html_site(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """html_site: deterministic src/index.html for build.py contract. No module contract required."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    outputs = [
+        ("index.html", "<!DOCTYPE html>\n<html><head><link rel=\"stylesheet\" href=\"styles.css\"></head><body><div id=\"app\"></div><script src=\"app.js\"></script></body></html>"),
+        ("styles.css", "/* Factory styles */\n#app { padding: 1rem; }\n"),
+        ("app.js", "// Factory app\ndocument.getElementById('app').textContent = 'Hello';\n"),
+    ]
+    for fname, content in outputs:
+        write_text(src_dir / fname, content)
+        files_written[f"src/{fname}"] = sha256_bytes(content.encode("utf-8"))
+    readme = "# html_site\n\nOpen dist/index.html in a browser. Build copies src/index.html to dist.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_mongodb_pack(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """mongodb_pack: deterministic src/schema.json for build.py contract. No module contract required."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    schema_content = '{"collections":[]}\n'
+    write_text(src_dir / "schema.json", schema_content)
+    files_written["src/schema.json"] = sha256_bytes(schema_content.encode("utf-8"))
+    readme = "# mongodb_pack\n\nBuild copies src/schema.json to dist.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_yaml_config(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """yaml_config: deterministic src/*.yaml for build.py contract. No module contract required."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    for fname, content in [
+        ("config.yaml", "version: 1\nsettings: {}\n"),
+        ("example.yaml", "key: value\nlist:\n  - a\n  - b\n"),
+    ]:
+        write_text(src_dir / fname, content)
+        files_written[f"src/{fname}"] = sha256_bytes(content.encode("utf-8"))
+    readme = "# yaml_config\n\nBuild copies src/*.yaml to dist.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def _generate_clang_cli(workspace_project: Path, ext: str, content: str, artifact_class: str) -> dict:
+    """Shared deterministic CLI emitter for C/C++. No module contract."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    main_file = f"src/main{ext}"
+    write_text(src_dir / f"main{ext}", content)
+    files_written[main_file] = sha256_bytes(content.encode("utf-8"))
+    readme = f"# {artifact_class}\n\nBuild and run per module build.py.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_c_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """c_cli: deterministic src/main.c for build.py contract. No module contract required."""
+    content = "/* Factory: c_cli */\n#include <stdio.h>\nint main(void) { printf(\"1\\n\"); return 0; }\n"
+    return _generate_clang_cli(workspace_project, ".c", content, "c_cli")
+
+
+def generate_cpp_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """cpp_cli: deterministic src/main.cpp for build.py contract. No module contract required."""
+    content = "/* Factory: cpp_cli */\n#include <iostream>\nint main() { std::cout << \"1\\n\"; return 0; }\n"
+    return _generate_clang_cli(workspace_project, ".cpp", content, "cpp_cli")
+
+
+def generate_docker_image(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """docker_image: deterministic context pack. dist/ produced by build.py (Dockerfile, context.tar, base_image_ref.txt)."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    dockerfile_content = "FROM alpine:3.19\nCOPY app.txt /app/\nCMD cat /app/app.txt\n"
+    write_text(workspace_project / "Dockerfile", dockerfile_content)
+    files_written["Dockerfile"] = sha256_bytes(dockerfile_content.encode("utf-8"))
+    app_content = "docker_image: deterministic context pack v1\n"
+    write_text(workspace_project / "app.txt", app_content)
+    files_written["app.txt"] = sha256_bytes(app_content.encode("utf-8"))
+    readme = "# docker_image\n\nDeterministic context pack. dist/ produced by run_systems: Dockerfile, context.tar, base_image_ref.txt.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def _generate_src_only(workspace_project: Path, src_file: str, content: str, artifact_class: str) -> dict:
+    """Emit single src file. For build steps that copy src/ to dist/ or compile one file."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    write_text(src_dir / src_file, content)
+    files_written[f"src/{src_file}"] = sha256_bytes(content.encode("utf-8"))
+    readme = f"# {artifact_class}\n\nBuild and run per module build.py.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_php_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """php_cli: src/main.php for build.py contract. No module contract required."""
+    content = "<?php\n/* Factory: php_cli */\necho \"1\\n\";\n"
+    return _generate_src_only(workspace_project, "main.php", content, "php_cli")
+
+
+def generate_ruby_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """ruby_cli: src/main.rb for build.py (copytree src to dist). No module contract required."""
+    content = "# Factory: ruby_cli\nputs '1'\n"
+    return _generate_src_only(workspace_project, "main.rb", content, "ruby_cli")
+
+
+def generate_kotlin_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """kotlin_cli: src/Main.kt for build.py contract. No module contract required."""
+    content = "// Factory: kotlin_cli\nfun main() { println(\"1\") }\n"
+    return _generate_src_only(workspace_project, "Main.kt", content, "kotlin_cli")
+
+
+def generate_solidity_contract(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """solidity_contract: src/main.sol for build.py contract. No module contract required."""
+    content = "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\ncontract Factory {}\n"
+    return _generate_src_only(workspace_project, "main.sol", content, "solidity_contract")
+
+
+def generate_javascript_web(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """javascript_web: src/ for build.py (copytree). No module contract required."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    index_html = "<!DOCTYPE html><html><body><script src=\"app.js\"></script></body></html>"
+    app_js = "document.body.textContent = '1';"
+    write_text(src_dir / "index.html", index_html)
+    files_written["src/index.html"] = sha256_bytes(index_html.encode("utf-8"))
+    write_text(src_dir / "app.js", app_js)
+    files_written["src/app.js"] = sha256_bytes(app_js.encode("utf-8"))
+    readme = "# javascript_web\n\nBuild copies src to dist. Open dist/index.html in browser.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_csharp_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """csharp_cli: dotnet build contract. No module contract required."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    prog_cs = "// Factory: csharp_cli\nclass Program { static void Main() { System.Console.WriteLine(\"1\"); } }\n"
+    write_text(workspace_project / "Program.cs", prog_cs)
+    files_written["Program.cs"] = sha256_bytes(prog_cs.encode("utf-8"))
+    csproj = '<?xml version="1.0"?><Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net6.0</TargetFramework><RootNamespace>App</RootNamespace></PropertyGroup></Project>'
+    write_text(workspace_project / "App.csproj", csproj)
+    files_written["App.csproj"] = sha256_bytes(csproj.encode("utf-8"))
+    readme = "# csharp_cli\n\nBuild: dotnet build -c Release. Output in bin/Release/.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_typescript_cli(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """typescript_cli: tsc only (no npm, zero deps). Emits src/main.ts + tsconfig.json."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    main_ts = "// Factory: typescript_cli\nconsole.log('1');\n"
+    write_text(src_dir / "main.ts", main_ts)
+    files_written["src/main.ts"] = sha256_bytes(main_ts.encode("utf-8"))
+    tsconfig = '{"compilerOptions":{"outDir":"dist","rootDir":"src","target":"ES2020","module":"commonjs"},"include":["src/**/*"]}'
+    write_text(workspace_project / "tsconfig.json", tsconfig)
+    files_written["tsconfig.json"] = sha256_bytes(tsconfig.encode("utf-8"))
+    readme = "# typescript_cli\n\nBuild: tsc --pretty false --project tsconfig.json. Output: dist/main.js.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
+def generate_python_debug_script(rd: Path, tasks: list, workspace_project: Path) -> dict:
+    """python_debug_script: same layout as python_cli (src/ copied to dist). No module contract required."""
+    files_written = {}
+    workspace_project.mkdir(parents=True, exist_ok=True)
+    src_dir = workspace_project / "src"
+    src_dir.mkdir(parents=True, exist_ok=True)
+    main_py = "# Factory: python_debug_script\nprint('1')\n"
+    write_text(src_dir / "main.py", main_py)
+    files_written["src/main.py"] = sha256_bytes(main_py.encode("utf-8"))
+    readme = "# python_debug_script\n\nBuild copies src to dist. Run: python dist/main.py.\n"
+    write_text(workspace_project / "README.md", readme)
+    files_written["README.md"] = sha256_bytes(readme.encode("utf-8"))
+    return files_written
+
+
 def generate_lang_emit(rd: Path, tasks: list, workspace_project: Path) -> dict:
     """Generate lang_emit project via KD extract (no templates)."""
     files_written = {}
@@ -1654,41 +1855,57 @@ def main():
     artifact_class, artifact_def = load_artifact_class(request_dir)
     tasks = load_tasks(request_dir)
     
-    # Generate based on artifact class
-    if artifact_class == "webview":
-        files_written = generate_webview(request_dir, tasks, workspace_project)
-    elif artifact_class == "python_cli":
-        files_written = generate_python_cli(request_dir, tasks, workspace_project)
-    elif artifact_class == "python_api":
-        files_written = generate_python_api(request_dir, tasks, workspace_project)
-    elif artifact_class == "python_gui":
-        files_written = generate_python_gui(request_dir, tasks, workspace_project)
-    elif artifact_class == "bash_cli":
-        files_written = generate_bash_cli(request_dir, tasks, workspace_project)
-    elif artifact_class == "go_cli":
-        files_written = generate_go_cli(request_dir, tasks, workspace_project)
-    elif artifact_class == "rust_cli":
-        files_written = generate_rust_cli(request_dir, tasks, workspace_project)
-    elif artifact_class == "java_cli":
-        files_written = generate_java_cli(request_dir, tasks, workspace_project)
-    elif artifact_class == "lang_emit":
-        files_written = generate_lang_emit(request_dir, tasks, workspace_project)
-    elif artifact_class == "lang_patch":
-        files_written = generate_lang_patch(request_dir, tasks, workspace_project)
-    elif artifact_class == "lang_project":
-        files_written = generate_lang_project(request_dir, tasks, workspace_project)
-    elif artifact_class == "web_site":
-        files_written = generate_web_site(request_dir, tasks, workspace_project)
-    elif artifact_class == "sql_pack":
-        files_written = generate_sql_pack(request_dir, tasks, workspace_project)
-    elif artifact_class == "mongo_pack":
-        files_written = generate_mongo_pack(request_dir, tasks, workspace_project)
-    elif artifact_class == "compose_pack":
-        files_written = generate_compose_pack(request_dir, tasks, workspace_project)
-    elif artifact_class == "yaml_pack":
-        files_written = generate_yaml_pack(request_dir, tasks, workspace_project)
-    else:
-        die(f"Unsupported artifact class: {artifact_class}")
+    # Stage A: Authority check (Gate0 alignment)
+    snapshot_id = os.environ.get("NLC_DB_SNAPSHOT_ID") or ""
+    if not snapshot_id and (request_dir / "payload.json").exists():
+        try:
+            pl = json.loads(read_text(request_dir / "payload.json"))
+            snapshot_id = str(pl.get("knowledge_snapshot_id", "")).strip()
+        except Exception:
+            pass
+    if not snapshot_id:
+        die("MISSING_SNAPSHOT_ID", 1)
+    caps_path = SNAP_ROOT / snapshot_id / "capabilities.json"
+    if not caps_path.exists():
+        die("SNAPSHOT_AUTHORITY_MISSING", 1)
+    try:
+        caps = json.loads(read_text(caps_path))
+        supported = set(caps.get("supported_artifact_classes", []))
+    except Exception:
+        die("SNAPSHOT_AUTHORITY_MISSING", 1)
+    if artifact_class not in supported:
+        die(f"UNDECLARED_ARTIFACT_CLASS: {artifact_class} not in snapshot supported_artifact_classes", 1)
+
+    # Stage B: Implementation dispatch
+    handlers = {
+        "bash_cli": generate_bash_cli,
+        "c_cli": generate_c_cli,
+        "cpp_cli": generate_cpp_cli,
+        "csharp_cli": generate_csharp_cli,
+        "docker_image": generate_docker_image,
+        "go_cli": generate_go_cli,
+        "html_site": generate_html_site,
+        "java_cli": generate_java_cli,
+        "javascript_web": generate_javascript_web,
+        "kotlin_cli": generate_kotlin_cli,
+        "mongodb_pack": generate_mongodb_pack,
+        "php_cli": generate_php_cli,
+        "python_api": generate_python_api,
+        "python_cli": generate_python_cli,
+        "python_debug_script": generate_python_debug_script,
+        "python_gui": generate_python_gui,
+        "ruby_cli": generate_ruby_cli,
+        "rust_cli": generate_rust_cli,
+        "solidity_contract": generate_solidity_contract,
+        "sql_pack": generate_sql_pack,
+        "typescript_cli": generate_typescript_cli,
+        "webview": generate_webview,
+        "yaml_config": generate_yaml_config,
+    }
+    fn = handlers.get(artifact_class)
+    if fn is None:
+        die(f"GENERATOR_MISSING_IMPLEMENTATION: no handler for {artifact_class}", 1)
+    files_written = fn(request_dir, tasks, workspace_project)
     
     # Write generator output summary
     output_path = request_dir / "generator.out.json"

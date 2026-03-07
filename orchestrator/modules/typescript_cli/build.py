@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Build typescript_cli artifact: npm ci --offline, npx tsc, output dist/main.js"""
+"""Build typescript_cli artifact: tsc --pretty false --project tsconfig.json (no npm, zero deps)"""
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -19,27 +18,25 @@ ENV = {
 
 
 def main() -> int:
-    r = subprocess.run(["npm", "ci", "--offline"], env=ENV, cwd=str(ROOT))
+    tsconfig = ROOT / "tsconfig.json"
+    if not tsconfig.exists():
+        print("error: tsconfig.json not found", file=sys.stderr)
+        return 1
+    r = subprocess.run(
+        ["tsc", "--pretty", "false", "--project", str(tsconfig)],
+        env=ENV,
+        cwd=str(ROOT),
+    )
     if r.returncode != 0:
         return r.returncode
-    r = subprocess.run(["npx", "tsc"], env=ENV, cwd=str(ROOT))
-    if r.returncode != 0:
-        return r.returncode
-    # tsc typically outputs to dist/ per tsconfig; ensure dist/main.js exists
-    # If tsconfig outDir is different, we may need to copy
-    DIST.mkdir(parents=True, exist_ok=True)
-    for base in [ROOT / "dist", ROOT]:
-        main_js = base / "main.js"
-        if main_js.exists():
-            if base != DIST:
-                shutil.copy2(main_js, DIST / "main.js")
-            return 0
-    # Check common tsc output locations
-    for p in (ROOT / "dist").rglob("main.js"):
-        shutil.copy2(p, DIST / "main.js")
-        return 0
-    print("error: main.js not found after tsc", file=sys.stderr)
-    return 1
+    # tsc outputs to dist/ per tsconfig outDir; verify main.js
+    main_js = DIST / "main.js"
+    if not main_js.exists():
+        main_js = ROOT / "dist" / "main.js"
+    if not main_js.exists():
+        print("error: main.js not found after tsc", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

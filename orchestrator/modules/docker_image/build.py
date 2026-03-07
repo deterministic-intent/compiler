@@ -28,18 +28,19 @@ def _die(code: str) -> None:
 
 
 def _get_base_image_ref() -> str:
+    """Read base_image_ref from snapshot capabilities.json (governed authority). No code default."""
     if not SNAPSHOT_ID:
-        _die("DOCKER_BASE_IMAGE_REF_MISSING")
-    cfg_path = SNAP_ROOT / SNAPSHOT_ID / "docker_image.json"
-    if not cfg_path.exists():
-        _die("DOCKER_BASE_IMAGE_REF_MISSING")
-    cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
-    ref = cfg.get("base_image_ref")
+        _die("DOCKER_BASE_REF_MISSING")
+    caps_path = SNAP_ROOT / SNAPSHOT_ID / "capabilities.json"
+    if not caps_path.exists():
+        _die("DOCKER_BASE_REF_MISSING")
+    caps = json.loads(caps_path.read_text(encoding="utf-8"))
+    ref = caps.get("docker_base_image_ref")
     if not ref or not isinstance(ref, str):
-        _die("DOCKER_BASE_IMAGE_REF_MISSING")
+        _die("DOCKER_BASE_REF_MISSING")
     ref = ref.strip()
     if not re.match(r"^[^@]+@sha256:[a-f0-9]{64}$", ref):
-        _die("DOCKER_BASE_IMAGE_REF_MISSING")
+        _die("DOCKER_BASE_REF_MISSING")
     return ref
 
 
