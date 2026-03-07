@@ -81,7 +81,7 @@ jobs:
       - name: Provision snapshot (immutable, hash-checked)
         shell: bash
         env:
-          SNAPSHOT_ID: 20260208T190113Z
+          SNAPSHOT_ID: 20260215T120000Z
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
@@ -115,15 +115,19 @@ jobs:
       - name: Proof run (canonical v1 entrypoint, no cache)
         shell: bash
         env:
+          SNAPSHOT_ID: 20260215T120000Z
           DCS_SKIP_TIER3_BUILD: "1"
           PYTHONPATH: ${{ github.workspace }}
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
           rm -rf out
-          mkdir -p out
-          echo "AUDIT_SCOPE=v1"
-          AUDIT_SCOPE=v1 bash proof/run_proof.sh
+          mkdir -p out/proof/state/requests
+          export AUDIT_SCOPE=v1
+          export DCS_PROOF_SNAPSHOT_ID="${SNAPSHOT_ID}"
+          export AUDIT_CLOSURE_SNAPSHOT="${SNAPSHOT_ID}"
+          export NLC_DB_SNAPSHOT_ID="${SNAPSHOT_ID}"
+          bash proof/run_proof.sh "${SNAPSHOT_ID}" "${GITHUB_WORKSPACE}/out/proof"
 
       - name: Compare proof hashes (atomic)
         shell: bash
