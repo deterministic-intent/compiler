@@ -60,12 +60,14 @@ def main() -> int:
     req_dir = req_root / req_id
     if req_dir.exists():
         shutil.rmtree(req_dir, ignore_errors=True)
-    ext_dir = BASE / "snapshots" / "external" / ext_id
+    from nlc.external_snapshot import EXTERNAL_ROOT, write_external_source, try_load_toolchain_pins
+    ext_dir = EXTERNAL_ROOT / ext_id
+    if str(BASE).startswith("/workspace") and str(ext_dir).startswith("/opt/dcs-public"):
+        die("CONTAINER_HOST_PATH_FORBIDDEN")
     if ext_dir.exists():
         shutil.rmtree(ext_dir, ignore_errors=True)
 
     # Create minimal external snapshot (no network)
-    from nlc.external_snapshot import write_external_source, try_load_toolchain_pins
     pins = try_load_toolchain_pins()
     write_external_source(
         snapshot_id=ext_id,
