@@ -120,6 +120,8 @@ jobs:
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
+          echo "JOB_PWD=$(pwd)"
+          export DOCKER_HOST_WORKSPACE="$(pwd)"
           rm -rf out
           mkdir -p out/proof/state/requests
           export AUDIT_SCOPE=v1
