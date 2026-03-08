@@ -116,7 +116,6 @@ jobs:
         shell: bash
         env:
           SNAPSHOT_ID: 20260215T120000Z
-          DOCKER_HOST_WORKSPACE: ${{ github.workspace }}
           PYTHONPATH: ${{ github.workspace }}
         run: |
           set -euo pipefail
