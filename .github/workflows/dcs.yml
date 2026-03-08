@@ -116,12 +116,13 @@ jobs:
         shell: bash
         env:
           SNAPSHOT_ID: 20260215T120000Z
-          PYTHONPATH: ${{ github.workspace }}
+          DOCKER_HOST_WORKSPACE: /__w/compiler/compiler
+          PYTHONPATH: /__w/compiler/compiler
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
-          echo "JOB_PWD=$(pwd)"
-          export DOCKER_HOST_WORKSPACE="$(pwd)"
+          echo "DOCKER_HOST_WORKSPACE=$DOCKER_HOST_WORKSPACE"
+          ls -la "$DOCKER_HOST_WORKSPACE" | head -20
           rm -rf out
           mkdir -p out/proof/state/requests
           export AUDIT_SCOPE=v1

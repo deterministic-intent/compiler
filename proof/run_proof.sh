@@ -116,8 +116,8 @@ if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
     NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
     python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
 elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
-  # CI: must mount repo into /workspace (image does not contain it); use pwd from job container
-  HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:-$(pwd)}"
+  # CI: must mount repo into /workspace; use host path (DOCKER_HOST_WORKSPACE) for nested Docker daemon
+  HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:?DOCKER_HOST_WORKSPACE not set}"
   if [[ ! -f "$HOST_WORKSPACE/scripts/audit/run_audit.py" ]]; then
     echo "DOCKER_HOST_WORKSPACE_INVALID: $HOST_WORKSPACE" >&2
     exit 2
