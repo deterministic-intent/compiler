@@ -232,7 +232,10 @@ def main() -> int:
     req_root = Path(args.requests_root) if args.requests_root else BASE / "state" / "requests"
 
     req_dir = req_root / req_id
-    ext_dir = BASE / "snapshots" / "external" / ext_id
+    from nlc.external_snapshot import EXTERNAL_ROOT
+    ext_dir = EXTERNAL_ROOT / ext_id
+    if str(BASE).startswith("/workspace") and str(ext_dir).startswith("/opt/dcs-public"):
+        die("CONTAINER_HOST_PATH_FORBIDDEN")
 
     # A) Clean room
     if req_dir.exists():
@@ -351,7 +354,6 @@ def main() -> int:
         die(f"negative control F1 missing expected snapshot-missing repro (one of {sorted(want1)})")
 
     # Recreate external snapshot for remaining negatives (deterministic source writer)
-    from nlc.external_snapshot import write_external_source, try_load_toolchain_pins
     from nlc.external_snapshot import write_external_source, try_load_toolchain_pins
     pins = try_load_toolchain_pins()
     write_external_source(
