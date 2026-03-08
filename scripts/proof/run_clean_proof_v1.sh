@@ -104,11 +104,28 @@ fi
 echo "✓ proof hash match: $HASH1"
 echo ""
 
-# 8) Full audit battery (optional full run; proof already validated)
+# 8) Full audit battery (same execution path as proof: inside Tier3)
 echo "--- audit battery ---"
-AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID DCS_PROOF_STATE_ROOT=$STATE_ROOT DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
-  NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
-  python3 scripts/audit/run_audit.py --state-root "$STATE_ROOT" --snapshot-id "$SNAPSHOT_ID" \
+HOST_WS="$(pwd)"
+CONTAINER_STATE="/workspace/out/proof"
+docker run --rm \
+  --user "$(id -u):$(id -g)" \
+  -v "$HOST_WS:/workspace" \
+  -w /workspace \
+  -e HOME=/tmp \
+  -e AUDIT_SCOPE=v1 \
+  -e AUDIT_POLICY=v1 \
+  -e DCS_EXTERNAL_SNAPSHOT_ROOT="$CONTAINER_STATE/snapshots/external" \
+  -e AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID \
+  -e DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
+  -e DCS_PROOF_STATE_ROOT="$CONTAINER_STATE" \
+  -e DCS_PROOF_REQUESTS_DIR="$CONTAINER_STATE/state/requests" \
+  -e NLC_REQUESTS_ROOT="$CONTAINER_STATE/state/requests" \
+  -e NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
+  -e NLC_SNAPSHOT_ID=$SNAPSHOT_ID \
+  -e NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
+  dcs-tier3 \
+  python3 scripts/audit/run_audit.py --policy v1 --state-root "$CONTAINER_STATE" --snapshot-id "$SNAPSHOT_ID" \
   || { echo "audit battery FAIL"; exit 2; }
 echo ""
 
