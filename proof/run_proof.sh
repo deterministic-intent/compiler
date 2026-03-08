@@ -115,26 +115,48 @@ if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
     DCS_PROOF_STATE_ROOT=$STATE_ROOT DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
     NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
     python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
+elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+  # CI: image has repo baked in; do NOT mount over /workspace (bind mount breaks it)
+  docker run --rm \
+    -e AUDIT_SCOPE="$SCOPE" \
+    -e AUDIT_POLICY=v1 \
+    -e DCS_PROOF_SNAPSHOT_ID="$SNAPSHOT_ID" \
+    -e AUDIT_CLOSURE_SNAPSHOT="$SNAPSHOT_ID" \
+    -e NLC_DB_SNAPSHOT_ID="$SNAPSHOT_ID" \
+    -e NLC_SNAPSHOT_ID="$SNAPSHOT_ID" \
+    -e NLC_KB_SNAPSHOT_ID="$SNAPSHOT_ID" \
+    -e DCS_PROOF_STATE_ROOT="/workspace/out/proof" \
+    -e DCS_PROOF_REQUESTS_DIR="/workspace/out/proof/state/requests" \
+    -e NLC_REQUESTS_ROOT="/workspace/out/proof/state/requests" \
+    -e DCS_EXTERNAL_SNAPSHOT_ROOT="/workspace/out/proof/snapshots/external" \
+    dcs-tier3 \
+    bash -lc 'pwd; ls -la /workspace | head -20; ls -la /workspace/scripts/audit 2>/dev/null | head -20; test -f /workspace/scripts/audit/run_audit.py || { echo TIER3_WORKSPACE_MISSING_AUDIT; exit 2; }; python3 scripts/audit/run_audit.py --policy v1 --snapshot-id "$DCS_PROOF_SNAPSHOT_ID" --state-root /workspace/out/proof' || { echo "FAIL: audit exited non-zero"; exit 1; }
 else
-CONTAINER_EXTERNAL_SNAP="$CONTAINER_STATE_ROOT/snapshots/external"
-docker run --rm \
-  --user "$(id -u):$(id -g)" \
-  -v "$DOCKER_MOUNT_SRC:/workspace" \
-  -w /workspace \
-  -e HOME=/tmp \
-  -e AUDIT_SCOPE="$SCOPE" \
-  -e AUDIT_POLICY=v1 \
-  -e DCS_EXTERNAL_SNAPSHOT_ROOT="$CONTAINER_EXTERNAL_SNAP" \
-  -e AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID \
-  -e DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
-  -e DCS_PROOF_STATE_ROOT="$CONTAINER_STATE_ROOT" \
-  -e DCS_PROOF_REQUESTS_DIR="$CONTAINER_REQUESTS_DIR" \
-  -e NLC_REQUESTS_ROOT="$CONTAINER_REQUESTS_DIR" \
-  -e NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
-  -e NLC_SNAPSHOT_ID=$SNAPSHOT_ID \
-  -e NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
-  dcs-tier3 \
-  python3 scripts/audit/run_audit.py --policy v1 --state-root "$CONTAINER_STATE_ROOT" || { echo "FAIL: audit exited non-zero"; exit 1; }
+  # Local: bind-mount host workspace
+  HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:-$(pwd)}"
+  if [[ ! -f "$HOST_WORKSPACE/scripts/audit/run_audit.py" ]]; then
+    echo "DOCKER_HOST_WORKSPACE_INVALID: $HOST_WORKSPACE" >&2
+    exit 2
+  fi
+  CONTAINER_EXTERNAL_SNAP="$CONTAINER_STATE_ROOT/snapshots/external"
+  docker run --rm \
+    --user "$(id -u):$(id -g)" \
+    -v "$HOST_WORKSPACE:/workspace" \
+    -w /workspace \
+    -e HOME=/tmp \
+    -e AUDIT_SCOPE="$SCOPE" \
+    -e AUDIT_POLICY=v1 \
+    -e DCS_EXTERNAL_SNAPSHOT_ROOT="$CONTAINER_EXTERNAL_SNAP" \
+    -e AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID \
+    -e DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
+    -e DCS_PROOF_STATE_ROOT="$CONTAINER_STATE_ROOT" \
+    -e DCS_PROOF_REQUESTS_DIR="$CONTAINER_REQUESTS_DIR" \
+    -e NLC_REQUESTS_ROOT="$CONTAINER_REQUESTS_DIR" \
+    -e NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID \
+    -e NLC_SNAPSHOT_ID=$SNAPSHOT_ID \
+    -e NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
+    dcs-tier3 \
+    bash -lc 'pwd; ls -la /workspace | head -20; ls -la /workspace/scripts/audit 2>/dev/null | head -20; test -f /workspace/scripts/audit/run_audit.py || { echo TIER3_WORKSPACE_MISSING_AUDIT; exit 2; }; python3 scripts/audit/run_audit.py --policy v1 --state-root "$DCS_PROOF_STATE_ROOT"' || { echo "FAIL: audit exited non-zero"; exit 1; }
 fi
 
 # 5) Compute three SHA256 values
