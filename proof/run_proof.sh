@@ -90,7 +90,12 @@ mkdir -p "$CLEAN_DIR"
 
 # 3) Build Tier3 image (no cache) — skip when already in tier3 (e.g. CI job container)
 # DOCKER_HOST_WORKSPACE: when CI runs in a container, docker -v needs the host path (not /__w/...)
-DOCKER_MOUNT_SRC="${DOCKER_HOST_WORKSPACE:-$KIT_ROOT}"
+HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:-$(pwd)}"
+DOCKER_MOUNT_SRC="$HOST_WORKSPACE"
+if [[ ! -f "$HOST_WORKSPACE/scripts/audit/run_audit.py" ]]; then
+  echo "DOCKER_HOST_WORKSPACE_INVALID: $HOST_WORKSPACE" >&2
+  exit 2
+fi
 if [[ -z "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
   echo "Building Tier3 image..."
   docker build --no-cache -t dcs-tier3 -f "$KIT_ROOT/Dockerfile.tier3" "$KIT_ROOT" || { echo "FAIL: docker build failed"; exit 1; }
@@ -101,14 +106,17 @@ fi
 # Proof hashes (step 5-6) are written ONLY on successful audit; || exit 1 prevents fallthrough on failure.
 SCOPE="${AUDIT_SCOPE:-v1}"
 echo "Running audit (scope=$SCOPE)..."
+EXTERNAL_SNAP_ROOT="${DCS_EXTERNAL_SNAPSHOT_ROOT:-$STATE_ROOT/snapshots/external}"
 if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
   # Already in tier3 container (CI); run audit in-process with same env as docker run
   (cd "$KIT_ROOT" && HOME=/tmp AUDIT_SCOPE="$SCOPE" AUDIT_POLICY=v1 \
+    DCS_EXTERNAL_SNAPSHOT_ROOT="$EXTERNAL_SNAP_ROOT" \
     AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
     DCS_PROOF_STATE_ROOT=$STATE_ROOT DCS_PROOF_REQUESTS_DIR=$REQUESTS_DIR \
     NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
     python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
 else
+CONTAINER_EXTERNAL_SNAP="$CONTAINER_STATE_ROOT/snapshots/external"
 docker run --rm \
   --user "$(id -u):$(id -g)" \
   -v "$DOCKER_MOUNT_SRC:/workspace" \
@@ -116,6 +124,7 @@ docker run --rm \
   -e HOME=/tmp \
   -e AUDIT_SCOPE="$SCOPE" \
   -e AUDIT_POLICY=v1 \
+  -e DCS_EXTERNAL_SNAPSHOT_ROOT="$CONTAINER_EXTERNAL_SNAP" \
   -e AUDIT_CLOSURE_SNAPSHOT=$SNAPSHOT_ID \
   -e DCS_PROOF_SNAPSHOT_ID=$SNAPSHOT_ID \
   -e DCS_PROOF_STATE_ROOT="$CONTAINER_STATE_ROOT" \

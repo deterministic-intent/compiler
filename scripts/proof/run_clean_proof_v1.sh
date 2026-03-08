@@ -53,6 +53,7 @@ KIT_ROOT="$REQUIRED_ROOT"
 export DCS_PROOF_SNAPSHOT_ID="$SNAPSHOT_ID"
 export DCS_PROOF_STATE_ROOT="$STATE_ROOT"
 export DCS_PROOF_REQUESTS_DIR="$REQUESTS_DIR"
+export DCS_EXTERNAL_SNAPSHOT_ROOT="$STATE_ROOT/snapshots/external"
 
 echo "=== Clean-room proof v1 ==="
 echo "repo_root=$REQUIRED_ROOT"

@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -25,7 +26,26 @@ from typing import Any, Dict, List, Optional
 
 # Repo root (nlc/ lives under it)
 BASE = Path(__file__).resolve().parents[1]
-EXTERNAL_ROOT = BASE / "snapshots" / "external"
+
+
+def _resolve_external_root() -> Path:
+    """Precedence: DCS_EXTERNAL_SNAPSHOT_ROOT > DCS_PROOF_STATE_ROOT/snapshots/external > legacy."""
+    root = os.environ.get("DCS_EXTERNAL_SNAPSHOT_ROOT", "").strip()
+    if root:
+        p = Path(root).resolve()
+        if str(BASE).startswith("/workspace") and str(p).startswith("/opt/dcs-public"):
+            raise SystemExit("CONTAINER_HOST_PATH_FORBIDDEN")
+        return p
+    proof_root = os.environ.get("DCS_PROOF_STATE_ROOT", "").strip()
+    if proof_root:
+        p = Path(proof_root).resolve() / "snapshots" / "external"
+        if str(BASE).startswith("/workspace") and str(p).startswith("/opt/dcs-public"):
+            raise SystemExit("CONTAINER_HOST_PATH_FORBIDDEN")
+        return p
+    return BASE / "snapshots" / "external"
+
+
+EXTERNAL_ROOT = _resolve_external_root()
 
 
 @dataclass(frozen=True)
