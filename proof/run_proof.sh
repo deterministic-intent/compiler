@@ -143,6 +143,16 @@ elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   # Copy proof outputs back (bind mount does not persist in nested Docker)
   mkdir -p "$HOST_PROOF_ROOT"
   docker cp "$CID:/workspace/out/proof/." "$HOST_PROOF_ROOT/" || true
+
+  # Copy normalized validation_hashes.json from container to host so we hash the right file
+  HOST_VH_PATH="$HOST_WORKSPACE/nlc/db/snapshots/$SNAPSHOT_ID/reports/validation_hashes.json"
+  mkdir -p "$(dirname "$HOST_VH_PATH")"
+  docker cp "$CID:/workspace/nlc/db/snapshots/$SNAPSHOT_ID/reports/validation_hashes.json" "$HOST_VH_PATH"
+  if grep -q "/tmp/stab_run" "$HOST_VH_PATH"; then
+    echo "VALIDATION_HASH_PATH_NOT_NORMALIZED_IN_HOST_COPY" >&2
+    exit 2
+  fi
+
   docker rm -f "$CID" >/dev/null 2>&1 || true
 
   if [[ $STATUS -ne 0 ]]; then
