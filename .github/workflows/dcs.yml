@@ -138,7 +138,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           diff -u dcs/expected_proof_hashes_v1.json out/proof_hashes.json
 
-      - name: Upload validation_hashes.json (debug artifact on hash mismatch)
+      - name: Upload validation_hashes.json (debug on hash mismatch)
         uses: actions/upload-artifact@v4
         if: failure()
         with:
