@@ -37,9 +37,13 @@ def _audit_policy() -> str:
 def run(cmd, cwd=None, allow_fail=False, env=None):
     """Run a command, stream output, return exit code."""
     print(f"\n$ {' '.join(cmd)}")
-    p = subprocess.run(cmd, cwd=cwd or BASE, env=env, stdin=subprocess.DEVNULL)
+    p = subprocess.run(cmd, cwd=cwd or BASE, env=env, stdin=subprocess.DEVNULL, capture_output=True, text=True)
     if p.returncode != 0 and not allow_fail:
         print(f"FAIL: exit {p.returncode}")
+        if p.stdout:
+            print("STDOUT:", p.stdout, end="" if p.stdout.endswith("\n") else "\n")
+        if p.stderr:
+            print("STDERR:", p.stderr, end="" if p.stderr.endswith("\n") else "\n")
         sys.exit(p.returncode)
     return p.returncode
 
