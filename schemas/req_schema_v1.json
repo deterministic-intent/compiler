@@ -1,0 +1,51 @@
+{
+  "$id": "req_schema_v1",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties": false,
+  "description": "DCS REQ v1 schema. Canonical public copy of req_v1.schema.json.",
+  "properties": {
+    "intents": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_class": {
+            "type": "string"
+          },
+          "intent_id": {
+            "type": "string"
+          },
+          "intent_type": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "module_refs": {
+            "type": "array"
+          },
+          "params": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "intent_type",
+          "params"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "req_v1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "intents"
+  ],
+  "title": "REQ v1 (REQ.json)"
+}

@@ -1,0 +1,56 @@
+{
+  "allowed_values": {
+    "artifact_class": [
+      "csharp_cli"
+    ],
+    "language": [
+      "csharp"
+    ]
+  },
+  "artifact_class": "csharp_cli",
+  "example": {
+    "intents": [
+      {
+        "intent_type": "generate",
+        "params": {
+          "artifact_class": "csharp_cli",
+          "language": "csharp",
+          "module_refs": [
+            "csharp_cli/project_v1.json"
+          ]
+        }
+      }
+    ],
+    "schema_version": "req_v1"
+  },
+  "module_ref": "csharp_cli/project_v1.json",
+  "optional_parameters": [
+    "goal",
+    "constraints",
+    "non_goals",
+    "inputs"
+  ],
+  "parameter_types": {
+    "artifact_class": "string",
+    "constraints": "array of strings",
+    "goal": "string",
+    "inputs": "object",
+    "language": "string",
+    "module_refs": "array of strings",
+    "non_goals": "array of strings"
+  },
+  "required_parameters": [
+    "artifact_class",
+    "language",
+    "module_refs"
+  ],
+  "schema_version": "v1",
+  "supported_languages": [
+    "csharp"
+  ],
+  "validation_rules": [
+    "artifact_class must match this spec",
+    "language must be in supported_languages",
+    "module_refs must include the module_ref for this class"
+  ]
+}

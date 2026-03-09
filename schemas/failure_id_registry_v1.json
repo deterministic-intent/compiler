@@ -1,0 +1,251 @@
+{
+  "computation_rule": {
+    "formula": "sha256(kind:artifact:locator:repro:expected_hash:actual_hash:message_norm)[:32]",
+    "inputs": [
+      "kind",
+      "artifact",
+      "locator",
+      "repro",
+      "message",
+      "expected",
+      "actual"
+    ],
+    "source": "workers.failure_canonicalizer.compute_failure_id"
+  },
+  "description": "Generated from workers/failure_canonicalizer.py. Dynamic IDs use compute_failure_id.",
+  "failure_kinds": [
+    {
+      "id": "compile_error",
+      "meaning": "compile error",
+      "typical_trigger": "Build/compile step failed"
+    },
+    {
+      "id": "test_failure",
+      "meaning": "test failure",
+      "typical_trigger": "Test execution failed"
+    },
+    {
+      "id": "snapshot_diff",
+      "meaning": "snapshot diff",
+      "typical_trigger": "Output differs from expected snapshot"
+    },
+    {
+      "id": "contract_mismatch",
+      "meaning": "contract mismatch",
+      "typical_trigger": "Contract mismatch"
+    },
+    {
+      "id": "contract_violation",
+      "meaning": "contract violation",
+      "typical_trigger": "Contract rule violated"
+    },
+    {
+      "id": "policy_violation",
+      "meaning": "policy violation",
+      "typical_trigger": "Policy rule violated"
+    },
+    {
+      "id": "type_error",
+      "meaning": "type error",
+      "typical_trigger": "Type check failed"
+    },
+    {
+      "id": "lint_error",
+      "meaning": "lint error",
+      "typical_trigger": "Linter reported error"
+    },
+    {
+      "id": "runtime_exception",
+      "meaning": "runtime exception",
+      "typical_trigger": "Runtime exception"
+    },
+    {
+      "id": "verifier_error",
+      "meaning": "verifier error",
+      "typical_trigger": "Verifier internal error"
+    },
+    {
+      "id": "external_input_violation",
+      "meaning": "external input violation",
+      "typical_trigger": "External input validation failed"
+    },
+    {
+      "id": "snapshot_violation",
+      "meaning": "snapshot violation",
+      "typical_trigger": "Snapshot integrity violated"
+    },
+    {
+      "id": "index_violation",
+      "meaning": "index violation",
+      "typical_trigger": "Index violation"
+    },
+    {
+      "id": "planner_violation",
+      "meaning": "planner violation",
+      "typical_trigger": "Planner violation"
+    },
+    {
+      "id": "answer_violation",
+      "meaning": "answer violation",
+      "typical_trigger": "Answer validation failed"
+    }
+  ],
+  "schema_version": "v1",
+  "severities": [
+    {
+      "id": "BLOCKER"
+    },
+    {
+      "id": "MAJOR"
+    },
+    {
+      "id": "MINOR"
+    }
+  ],
+  "stable_ids": [
+    {
+      "id": "UNDECLARED_ARTIFACT_CLASS",
+      "kind": "policy_violation",
+      "meaning": "artifact_class not in snapshot supported_artifact_classes",
+      "typical_trigger": "Request uses unsupported artifact_class"
+    },
+    {
+      "id": "TOOLCHAIN_VERIFY_FAILED",
+      "kind": "verifier_error",
+      "meaning": "Toolchain verification failed",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_POLICY_INVALID",
+      "kind": "policy_violation",
+      "meaning": "Invalid toolchains policy",
+      "typical_trigger": "Invalid policy/toolchains_v1.json"
+    },
+    {
+      "id": "TOOLCHAIN_POLICY_MISSING",
+      "kind": "policy_violation",
+      "meaning": "Toolchain policy files missing",
+      "typical_trigger": "policy/toolchains_v1.json not found"
+    },
+    {
+      "id": "TOOLCHAIN_POLICY_EMPTY",
+      "kind": "policy_violation",
+      "meaning": "No tools defined in policy",
+      "typical_trigger": "Empty toolchains config"
+    },
+    {
+      "id": "FAILURE_SIGNATURE: MISSING_DOM_MANIPULATION",
+      "kind": "contract_violation",
+      "meaning": "DOM manipulation missing in web artifact",
+      "typical_trigger": "javascript_web artifact"
+    },
+    {
+      "id": "FAILURE_SIGNATURE: MISSING_CLI_PARSER",
+      "kind": "contract_violation",
+      "meaning": "CLI argument parser missing",
+      "typical_trigger": "CLI artifact"
+    },
+    {
+      "id": "FAILURE_SIGNATURE: MISSING_API_FRAMEWORK",
+      "kind": "contract_violation",
+      "meaning": "API framework missing",
+      "typical_trigger": "python_api artifact"
+    },
+    {
+      "id": "FAILURE_SIGNATURE: MISSING_ROUTES",
+      "kind": "contract_violation",
+      "meaning": "API routes missing",
+      "typical_trigger": "API artifact"
+    },
+    {
+      "id": "FAILURE_SIGNATURE: MISSING_GUI_FRAMEWORK",
+      "kind": "contract_violation",
+      "meaning": "GUI framework missing",
+      "typical_trigger": "python_gui artifact"
+    },
+    {
+      "id": "TOOLCHAIN_PYTHON_MISSING",
+      "kind": "verifier_error",
+      "meaning": "python toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_TYPESCRIPT_MISSING",
+      "kind": "verifier_error",
+      "meaning": "typescript toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_PHP_MISSING",
+      "kind": "verifier_error",
+      "meaning": "php toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_RUBY_MISSING",
+      "kind": "verifier_error",
+      "meaning": "ruby toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_C_MISSING",
+      "kind": "verifier_error",
+      "meaning": "c toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_CPP_MISSING",
+      "kind": "verifier_error",
+      "meaning": "cpp toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_CSHARP_MISSING",
+      "kind": "verifier_error",
+      "meaning": "csharp toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_KOTLIN_MISSING",
+      "kind": "verifier_error",
+      "meaning": "kotlin toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_SOLIDITY_MISSING",
+      "kind": "verifier_error",
+      "meaning": "solidity toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_DOCKER_MISSING",
+      "kind": "verifier_error",
+      "meaning": "docker toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_SQL_MISSING",
+      "kind": "verifier_error",
+      "meaning": "sql toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_MONGODB_MISSING",
+      "kind": "verifier_error",
+      "meaning": "mongodb toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_HTML_MISSING",
+      "kind": "verifier_error",
+      "meaning": "html toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    },
+    {
+      "id": "TOOLCHAIN_YAML_MISSING",
+      "kind": "verifier_error",
+      "meaning": "yaml toolchain binary not found",
+      "typical_trigger": "verify_toolchains_ready.py"
+    }
+  ]
+}

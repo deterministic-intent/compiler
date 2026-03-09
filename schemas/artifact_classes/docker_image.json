@@ -1,0 +1,62 @@
+{
+  "allowed_values": {
+    "artifact_class": [
+      "docker_image"
+    ],
+    "language": [
+      "docker"
+    ]
+  },
+  "artifact_class": "docker_image",
+  "deliverables": [
+    "dist/Dockerfile",
+    "dist/context.tar",
+    "dist/base_image_ref.txt"
+  ],
+  "description": "Deterministic Docker build context pack. docker build out of scope for v1.",
+  "example": {
+    "intents": [
+      {
+        "intent_type": "generate",
+        "params": {
+          "artifact_class": "docker_image",
+          "language": "docker",
+          "module_refs": [
+            "docker_image/project_v1.json"
+          ]
+        }
+      }
+    ],
+    "schema_version": "req_v1"
+  },
+  "module_ref": "docker_image/project_v1.json",
+  "optional_parameters": [
+    "goal",
+    "constraints",
+    "non_goals",
+    "inputs"
+  ],
+  "parameter_types": {
+    "artifact_class": "string",
+    "constraints": "array of strings",
+    "goal": "string",
+    "inputs": "object",
+    "language": "string",
+    "module_refs": "array of strings",
+    "non_goals": "array of strings"
+  },
+  "required_parameters": [
+    "artifact_class",
+    "language",
+    "module_refs"
+  ],
+  "schema_version": "v1",
+  "supported_languages": [
+    "docker"
+  ],
+  "validation_rules": [
+    "artifact_class must match this spec",
+    "language must be in supported_languages",
+    "module_refs must include the module_ref for this class"
+  ]
+}

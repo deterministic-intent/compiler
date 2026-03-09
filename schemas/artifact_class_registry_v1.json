@@ -1,0 +1,195 @@
+{
+  "artifact_classes": [
+    {
+      "artifact_class": "bash_cli",
+      "module_ref": "bash_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/bash_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "bash"
+      ]
+    },
+    {
+      "artifact_class": "c_cli",
+      "module_ref": "c_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/c_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "c"
+      ]
+    },
+    {
+      "artifact_class": "cpp_cli",
+      "module_ref": "cpp_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/cpp_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "cpp"
+      ]
+    },
+    {
+      "artifact_class": "csharp_cli",
+      "module_ref": "csharp_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/csharp_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "csharp"
+      ]
+    },
+    {
+      "artifact_class": "docker_image",
+      "module_ref": "docker_image/project_v1.json",
+      "spec_path": "schemas/artifact_classes/docker_image.json",
+      "status": "admitted",
+      "supported_languages": [
+        "docker"
+      ]
+    },
+    {
+      "artifact_class": "go_cli",
+      "module_ref": "go_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/go_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "go"
+      ]
+    },
+    {
+      "artifact_class": "html_site",
+      "module_ref": "html_site/project_v1.json",
+      "spec_path": "schemas/artifact_classes/html_site.json",
+      "status": "admitted",
+      "supported_languages": [
+        "html"
+      ]
+    },
+    {
+      "artifact_class": "java_cli",
+      "module_ref": "java_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/java_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "java"
+      ]
+    },
+    {
+      "artifact_class": "javascript_web",
+      "module_ref": "javascript_web/project_v1.json",
+      "spec_path": "schemas/artifact_classes/javascript_web.json",
+      "status": "admitted",
+      "supported_languages": [
+        "javascript"
+      ]
+    },
+    {
+      "artifact_class": "kotlin_cli",
+      "module_ref": "kotlin_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/kotlin_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "kotlin"
+      ]
+    },
+    {
+      "artifact_class": "mongodb_pack",
+      "module_ref": "mongodb_pack/project_v1.json",
+      "spec_path": "schemas/artifact_classes/mongodb_pack.json",
+      "status": "admitted",
+      "supported_languages": [
+        "mongodb"
+      ]
+    },
+    {
+      "artifact_class": "php_cli",
+      "module_ref": "php_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/php_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "php"
+      ]
+    },
+    {
+      "artifact_class": "python_api",
+      "module_ref": "python_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/python_api.json",
+      "status": "admitted",
+      "supported_languages": [
+        "python"
+      ]
+    },
+    {
+      "artifact_class": "python_cli",
+      "module_ref": "python_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/python_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "python"
+      ]
+    },
+    {
+      "artifact_class": "python_gui",
+      "module_ref": "python_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/python_gui.json",
+      "status": "admitted",
+      "supported_languages": [
+        "python"
+      ]
+    },
+    {
+      "artifact_class": "ruby_cli",
+      "module_ref": "ruby_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/ruby_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "ruby"
+      ]
+    },
+    {
+      "artifact_class": "rust_cli",
+      "module_ref": "rust_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/rust_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "rust"
+      ]
+    },
+    {
+      "artifact_class": "solidity_contract",
+      "module_ref": "solidity_contract/project_v1.json",
+      "spec_path": "schemas/artifact_classes/solidity_contract.json",
+      "status": "admitted",
+      "supported_languages": [
+        "solidity"
+      ]
+    },
+    {
+      "artifact_class": "sql_pack",
+      "module_ref": "sql_pack/project_v1.json",
+      "spec_path": "schemas/artifact_classes/sql_pack.json",
+      "status": "admitted",
+      "supported_languages": [
+        "sql"
+      ]
+    },
+    {
+      "artifact_class": "typescript_cli",
+      "module_ref": "typescript_cli/project_v1.json",
+      "spec_path": "schemas/artifact_classes/typescript_cli.json",
+      "status": "admitted",
+      "supported_languages": [
+        "typescript"
+      ]
+    },
+    {
+      "artifact_class": "yaml_config",
+      "module_ref": "yaml_config/project_v1.json",
+      "spec_path": "schemas/artifact_classes/yaml_config.json",
+      "status": "admitted",
+      "supported_languages": [
+        "yaml"
+      ]
+    }
+  ],
+  "description": "Generated from contracts/v1_language_artifact_matrix.json and admitted modules.",
+  "schema_version": "v1"
+}

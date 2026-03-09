@@ -160,6 +160,10 @@ scraper/temp/
 !governance/freeze_manifest_v1.json
 !schemas/ir_v1.schema.json
 !schemas/req_v1.schema.json
+!schemas/req_schema_v1.json
+!schemas/artifact_class_registry_v1.json
+!schemas/failure_id_registry_v1.json
+!schemas/artifact_classes/*.json
 !suites/**/*.json
 !scripts/e2e/fixtures/e2e0.json
 !versions/repro_versions.json
