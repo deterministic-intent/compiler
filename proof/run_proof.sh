@@ -116,32 +116,31 @@ if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
     NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
     python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
 elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
-  # CI: full workspace mount so host sees audit writes (subdir mount did not persist)
+  # CI: image has COPY . /workspace; mount only proof output dir so repo stays intact
   HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:?DOCKER_HOST_WORKSPACE not set}"
-  if [[ ! -f "$HOST_WORKSPACE/scripts/audit/run_audit.py" ]]; then
-    echo "DOCKER_HOST_WORKSPACE_INVALID: $HOST_WORKSPACE"
-    exit 2
-  fi
+  HOST_PROOF_ROOT="$HOST_WORKSPACE/out/proof"
+  mkdir -p "$HOST_PROOF_ROOT"
   docker run --rm \
-    -v "$HOST_WORKSPACE:/workspace" \
-    -w /workspace \
+    -v "$HOST_PROOF_ROOT:/workspace/out/proof" \
     -e DCS_PROOF_SNAPSHOT_ID="$SNAPSHOT_ID" \
     -e AUDIT_CLOSURE_SNAPSHOT="$SNAPSHOT_ID" \
     -e NLC_DB_SNAPSHOT_ID="$SNAPSHOT_ID" \
     -e NLC_SNAPSHOT_ID="$SNAPSHOT_ID" \
-    -e NLC_KB_SNAPSHOT_ID="$SNAPSHOT_ID" \
     -e DCS_PROOF_STATE_ROOT="/workspace/out/proof" \
     -e NLC_REQUESTS_ROOT="/workspace/out/proof/state/requests" \
     -e DCS_EXTERNAL_SNAPSHOT_ROOT="/workspace/out/proof/snapshots/external" \
     dcs-tier3 \
     bash -lc '
+      pwd
+      ls -la /workspace | head -20
+      ls -la /workspace/scripts/audit | head -20
       test -f /workspace/scripts/audit/run_audit.py || { echo "TIER3_WORKSPACE_MISSING_AUDIT"; exit 2; }
       python3 scripts/audit/run_audit.py --policy v1 --snapshot-id "$DCS_PROOF_SNAPSHOT_ID" --state-root /workspace/out/proof
       echo "=== INSIDE TIER3 PACKAGE COUNT ==="
       find /workspace/out/proof/state/requests -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) | wc -l
     ' || { echo "FAIL: audit exited non-zero"; exit 1; }
   echo "=== HOST PACKAGE COUNT ==="
-  find "$HOST_WORKSPACE/out/proof/state/requests" -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) 2>/dev/null | wc -l
+  find "$HOST_PROOF_ROOT/state/requests" -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) 2>/dev/null | wc -l
 else
   # Local: bind-mount host workspace
   HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:-$(pwd)}"
