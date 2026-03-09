@@ -116,12 +116,12 @@ if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
     NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
     python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
 elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
-  # CI: image has repo baked in (COPY in Dockerfile); mount only out/ so host sees audit writes
+  # CI: image has repo baked in (COPY in Dockerfile); mount only proof output dir so host sees audit writes
   HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:?DOCKER_HOST_WORKSPACE not set}"
+  HOST_PROOF_ROOT="$HOST_WORKSPACE/out/proof"
+  mkdir -p "$HOST_PROOF_ROOT"
   docker run --rm \
-    -v "$HOST_WORKSPACE/out:/workspace/out" \
-    -e AUDIT_SCOPE="$SCOPE" \
-    -e AUDIT_POLICY=v1 \
+    -v "$HOST_PROOF_ROOT:/workspace/out/proof" \
     -e DCS_PROOF_SNAPSHOT_ID="$SNAPSHOT_ID" \
     -e AUDIT_CLOSURE_SNAPSHOT="$SNAPSHOT_ID" \
     -e NLC_DB_SNAPSHOT_ID="$SNAPSHOT_ID" \
@@ -134,11 +134,10 @@ elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     dcs-tier3 \
     bash -lc '
       test -f /workspace/scripts/audit/run_audit.py || { echo TIER3_WORKSPACE_MISSING_AUDIT; exit 2; }
-      pwd
-      ls -la /workspace | head -20
-      ls -la /workspace/scripts/audit | head -20
       python3 scripts/audit/run_audit.py --policy v1 --snapshot-id "$DCS_PROOF_SNAPSHOT_ID" --state-root /workspace/out/proof
     ' || { echo "FAIL: audit exited non-zero"; exit 1; }
+  echo "proof requests root: $HOST_PROOF_ROOT/state/requests"
+  find "$HOST_PROOF_ROOT/state/requests" -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) 2>/dev/null | sed -n '1,50p'
 else
   # Local: bind-mount host workspace
   HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:-$(pwd)}"
