@@ -244,7 +244,10 @@ def build_index(request_dir: Path) -> Path:
         # External sources -> sources + documents
         sources_meta: List[Dict[str, Any]] = []
         if external_id:
-            snap_dir = BASE / "snapshots" / "external" / external_id
+            from nlc.external_snapshot import EXTERNAL_ROOT
+            snap_dir = EXTERNAL_ROOT / external_id
+            if str(BASE).startswith("/workspace") and str(snap_dir).startswith("/opt/dcs-public"):
+                raise SystemExit("CONTAINER_HOST_PATH_FORBIDDEN")
             manifest_path = snap_dir / "sources.manifest.json"
             if not manifest_path.exists():
                 raise FileNotFoundError(f"external sources.manifest.json missing: {manifest_path}")
