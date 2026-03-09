@@ -23,6 +23,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from dcs_cli import ux
 
+from dcs_core.path_normalize import normalize_proof_obj, normalize_proof_text
 
 BASE = Path(__file__).resolve().parents[1]
 
@@ -2046,6 +2047,25 @@ def _create_proof_bundle(request_id: str) -> Optional[Path]:
         zi.external_attr = (0o644 & 0xFFFF) << 16
         return zi
 
+    # Binary files: do not normalize
+    _BINARY_ARCNAMES = frozenset({"dist/artifact.zip", "dist/checksums.sha256"})
+
+    def _normalize_entry(arcname: str, data: bytes) -> bytes:
+        if arcname in _BINARY_ARCNAMES:
+            return data
+        try:
+            text = data.decode("utf-8")
+        except Exception:
+            return data
+        if arcname.endswith(".json"):
+            try:
+                obj = json.loads(text)
+                obj = normalize_proof_obj(obj)
+                return json.dumps(obj, indent=2, sort_keys=True).encode("utf-8") + b"\n"
+            except Exception:
+                pass
+        return normalize_proof_text(text).encode("utf-8")
+
     # 1) Collect (arcname, bytes) for all files
     entries: list[tuple[str, bytes]] = []
 
@@ -2056,7 +2076,8 @@ def _create_proof_bundle(request_id: str) -> Optional[Path]:
         ("dist/EXECUTE.json", dist_dir / "EXECUTE.json"),
     ]:
         if src.exists():
-            data = src.read_bytes() if arcname != "dist/ENTRYPOINT.md" else src.read_text(encoding="utf-8").encode("utf-8")
+            data = src.read_bytes()
+            data = _normalize_entry(arcname, data)
             entries.append((arcname, data))
 
     for subdir in ("verifier", "validation", "repair", "replay"):
@@ -2066,7 +2087,8 @@ def _create_proof_bundle(request_id: str) -> Optional[Path]:
                 if f.is_file():
                     rel = str(f.relative_to(rd)).replace("\\", "/")
                     if _should_include(f, rel):
-                        entries.append((rel, f.read_bytes()))
+                        data = _normalize_entry(rel, f.read_bytes())
+                        entries.append((rel, data))
 
     # 2) Sort by arcname (lexicographic)
     entries.sort(key=lambda x: x[0])

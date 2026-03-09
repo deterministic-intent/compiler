@@ -2,6 +2,7 @@
 """
 Build validation_hashes.json for snapshot. Includes language_closure.json
 in the hash bundle for determinism. Languages are sorted before writing.
+Paths are normalized for deterministic hashing (no /tmp/stab_run*, etc.).
 """
 from __future__ import annotations
 
@@ -12,6 +13,10 @@ import sys
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parents[1]
+if str(BASE) not in sys.path:
+    sys.path.insert(0, str(BASE))
+
+from dcs_core.path_normalize import normalize_proof_obj
 
 
 def _sha256_file(p: Path) -> str:
@@ -81,6 +86,9 @@ def main() -> int:
     e2e_path = Path(args.e2e0_report).resolve() if args.e2e0_report else None
     if e2e_path and e2e_path.exists():
         out["e2e0_report_sha256"] = _sha256_file(e2e_path)
+
+    # Normalize paths for deterministic VALIDATION_HASHES_SHA256
+    out = normalize_proof_obj(out)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(out, indent=2, sort_keys=True) + "\n", encoding="utf-8")
