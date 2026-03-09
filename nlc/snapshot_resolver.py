@@ -46,7 +46,8 @@ def _fail(repro: str, msg: str) -> "SnapshotResolutionError":
 
 
 def _external_sha256(external_snapshot_id: str) -> str:
-    meta = BASE / "snapshots" / "external" / external_snapshot_id / "snapshot.meta.json"
+    from nlc.external_snapshot import EXTERNAL_ROOT
+    meta = EXTERNAL_ROOT / external_snapshot_id / "snapshot.meta.json"
     if not meta.exists():
         raise _fail(f"snapshot:explicit_missing:{external_snapshot_id}", f"missing external snapshot.meta.json: {meta}")
     obj = _read_json(meta)
