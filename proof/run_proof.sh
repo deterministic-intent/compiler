@@ -220,6 +220,9 @@ if [[ ! -f "$VH_PATH" ]]; then
   echo "FAIL: validation_hashes.json not found: $VH_PATH"
   exit 1
 fi
+echo "VH_HASH_PATH=$VH_PATH"
+grep -n "/tmp/stab_run\|TMP_STAB_ROOT" "$VH_PATH" | head -20 || true
+sha256sum "$VH_PATH"
 VALIDATION_HASHES_SHA256="$(sha256sum "$VH_PATH" | cut -d' ' -f1)"
 
 # PROOF_BUNDLE_SHA256: first proof_bundle.zip from positive executable requests (sorted for determinism)
