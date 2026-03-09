@@ -135,9 +135,15 @@ elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     bash -lc '
       test -f /workspace/scripts/audit/run_audit.py || { echo TIER3_WORKSPACE_MISSING_AUDIT; exit 2; }
       python3 scripts/audit/run_audit.py --policy v1 --snapshot-id "$DCS_PROOF_SNAPSHOT_ID" --state-root /workspace/out/proof
+      echo "=== INSIDE TIER3 PACKAGE SCAN ==="
+      find /workspace/out/proof/state/requests -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) | sort || true
+      echo "=== INSIDE TIER3 PACKAGE COUNT ==="
+      find /workspace/out/proof/state/requests -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) | wc -l
     ' || { echo "FAIL: audit exited non-zero"; exit 1; }
-  echo "proof requests root: $HOST_PROOF_ROOT/state/requests"
-  find "$HOST_PROOF_ROOT/state/requests" -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) 2>/dev/null | sed -n '1,50p'
+  echo "=== HOST PACKAGE SCAN ==="
+  find "$HOST_PROOF_ROOT/state/requests" -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) 2>/dev/null | sort || true
+  echo "=== HOST PACKAGE COUNT ==="
+  find "$HOST_PROOF_ROOT/state/requests" -maxdepth 3 \( -name "artifact.zip" -o -name "site.zip" \) 2>/dev/null | wc -l
 else
   # Local: bind-mount host workspace
   HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:-$(pwd)}"
