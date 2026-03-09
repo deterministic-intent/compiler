@@ -134,6 +134,10 @@ RUN set -eux; ruby -v | grep -E "^ruby ${RUBY_MAJOR_MINOR}\\."
 # ---- Python deps for audit ----
 RUN pip3 install --no-cache-dir --break-system-packages pyyaml
 
+# ---- Repo into image (self-contained for CI nested run) ----
+COPY . /workspace
+RUN test -f /workspace/scripts/audit/run_audit.py
+
 ENV PYTHONPATH=/workspace
 WORKDIR /workspace
 CMD ["python3", "scripts/audit/run_audit.py", "--policy", "v1"]

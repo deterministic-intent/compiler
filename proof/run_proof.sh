@@ -116,15 +116,10 @@ if [[ -n "${DCS_SKIP_TIER3_BUILD:-}" ]]; then
     NLC_DB_SNAPSHOT_ID=$SNAPSHOT_ID NLC_SNAPSHOT_ID=$SNAPSHOT_ID NLC_KB_SNAPSHOT_ID=$SNAPSHOT_ID \
     python3 scripts/audit/run_audit.py --policy v1 --state-root "$STATE_ROOT") || { echo "FAIL: audit exited non-zero"; exit 1; }
 elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
-  # CI: must mount repo into /workspace; use host path (DOCKER_HOST_WORKSPACE) for nested Docker daemon
+  # CI: image has repo baked in (COPY in Dockerfile); mount only out/ so host sees audit writes
   HOST_WORKSPACE="${DOCKER_HOST_WORKSPACE:?DOCKER_HOST_WORKSPACE not set}"
-  if [[ ! -f "$HOST_WORKSPACE/scripts/audit/run_audit.py" ]]; then
-    echo "DOCKER_HOST_WORKSPACE_INVALID: $HOST_WORKSPACE" >&2
-    exit 2
-  fi
   docker run --rm \
-    -v "$HOST_WORKSPACE:/workspace" \
-    -w /workspace \
+    -v "$HOST_WORKSPACE/out:/workspace/out" \
     -e AUDIT_SCOPE="$SCOPE" \
     -e AUDIT_POLICY=v1 \
     -e DCS_PROOF_SNAPSHOT_ID="$SNAPSHOT_ID" \
@@ -138,6 +133,7 @@ elif [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     -e DCS_EXTERNAL_SNAPSHOT_ROOT="/workspace/out/proof/snapshots/external" \
     dcs-tier3 \
     bash -lc '
+      test -f /workspace/scripts/audit/run_audit.py || { echo TIER3_WORKSPACE_MISSING_AUDIT; exit 2; }
       pwd
       ls -la /workspace | head -20
       ls -la /workspace/scripts/audit | head -20
