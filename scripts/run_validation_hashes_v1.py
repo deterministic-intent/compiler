@@ -56,7 +56,7 @@ def main() -> int:
     existing = {}
     if out_path.exists():
         try:
-            existing = json.loads(out_path.read_text(encoding="utf-8", errors="replace"))
+            existing = normalize_proof_obj(json.loads(out_path.read_text(encoding="utf-8", errors="replace")))
         except Exception:
             pass
 
@@ -91,6 +91,9 @@ def main() -> int:
     out = normalize_proof_obj(out)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    blob = json.dumps(out, sort_keys=True)
+    if "/tmp/stab_run" in blob:
+        raise SystemExit("VALIDATION_HASH_PATH_NOT_NORMALIZED")
     out_path.write_text(json.dumps(out, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return 0
 
