@@ -170,9 +170,22 @@ fi
 # 5) Compute three SHA256 values
 mkdir -p "$OUT_DIR"
 
-# DIST_SHA256: first artifact.zip (sorted for determinism)
+# Requests root: DCS_PROOF_REQUESTS_DIR | NLC_REQUESTS_ROOT | explicit arg (never hardcoded state/requests)
+REQUESTS_ROOT="${DCS_PROOF_REQUESTS_DIR:-${NLC_REQUESTS_ROOT:-$REQUESTS_DIR}}"
+echo "proof requests root: $REQUESTS_ROOT"
+
+# Non-package-producing dirs (audit controls, gate proofs, negatives) — skip when scanning
+_is_excluded() {
+  case "$1" in
+    E2E0-D-AUDIT|G0-PROOF-BLOCKED|G0-PROOF-PASS|STEP9-AUDIT|STEP10-AUDIT|STEP11-AUDIT|STEP12-AUDIT|STEP13-AUDIT|STEP18-E2E-NEG1|STEP18-E2E-NEG2|STEP18-E2E-NEG3) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+# DIST_SHA256: first artifact.zip from positive executable requests (sorted for determinism)
 DIST_ZIP=""
-for d in $(find "$CLEAN_DIR" -mindepth 1 -maxdepth 1 -type d | sort); do
+for d in $(find "$REQUESTS_ROOT" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort); do
+  _is_excluded "$(basename "$d")" && continue
   if [[ -f "$d/dist/artifact.zip" ]]; then
     DIST_ZIP="$d/dist/artifact.zip"
     break
@@ -183,7 +196,7 @@ for d in $(find "$CLEAN_DIR" -mindepth 1 -maxdepth 1 -type d | sort); do
   fi
 done
 if [[ -z "$DIST_ZIP" || ! -f "$DIST_ZIP" ]]; then
-  echo "FAIL: no artifact.zip or site.zip found in state/requests"
+  echo "FAIL: no artifact.zip or site.zip found in positive executable requests (root=$REQUESTS_ROOT)"
   exit 1
 fi
 DIST_SHA256="$(sha256sum "$DIST_ZIP" | cut -d' ' -f1)"
@@ -196,16 +209,17 @@ if [[ ! -f "$VH_PATH" ]]; then
 fi
 VALIDATION_HASHES_SHA256="$(sha256sum "$VH_PATH" | cut -d' ' -f1)"
 
-# PROOF_BUNDLE_SHA256: first proof_bundle.zip (sorted for determinism)
+# PROOF_BUNDLE_SHA256: first proof_bundle.zip from positive executable requests (sorted for determinism)
 PROOF_BUNDLE=""
-for d in $(find "$CLEAN_DIR" -mindepth 1 -maxdepth 1 -type d | sort); do
+for d in $(find "$REQUESTS_ROOT" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort); do
+  _is_excluded "$(basename "$d")" && continue
   if [[ -f "$d/dist/proof_bundle.zip" ]]; then
     PROOF_BUNDLE="$d/dist/proof_bundle.zip"
     break
   fi
 done
 if [[ -z "$PROOF_BUNDLE" || ! -f "$PROOF_BUNDLE" ]]; then
-  echo "FAIL: no proof_bundle.zip found in state/requests"
+  echo "FAIL: no proof_bundle.zip found in positive executable requests (root=$REQUESTS_ROOT)"
   exit 1
 fi
 PROOF_BUNDLE_SHA256="$(sha256sum "$PROOF_BUNDLE" | cut -d' ' -f1)"
