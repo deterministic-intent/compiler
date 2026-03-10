@@ -1,9 +1,0 @@
-usage: main.py [-h] {golden-python-cli}
-
-CLI application
-
-positional arguments:
-  {golden-python-cli}  Command to run
-
-options:
-  -h, --help           show this help message and exit
