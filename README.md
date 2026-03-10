@@ -1,195 +1,72 @@
 # Deterministic Compiler System (DCS)
 
-A deterministic, reproducible pipeline for prompt compilation, knowledge management, code generation, verification, and automated repair.
+A deterministic compiler that transforms structured requests into verified artifacts.
 
-## Overview
+## What is DCS
 
-DCS is a deterministic compiler system that treats LLM interactions as untrusted adapters. The system enforces strict reproducibility, snapshot-based knowledge management, and automated repair loops with monotonic improvement guarantees.
+DCS is a compiler system where:
 
-## Repo Root Policy
+- **Inputs are deterministic**: Requests (REQ) specify intent, language, and parameters
+- **Outputs are reproducible**: The same REQ always produces the same artifact
+- **Verification is built-in**: Every artifact passes machine-checkable verification
+- **LLMs are untrusted adapters**: Generation is isolated; verification is authoritative
 
-The repository root contains only configuration files:
+## Pipeline
 
-- `.gitignore` - Git ignore rules
-- `.env.example` - Environment variable template
-- `pyproject.toml` - Python project configuration
-- `Dockerfile.tier3` - Deterministic build environment
-- `README.md` - This file
-
-All other code, scripts, and modules are organized under canonical directories (see Project Structure below).
-
-## Quick Start
-
-### One-Command Interface (Primary UX)
-
-The simplest way to use DCS is the one-command interface:
-
-```bash
-# Enter your prompt and press Ctrl-D
-$ dcs
-Enter prompt:Make a CLI that counts from 1 to 5
-request_id: COMPILED_ABC123...
-status: PASS
-artifact: state/requests/COMPILED_ABC123.../dist/artifact.zip
-proof_bundle: state/requests/COMPILED_ABC123.../dist/proof_bundle.zip
+```
+REQ.json  →  IR (Internal Representation)  →  Artifact
+   ↓              ↓                              ↓
+intent        snapshot-pinned              verified output
+params        manifest-bound               proof bundle
+language      deterministic selection      checksums
 ```
 
-Or pipe your prompt:
+## Usage
+
+Build an artifact from a request specification:
 
 ```bash
-$ printf "Make a CLI that counts from 1 to 5\n" | dcs
+dcs build --req request.json
 ```
 
-Or run a `.dcs` file directly:
+The request file specifies intent, language, and parameters. On success, DCS produces:
+
+- `dist/artifact.zip` — the generated artifact
+- `dist/proof_bundle.zip` — verification evidence
+
+## Verification
+
+DCS artifacts are reproducible. Given the same inputs and snapshot, any machine running the proof produces identical hashes.
+
+To verify:
 
 ```bash
-$ dcs my_request.dcs
+./scripts/proof/run_clean_proof_v1.sh
 ```
 
-The one-command interface automatically:
-- Compiles your prompt to a `.dcs` file
-- Runs the full pipeline (gates 0-6)
-- Creates a proof bundle zip with all artifacts
-- Prints exactly 4 lines: `request_id`, `status`, `artifact`, `proof_bundle`
+Expected hashes are in `dcs/expected_proof_hashes_v1.json`.
 
-### Advanced Usage
+For independent verification instructions, see [docs/EXTERNAL_VERIFICATION.md](docs/EXTERNAL_VERIFICATION.md).
 
-Install the canonical `dcs` command (user-local, no sudo):
+## Documentation
 
-```bash
-scripts/install_dcs.sh
-```
+- [Whitepaper](docs/DCS_WHITEPAPER.md) — architecture and design principles
+- [External Verification](docs/EXTERNAL_VERIFICATION.md) — independent proof reproduction
+- [CLI Reference](docs/CLI.md) — command interface
+- [Paths](docs/paths.md) — directory layout and conventions
 
-This installs `dcs` to `~/.local/bin/` (ensure it is on your `PATH`).
+## Implementation Status
 
-For more control, use the CLI subcommands. The repo shim is located at `scripts/bin/dcs`:
+This is the v1 implementation. The system supports:
 
-```bash
-# Run a .dcs spec file
-./scripts/bin/dcs run examples/hello_world.dcs
+- Structured intake via REQ.json
+- Snapshot-pinned knowledge manifests
+- Deterministic artifact generation
+- Machine-checkable verification
+- Reproducible proof bundles
 
-# Run full pipeline from natural language prompt
-./scripts/bin/dcs build --prompt "Make a Python CLI that prints hello world"
+See `governance/` for freeze manifests and version attestations.
 
-# Run from structured intake (intent + language)
-./scripts/bin/dcs build --intent print_sequence --lang python --from 1 --to 5
+## License
 
-# Verify a specific gate
-./scripts/bin/dcs verify --request-id <id> --gate-name gate3
-
-# Replay deterministically (no LLM, no network)
-./scripts/bin/dcs replay --request-id <id> --gate-name gate3
-
-# Inspect last request ID
-./scripts/bin/dcs inspect last
-
-# Inspect file contents
-./scripts/bin/dcs inspect cat --path <file>
-
-# Compile natural language to .dcs file
-./scripts/bin/dcs compile "Make a Python CLI" --out request.dcs
-
-# Debug report (read-only)
-./scripts/bin/dcs debug --request-id <id>
-
-# Show supported capabilities
-./scripts/bin/dcs capabilities
-
-# System diagnostics
-./scripts/bin/dcs doctor
-```
-
-### Replay Mode (Deterministic)
-
-Replay mode (`dcs replay`) enforces strict determinism:
-- **No LLM calls** - Uses cached artifacts only
-- **No network access** - All inputs must be pinned in snapshots
-- **No UX effects** - Banner, spinner, and color are forcibly disabled
-- **Byte-identical outputs** - Replay must produce identical verifier outputs
-
-For independent replay instructions, see [docs/EXTERNAL_VERIFICATION.md](docs/EXTERNAL_VERIFICATION.md).
-
-## Project Structure
-
-### State Directories (Request-Scoped, Runtime)
-
-These directories are created at runtime (not tracked in git):
-
-- **`state/requests/<request_id>/`** - Request root (all deliverables live here)
-  - `payload.json` - Request metadata and pinned snapshots
-  - `REQ.json` - Compiled request (or `CLARIFY.json` if ambiguous)
-  - `workspace/project/` - Generated project files
-  - `dist/` - Packaged deliverables (`artifact.zip`, `checksums.sha256`, etc.)
-  - `verifier/` - Verifier outputs (single-writer: `workers/run_verifier.py`)
-    - `verifier.result.json` - Structured verdict
-    - `failures.json` - Canonical failures
-  - `repair/` - Repair trace (single-writer: `workers/run_repair.py`)
-    - `status.json` - Repair loop status
-    - `iter_<n>/` - Per-iteration artifacts
-  - `planner/` - Planning artifacts (`SPEC.md`, `TASKS.json`, `PLAN.md`, `NEEDS.json`)
-  - `answer/` - Deterministic answer artifact (`answer.json`)
-  - `index/` - Request-local SQLite index DB (`index.db`, `index.sha256`)
-
-### Knowledge Snapshots (Immutable)
-
-- **`nlc/db/snapshots/<snapshot_id>/`** - Knowledge snapshot root
-  - `nlc.db` - Snapshot database
-  - `manifest/` - Snapshot manifests
-    - `intents.json` - Intent registry
-    - `templates.json` - DB-derived templates (empty if not in DB)
-    - `modules.json` - Generator modules from `orchestrator/modules/`
-    - `practices.json` - Practices (empty but valid)
-    - `toolchain_pins.json` - Toolchain version pins
-  - `capabilities.json` - Supported languages/artifact classes (if present)
-
-### External Snapshots (Immutable Raw Inputs)
-
-- **`snapshots/external/<snapshot_id>/`** - External data snapshot root
-  - `sources/` - Raw source files (URLs, fetched content)
-  - `sources.manifest.json` - Source manifest
-  - `snapshot.meta.json` - Snapshot metadata
-
-### Core Modules
-
-- **`policy/`** - Policy spine (`policy.py`, `policy_v1.json`)
-- **`nlc/`** - Core compiler logic
-  - `nlc/prompt_compiler.py` - Prompt → REQ/CLARIFY
-  - `nlc/paths.py` - Canonical path constants
-  - `nlc/external_snapshot.py` - External snapshot writer
-  - `nlc/snapshot_resolver.py` - Snapshot resolution & precedence
-  - `nlc/reproducibility.py` - Manifest hashing & reproducibility metadata
-- **`orchestrator/`** - Gate orchestration (`orchestrator.py`, `modules/`, `intent_emitters/`)
-- **`workers/`** - Single-writer runners
-  - `workers/run_planner.py` - Planning runner
-  - `workers/run_generator.py` - Generator runner
-  - `workers/run_verifier.py` - Verifier runner (sole writer of `verifier/`)
-  - `workers/run_repair.py` - Repair runner (sole writer of `repair/`)
-  - `workers/contract_checker.py` - Contract enforcement engine
-- **`contracts/`** - Contract rules (`contract_rules.json`)
-- **`scripts/`** - Proof harnesses & utilities
-  - `scripts/bin/dcs` - CLI entrypoint
-  - `scripts/run_replay.py` - Replay runner
-  - `scripts/audit/` - Audit battery
-  - `scripts/e2e/` - E2E test suite
-  - `scripts/verify_*.py` - Step verification proofs
-
-### Proof & Verification
-
-- **`proof/`** - Proof execution scripts (`run_proof.sh`)
-- **`dcs/`** - Expected proof hashes (`expected_proof_hashes_v1.json`)
-- **`governance/`** - Freeze manifests and signoff attestations
-- **`versions/`** - Reproducibility version pins (`repro_versions.json`)
-
-## Features
-
-- **Deterministic compilation** - Prompt → REQ with clarification artifacts
-- **Snapshot-based knowledge** - Immutable, versioned knowledge snapshots
-- **Structured verification** - Machine-consumable verifier outputs with canonical failures
-- **Automated repair** - Bounded repair loop with monotonic improvement
-- **Replay mode** - Byte-identical deterministic reproduction (no LLM, no network)
-- **Contract enforcement** - Machine-checkable contract rules prevent drift
-- **External snapshotting** - Deterministic raw input capture for offline replay
-
-## Contributing
-
-See the Project Structure section above for the canonical directory layout and entrypoints.
+See [LICENSE](LICENSE).
