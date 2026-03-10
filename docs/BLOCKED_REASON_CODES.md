@@ -1,11 +1,9 @@
 # BLOCKED reason codes (deterministic contract)
-#
-# This file is part of the public surface area: it defines what a BLOCKED outcome
-# means and what fields MUST appear in BLOCKED.json for each reason_code.
-#
-# Rule: the compiler never guesses. If required information cannot be extracted
-# deterministically, it MUST BLOCK with one of these reason codes.
-#
+
+ This file is part of the public surface area: it defines what a BLOCKED outcome means and what fields MUST appear in BLOCKED.json for each reason_code.
+
+ Rule: the compiler never guesses. If required information cannot be extracted deterministically, it MUST BLOCK with one of these reason codes.
+
 
 ## Runtime invalid input classification (frozen)
 
