@@ -1,5 +1,0 @@
-KB Fixture
-
-deterministic
-
-\n
