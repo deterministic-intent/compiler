@@ -65,32 +65,35 @@ This installs `dcs` to `~/.local/bin/` (ensure it is on your `PATH`).
 For more control, use the CLI subcommands. The repo shim is located at `scripts/bin/dcs`:
 
 ```bash
-# Initialize a new request
-./scripts/bin/dcs init <request_id> <objective> [constraints] [non-goals] [dod]
+# Run a .dcs spec file
+./scripts/bin/dcs run examples/hello_world.dcs
 
-# Build snapshot manifests
-./scripts/bin/dcs build <snapshot_id>
+# Run full pipeline from natural language prompt
+./scripts/bin/dcs build --prompt "Make a Python CLI that prints hello world"
 
-# Run full pipeline
-./scripts/bin/dcs run <request_file.dcs>
+# Run from structured intake (intent + language)
+./scripts/bin/dcs build --intent print_sequence --lang python --from 1 --to 5
 
-# Verify artifacts
-./scripts/bin/dcs verify <request_id>
-
-# Repair on failure
-./scripts/bin/dcs repair <request_id>
+# Verify a specific gate
+./scripts/bin/dcs verify --request-id <id> --gate-name gate3
 
 # Replay deterministically (no LLM, no network)
-./scripts/bin/dcs replay <request_id> <gate_name>
+./scripts/bin/dcs replay --request-id <id> --gate-name gate3
 
-# Inspect request artifacts
-./scripts/bin/dcs inspect <request_id> [cat|list|last]
+# Inspect last request ID
+./scripts/bin/dcs inspect last
+
+# Inspect file contents
+./scripts/bin/dcs inspect cat --path <file>
 
 # Compile natural language to .dcs file
-./scripts/bin/dcs compile "<natural language request>" --out <file.dcs>
+./scripts/bin/dcs compile "Make a Python CLI" --out request.dcs
 
 # Debug report (read-only)
-./scripts/bin/dcs debug --request-id <request_id>
+./scripts/bin/dcs debug --request-id <id>
+
+# Show supported capabilities
+./scripts/bin/dcs capabilities
 
 # System diagnostics
 ./scripts/bin/dcs doctor
