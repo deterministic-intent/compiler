@@ -4,6 +4,8 @@ This document explains how an independent engineer can reproduce the determinist
 
 Verification is successful if the generated proof hashes match the expected values in `dcs/expected_proof_hashes_v1.json`.
 
+Expected runtime: ~5–15 minutes depending on hardware.
+
 ## Requirements
 
 You need:

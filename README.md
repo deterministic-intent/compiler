@@ -6,13 +6,14 @@ A deterministic, reproducible pipeline for prompt compilation, knowledge managem
 
 DCS is a deterministic compiler system that treats LLM interactions as untrusted adapters. The system enforces strict reproducibility, snapshot-based knowledge management, and automated repair loops with monotonic improvement guarantees.
 
-## Repo Root Policy (Ultra-Strict)
+## Repo Root Policy
 
-The repository root (`/opt/llm-hub/`) enforces an ultra-strict inventory policy. Only these files are allowed at the root:
+The repository root contains only configuration files:
 
 - `.gitignore` - Git ignore rules
 - `.env.example` - Environment variable template
 - `pyproject.toml` - Python project configuration
+- `Dockerfile.tier3` - Deterministic build environment
 - `README.md` - This file
 
 All other code, scripts, and modules are organized under canonical directories (see Project Structure below).
@@ -46,7 +47,7 @@ $ dcs my_request.dcs
 ```
 
 The one-command interface automatically:
-- Compiles your prompt to a `.dcs` file (stored under `state/intake/`)
+- Compiles your prompt to a `.dcs` file
 - Runs the full pipeline (gates 0-6)
 - Creates a proof bundle zip with all artifacts
 - Prints exactly 4 lines: `request_id`, `status`, `artifact`, `proof_bundle`
@@ -107,7 +108,9 @@ For independent replay instructions, see [docs/EXTERNAL_VERIFICATION.md](docs/EX
 
 ## Project Structure
 
-### State Directories (Request-Scoped)
+### State Directories (Request-Scoped, Runtime)
+
+These directories are created at runtime (not tracked in git):
 
 - **`state/requests/<request_id>/`** - Request root (all deliverables live here)
   - `payload.json` - Request metadata and pinned snapshots
@@ -167,12 +170,12 @@ For independent replay instructions, see [docs/EXTERNAL_VERIFICATION.md](docs/EX
   - `scripts/e2e/` - E2E test suite
   - `scripts/verify_*.py` - Step verification proofs
 
-### Database (Dev/Scraper)
+### Proof & Verification
 
-- **`db/`** - Database models, API, validation
-- **`scraper/`** - Scraping pipeline
-- **`sources/`** - Source registry (`registry.json`)
-- **`state/dev/db/dev.db`** - Default dev database (gitignored, not in repo root)
+- **`proof/`** - Proof execution scripts (`run_proof.sh`)
+- **`dcs/`** - Expected proof hashes (`expected_proof_hashes_v1.json`)
+- **`governance/`** - Freeze manifests and signoff attestations
+- **`versions/`** - Reproducibility version pins (`repro_versions.json`)
 
 ## Features
 
