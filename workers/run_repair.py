@@ -459,111 +459,22 @@ def main():
         iter_dir = repair_dir / f"iter_{iteration}"
         iter_dir.mkdir(parents=True, exist_ok=True)
         
-        # Check for proposal.diff (stub mode) or generate via LLM (5b)
+        # Check for proposal.diff
         proposal_path = iter_dir / "proposal.diff"
         diff_text = None
-        llm_metadata = {}
-        # Milestone 5.6: For python_debug_script, allow proposal.diff from debug/ only (no LLM)
+        
+        # For python_debug_script, allow proposal.diff from debug/
         if artifact_class == "python_debug_script" and not proposal_path.exists():
             debug_proposal = request_dir / "debug" / "proposal.diff"
             if debug_proposal.exists():
                 shutil.copy(debug_proposal, proposal_path)
         
         if proposal_path.exists():
-            # Stub mode: read from disk
             diff_text = proposal_path.read_text(encoding="utf-8", errors="replace")
-        else:
-            # Step 5b: Try LLM adapter (disabled for python_debug_script)
-            if artifact_class == "python_debug_script":
-                diff_text = None
-                llm_metadata = {"disabled": True, "reason": "python_debug_script_no_llm"}
-            else:
-                try:
-                    from nlc.llm_patch_adapter import propose_patch
-                    
-                    # Build workspace context (limited by policy)
-                    workspace_context = {}
-                    llm_repair_config = repair_policy.get("llm", {}).get("repair", {})
-                    max_context_bytes = llm_repair_config.get("max_context_bytes", 10000)
-                    context_bytes = 0
-                    
-                    # Get file paths from initial failures (artifacts that need fixing)
-                    relevant_files = set()
-                    for failure in initial_failures:
-                        artifact = failure.get("artifact", "")
-                        if artifact and "/" in artifact:
-                            relevant_files.add(artifact)
-                    
-                    for file_path in sorted(relevant_files):
-                        full_path = workspace_root / file_path
-                        if full_path.exists() and context_bytes < max_context_bytes:
-                            content = full_path.read_text(encoding="utf-8", errors="replace")
-                            content_bytes = len(content.encode("utf-8"))
-                            if context_bytes + content_bytes <= max_context_bytes:
-                                workspace_context[file_path] = content
-                                context_bytes += content_bytes
-                    
-                    from dcs_core.repro_env import is_repro_mode
-                    repro_mode = is_repro_mode()
-                    cache_dir = repair_dir / "llm_cache"
-                    cache_dir.mkdir(parents=True, exist_ok=True)
-                    
-                    # Milestone 4.0: LLM I/O persistence directory
-                    llm_dir = iter_dir / "llm"
-                    
-                    diff_text, llm_meta = propose_patch(
-                        request_id=request_id,
-                        iter_n=iteration,
-                        failures=initial_failures,
-                        workspace_context=workspace_context,
-                        knowledge_snapshot_id=knowledge_snapshot_id or "",
-                        manifest_bundle_hash=manifest_bundle_hash or "",
-                        policy_version=policy_version,
-                        failure_bundle_hash=initial_failure_hash,
-                        cache_dir=cache_dir,
-                        repro_mode=repro_mode,
-                        llm_dir=llm_dir,  # Milestone 4.0: persist LLM I/O
-                    )
-                    
-                    llm_metadata = llm_meta
-                    
-                    if diff_text:
-                        # Write proposal to disk for trace
-                        proposal_path.write_text(diff_text, encoding="utf-8")
-                        
-                        # Write LLM metadata (Milestone 4.0: prompt/response already in llm_dir)
-                        (iter_dir / "llm_request.json").write_text(
-                            json.dumps({
-                                "prompt_hash": llm_meta.get("prompt_hash"),
-                                "context_hashes": {k: sha256_bytes(v.encode("utf-8"))[:16] for k, v in workspace_context.items()},
-                                "cache_key": llm_meta.get("cache_key"),
-                            }, indent=2, sort_keys=True) + "\n",
-                            encoding="utf-8"
-                        )
-                        (iter_dir / "llm_response.meta.json").write_text(
-                            json.dumps({
-                                "model_name": llm_meta.get("model_name", "stub"),
-                                "latency_ms": llm_meta.get("latency_ms", 0),
-                                "retry_count": llm_meta.get("retry_count", 0),
-                                "cache_hit": llm_meta.get("cache_hit", False),
-                            }, indent=2, sort_keys=True) + "\n",
-                            encoding="utf-8"
-                        )
-                except Exception as e:
-                    llm_metadata = {"error": str(e)}
         
         if not diff_text:
             # No proposal - stop deterministically
-            # Milestone 4.0: If LLM adapter was called but returned None, record the reason
             stop_reason = "NO_PROPOSAL"
-            if llm_metadata and llm_metadata.get("error"):
-                error_msg = llm_metadata.get("error", "")
-                if "repro_mode" in error_msg:
-                    stop_reason = "NO_PROPOSAL_REPRO_MODE"
-                elif "disabled" in error_msg.lower():
-                    stop_reason = "NO_PROPOSAL_LLM_DISABLED"
-                elif "not yet implemented" in error_msg.lower() or "stub" in error_msg.lower():
-                    stop_reason = "NO_PROPOSAL_LLM_STUB"
             
             status_json = {
                 "final_status": "FAIL_NO_PROPOSAL",

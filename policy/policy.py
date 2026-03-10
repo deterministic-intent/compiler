@@ -15,7 +15,6 @@ class Policy:
     """Policy object - immutable policy configuration."""
     policy_version: str
     snapshot: Dict[str, Any]
-    llm: Dict[str, Any]
     repair: Dict[str, Any]
     toolchain: Dict[str, Any]
     forbidden_paths: list[str]
@@ -24,10 +23,6 @@ class Policy:
     def get_snapshot_policy(self) -> Dict[str, Any]:
         """Get snapshot policy section."""
         return self.snapshot
-    
-    def get_llm_policy(self) -> Dict[str, Any]:
-        """Get LLM policy section."""
-        return self.llm
     
     def get_repair_policy(self) -> Dict[str, Any]:
         """Get repair policy section."""
@@ -85,7 +80,7 @@ def load_policy(policy_version: str) -> Policy:
         raise ValueError(f"Policy file {policy_file} is invalid JSON: {e}")
     
     # Validate required fields
-    required_fields = ["policy_version", "snapshot", "llm", "repair", "toolchain", "forbidden_paths", "determinism"]
+    required_fields = ["policy_version", "snapshot", "repair", "toolchain", "forbidden_paths", "determinism"]
     for field in required_fields:
         if field not in policy_data:
             raise ValueError(f"Policy file {policy_file} missing required field: {field}")
@@ -99,7 +94,6 @@ def load_policy(policy_version: str) -> Policy:
     return Policy(
         policy_version=policy_data["policy_version"],
         snapshot=policy_data.get("snapshot", {}),
-        llm=policy_data.get("llm", {}),
         repair=policy_data.get("repair", {}),
         toolchain=policy_data.get("toolchain", {}),
         forbidden_paths=policy_data.get("forbidden_paths", []),

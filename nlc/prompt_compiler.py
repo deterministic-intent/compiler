@@ -1009,68 +1009,10 @@ def compile_with_fallback(
     resolved_req_json = None
     resolved_trace = None
     
-    # Milestone 4.1: Optional LLM intent proposal (before deterministic parse)
-    llm_candidates = None
     from dcs_core.repro_env import is_repro_mode
     repro_mode = is_repro_mode()
     
-    # Check if LLM parse is enabled
-    llm_parse_enabled = False
-    if load_policy and policy_version:
-        try:
-            policy = load_policy(policy_version)
-            llm_policy = policy.get_llm_policy()
-            llm_parse_enabled = "parse" in llm_policy.get("allowed_call_sites", [])
-        except Exception:
-            pass
-    
-    if llm_parse_enabled and intents_manifest and not repro_mode:
-        try:
-            from nlc.llm_parse_adapter import parse_with_llm
-            
-            # Load capabilities if available
-            capabilities = None
-            if knowledge_snapshot_id:
-                try:
-                    BASE = Path(__file__).resolve().parents[1]
-                    caps_path = BASE / "nlc" / "db" / "snapshots" / knowledge_snapshot_id / "capabilities.json"
-                    if caps_path.exists():
-                        capabilities = json.loads(caps_path.read_text(encoding="utf-8", errors="replace"))
-                except Exception:
-                    pass
-            
-            # Milestone 4.1: LLM I/O persistence directory
-            llm_parse_dir = request_dir / "llm_parse"
-            cache_dir = request_dir / "llm_parse_cache"
-            cache_dir.mkdir(parents=True, exist_ok=True)
-            
-            llm_result = parse_with_llm(
-                prompt=prompt,
-                knowledge_snapshot_id=knowledge_snapshot_id or "",
-                manifest_bundle_hash=manifest_bundle_hash or "",
-                policy_version=policy_version or "v1",
-                intents_manifest=intents_manifest,
-                capabilities=capabilities,
-                cache_dir=cache_dir,
-                repro_mode=repro_mode,
-                llm_dir=llm_parse_dir,  # Milestone 4.1: persist LLM I/O
-            )
-            
-            llm_candidates = llm_result.get("candidate_intent_set", {}).get("candidates", [])
-            
-            # Validate LLM candidates deterministically against manifest
-            if llm_candidates:
-                validated_candidates = []
-                for candidate in llm_candidates:
-                    intent_id = candidate.get("intent_id")
-                    if intent_id and intent_id in intents_manifest:
-                        validated_candidates.append(candidate)
-                llm_candidates = validated_candidates
-        except Exception as e:
-            # LLM parse failed - fall back to deterministic parse
-            llm_candidates = None
-    
-    # Deterministic compile (may use LLM candidates as hints, but validates deterministically)
+    # Deterministic compile
     success, req_json, error = compile_prompt(prompt, repro_mode=repro_mode, overrides=overrides)
 
     # KD-executable intent matching (intent-driven execution with module bindings).

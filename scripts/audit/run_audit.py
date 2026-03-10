@@ -102,8 +102,6 @@ def help_smoke():
         ["scripts/verify_step17.py", "--help"],
         ["scripts/verify_step18.py", "--help"],
         ["scripts/e2e/run_e2e0.py", "--help"],
-        ["scripts/verify_milestone_4_0.py", "--help"],
-        ["scripts/verify_milestone_4_1.py", "--help"],
         ["scripts/verify_milestone_4_2.py", "--help"],
         ["scripts/verify_milestone_5_0.py", "--help"],
         ["scripts/verify_milestone_5_1.py", "--help"],
@@ -351,10 +349,8 @@ def main():
         print("Audit battery completed.")
         return 0
 
-    # Phase 4/5 (LLM, API, auth): outside v1 structured scope. Skip when policy=v1 (v1 claim path).
+    # Phase 4/5 (API, auth): outside v1 structured scope. Skip when policy=v1 (v1 claim path).
     phase45_scripts = [
-        "verify_milestone_4_0.py",
-        "verify_milestone_4_1.py",
         "verify_milestone_4_2.py",
         "verify_milestone_5_0.py",
         "verify_milestone_5_1.py",
@@ -365,10 +361,6 @@ def main():
         sys.stderr.write("(Skipping Phase 4/5 milestones: v1 scope)\n")
         sys.stderr.flush()
     else:
-        # Milestone 4.0 proof: LLM patch suggester (diff-only, replay-safe).
-        run([sys.executable, "scripts/verify_milestone_4_0.py"])
-        # Milestone 4.1 proof: Optional LLM intent proposals (deterministic acceptance).
-        run([sys.executable, "scripts/verify_milestone_4_1.py"])
         # Milestone 4.2 proof: Runtime smoke validation + single-user acceptance pack.
         run([sys.executable, "scripts/verify_milestone_4_2.py"])
         # Milestone 5.0 proof: Job queue + isolation.
