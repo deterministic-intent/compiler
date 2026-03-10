@@ -75,7 +75,7 @@ def _run(cmd: list[str], cwd: Path | None = None) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--spec", default="demo/real_pass.dcs")
+    ap.add_argument("--spec", default="examples/hello_world.dcs")
     ap.add_argument("--snapshot-id", default=os.environ.get("DCS_PROOF_SNAPSHOT_ID") or os.environ.get("AUDIT_CLOSURE_SNAPSHOT", ""), help="Knowledge snapshot (must exist in proof kit)")
     ap.add_argument("--policy", default="v1")
     ap.add_argument("--requests-root", help="Requests dir (default: BASE/state/requests); sets NLC_REQUESTS_ROOT")
