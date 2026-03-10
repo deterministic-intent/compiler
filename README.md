@@ -48,6 +48,10 @@ Expected hashes are in `dcs/expected_proof_hashes_v1.json`.
 
 For independent verification instructions, see [docs/EXTERNAL_VERIFICATION.md](docs/EXTERNAL_VERIFICATION.md).
 
+## Repository layout
+
+This repository is an **implementation tree**, not a single Python package at the root. The top-level directories (`dcs_cli/`, `dcs_core/`, `nlc/`, `orchestrator/`, `proof/`, `scripts/`, etc.) are the canonical source and spec surfaces for v1. Root **files** (e.g. `pyproject.toml`, `Dockerfile.tier3`, `LICENSE`) are configuration and entrypoints; the full directory map is in [docs/paths.md](docs/paths.md). There is no `demo/` directory in the curated tree—examples live under `examples/`.
+
 ## Documentation
 
 - [Whitepaper](docs/DCS_WHITEPAPER.md) — architecture and design principles

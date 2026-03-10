@@ -3,10 +3,10 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dev-knowledge-base"
+name = "dcs"
 version = "0.1.0"
-description = "A knowledge base for programming languages and frameworks"
-authors = [{name = "Developer", email = "dev@example.com"}]
+description = "Deterministic Compiler System (DCS) — structured REQ to verified artifacts with reproducible proof"
+authors = [{name = "Justin Wilsey"}]
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [

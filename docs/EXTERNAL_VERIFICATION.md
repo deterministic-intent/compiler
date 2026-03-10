@@ -6,6 +6,22 @@ Verification is successful if the generated proof hashes match the expected valu
 
 Expected runtime: ~5–15 minutes depending on hardware.
 
+### Sealed state and drift
+
+- **Golden hashes** are defined only for the commit where `dcs/expected_proof_hashes_v1.json` was last updated. If you are not on that commit (or a descendant that did not change proof inputs), hashes may legitimately differ.
+- **Record the commit** after a successful run so the result is auditable:
+
+  ```bash
+  git rev-parse HEAD
+  ```
+
+- **Drift across commits**: Any change to proof inputs (Dockerfile, audit scripts, golden fixtures, snapshot pins) can change `PROOF_BUNDLE_SHA256` or related outputs. The project updates `dcs/expected_proof_hashes_v1.json` only when intentionally re-baselining v1.
+
+### Proof profile and coverage
+
+- **Single public profile (v1)**: The supported independent verification path is `./scripts/proof/run_clean_proof_v1.sh`. There is no alternate “light” or “internal-only” profile documented for external replay; other scripts under `scripts/` are development and CI helpers unless explicitly referenced from governance docs.
+- **What the proof covers**: The script builds the tier3 Docker image, runs the full audit battery (binding matrix, step verifiers, validation hash generation, proof bundle assembly), and asserts byte-identical hashes across two consecutive runs. It does **not** replace all unit tests under `tests/` or every script under `scripts/`—those are supplementary. Freeze and scope boundaries are summarized in `governance/` and `docs/V1_FREEZE.md`.
+
 ## Requirements
 
 You need:
