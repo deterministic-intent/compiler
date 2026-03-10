@@ -16,7 +16,7 @@ dcs-public/
 ├── examples/         # Example requests
 ├── governance/       # Freeze manifests, attestations
 ├── infra/            # Infrastructure configs
-├── nlc/              # Compiler logic, snapshots
+├── nlc/              # Normalized Logic Corpus (see below)
 ├── orchestrator/     # Gate orchestration
 ├── policy/           # Policy spine
 ├── proof/            # Proof execution scripts
@@ -28,6 +28,24 @@ dcs-public/
 ├── versions/         # Reproducibility pins
 └── workers/          # Single-writer runners
 ```
+
+---
+
+## NLC — Normalized Logic Corpus
+
+The `nlc/` directory contains the **Normalized Logic Corpus**: immutable snapshots, intent registries, capability definitions, and compiler logic that the deterministic pipeline consumes.
+
+| Path | Purpose |
+|------|---------|
+| `nlc/db/snapshots/` | Versioned knowledge snapshots (immutable) |
+| `nlc/registry/v1/intents/` | Intent definitions (print_sequence, count_lines, etc.) |
+| `nlc/prompt_compiler.py` | REQ compilation logic |
+| `nlc/capability_classifier.py` | Artifact class classification |
+| `nlc/snapshot_resolver.py` | Snapshot resolution and precedence |
+| `nlc/clarification.py` | CLARIFY artifact generation |
+| `nlc/index/` | Request-local index builder and query |
+
+The corpus is **read-only at runtime**. All writes go to `state/` (request artifacts) or `out/` (proof outputs).
 
 ---
 
