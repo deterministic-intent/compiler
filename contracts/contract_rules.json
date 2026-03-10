@@ -1,0 +1,95 @@
+{
+  "version": "v1",
+  "deliverables": {
+    "enforced_gates": [
+      "gate4_review",
+      "gate5_finalize",
+      "gate6_complete"
+    ]
+  },
+  "path_policy": {
+    "forbid_absolute_paths": true,
+    "forbid_path_traversal": true
+  },
+  "schemas": {
+    "payload.json": {
+      "required_keys": {
+        "request_id": "str",
+        "policy_version": "str",
+        "deliverables": "list"
+      }
+    },
+    "REQ.json": {
+      "required_keys": {
+        "intents": "list"
+      }
+    },
+    "INTENT_TRACE.json": {
+      "required_keys_any_of": [
+        {
+          "candidates": "list",
+          "prompt": "str",
+          "selected_intents": "list"
+        },
+        {
+          "pipeline": "dict",
+          "prompt": "str"
+        }
+      ]
+    },
+    "repair/status.json": {
+      "required_keys": {
+        "final_status": "str",
+        "stop_reason": "str",
+        "iters_run": "int"
+      }
+    }
+  },
+  "filesystem": {
+    "allowed_top_level_files": [
+      "REQUEST.md",
+      "payload.json",
+      "state.json",
+      "REQ.json",
+      "INTENT_TRACE.json",
+      "snapshot_resolution.json",
+      "replay_pins.json",
+      "CLARIFY.json",
+      "SPEC.md",
+      "TASKS.json",
+      "PLAN.md",
+      "NEEDS.json",
+      "VERIFY.md",
+      "verifier.meta.json",
+      "verifier.prompt.txt",
+      "verifier.out.txt",
+      "verifier.stdout.txt",
+      "verifier.stderr.txt",
+      "generator.out.json",
+      "systems.meta.json",
+      "RUNBOOK.md"
+    ],
+    "allowed_top_level_file_globs": [
+      "gate*.status",
+      "gate*.result.json"
+    ],
+    "allowed_top_level_dirs": [
+      "verifier",
+      "repair",
+      "replay",
+      "validation",
+      "index",
+      "planner",
+      "answer",
+      "workspace",
+      "WEB_EVIDENCE",
+      "dist",
+      "llm_parse",
+      "llm_parse_cache"
+    ],
+    "verifier_dir_allowed_files": [
+      "verifier.result.json",
+      "failures.json"
+    ]
+  }
+}
