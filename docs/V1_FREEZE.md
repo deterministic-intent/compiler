@@ -9,7 +9,7 @@
 
 ## Freeze Declaration
 
-The document `docs/CURRENT_STATE.md` as it exists at tag `nlc-v1.13.0` is the **canonical description** of Deterministic Compiler Systems (DCS) v1.
+The document `docs/CURRENT_STATE.md` as it exists at tag `nlc-v1.13.0` is the **canonical description** of the Deterministic Compiler System (DCS) v1.
 
 This document:
 - Describes the system exactly as implemented at `nlc-v1.13.0`

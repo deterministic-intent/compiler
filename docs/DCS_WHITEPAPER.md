@@ -1,4 +1,4 @@
-# Deterministic Compiler Systems (DCS)
+# Deterministic Compiler System (DCS)
 
 Deterministic Compilation of Structured Intent into Reproducible Software Artifacts
 
@@ -10,7 +10,7 @@ Deterministic Compilation of Structured Intent into Reproducible Software Artifa
 
 Software artifacts produced by modern build pipelines frequently lack reproducibility. Identical builds executed across machines may yield different outputs due to dependency resolution drift, toolchain differences, environmental variation, or nondeterministic packaging behavior.
 
-Deterministic Compiler Systems (DCS) introduce a constrained compilation architecture that deterministically converts structured intent into reproducible multi-file software artifacts. The system enforces explicit request contracts, canonical intermediate representations, sealed execution environments, snapshot-pinned dependencies, and deterministic packaging rules.
+The Deterministic Compiler System (DCS) introduces a constrained compilation architecture that deterministically converts structured intent into reproducible multi-file software artifacts. The system enforces explicit request contracts, canonical intermediate representations, sealed execution environments, snapshot-pinned dependencies, and deterministic packaging rules.
 
 The deterministic compilation pipeline is:
 
@@ -28,7 +28,7 @@ Software distribution increasingly relies on artifacts whose production pipeline
 
 These inconsistencies undermine reproducibility and make independent verification difficult.
 
-Deterministic Compiler Systems address this problem by redefining artifact production as deterministic compilation of structured intent. Instead of executing arbitrary project build scripts, DCS compiles explicit request contracts into artifacts under strictly controlled execution conditions.
+The Deterministic Compiler System addresses this problem by redefining artifact production as deterministic compilation of structured intent. Instead of executing arbitrary project build scripts, DCS compiles explicit request contracts into artifacts under strictly controlled execution conditions.
 
 The result is a deterministic artifact pipeline in which outputs can be reproduced independently across machines.
 
@@ -508,7 +508,7 @@ No trust in the original producer is required.
 
 # Conclusion
 
-Deterministic Compiler Systems redefine software artifact production as deterministic compilation of structured intent.
+The Deterministic Compiler System redefines software artifact production as deterministic compilation of structured intent.
 
 By enforcing strict request contracts, canonical intermediate representations, sealed execution environments, snapshot-pinned dependencies, and deterministic packaging rules, DCS enables byte-identical artifact reproduction across independent machines.
 

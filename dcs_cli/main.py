@@ -37,11 +37,11 @@ BANNER = (
     "  \\ \\                  | |__| | | |____   ____) |                  / /    / / \n"
     "   \\_\\                 |_____/   \\_____| |_____/                  /_/    /_/  \n"
     "\n"
-    "Deterministic Compiler Systems\n"
+    "Deterministic Compiler System\n"
 )
 
 # Compact fallback banner (terminal width < 80 columns OR explicit compact banner mode).
-COMPACT_BANNER = "DCS - Deterministic Compiler Systems\n"
+COMPACT_BANNER = "DCS - Deterministic Compiler System\n"
 PROMPT = "dcs> "
 DOTS = ".........."
 

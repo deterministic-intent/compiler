@@ -1,4 +1,4 @@
-# Deterministic Compiler Systems (DCS)
+# Deterministic Compiler System (DCS)
 
 A deterministic compiler that transforms structured requests into verified artifacts.
 
