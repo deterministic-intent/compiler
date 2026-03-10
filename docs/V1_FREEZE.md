@@ -1,31 +1,23 @@
-# DCS v1 Canonical Description Freeze
+# DCS v1 Freeze
 
-## Frozen Version
+Canonical freeze surface for v1: what is sealed and how it is verified.
 
-**Version:** `nlc-v1.13.0`  
-**Date:** 2026-02-04  
-**Document:** `docs/CURRENT_STATE.md`  
-**Frozen Copy:** `docs/CURRENT_STATE_v1.13.0.md`
+## Frozen surface
 
-## Freeze Declaration
+v1 is defined by:
 
-The document `docs/CURRENT_STATE.md` as it exists at tag `nlc-v1.13.0` is the **canonical description** of the Deterministic Compiler System (DCS) v1.
+- **Freeze manifest:** `governance/freeze_manifest_v1.json` — pins REQ schema, IR schema, artifact contract, and failure taxonomy (by SHA256).
+- **Proof hashes:** `dcs/expected_proof_hashes_v1.json` — golden values for deterministic proof verification (`DIST_SHA256`, `VALIDATION_HASHES_SHA256`, `PROOF_BUNDLE_SHA256`).
+- **Proof seal:** `governance/decisions/v1_proof_seal.md` — records the sealed snapshot and proof state.
+- **Schemas and contracts:** Versions and hashes in the freeze manifest; see [Reproducibility and schemas](REPRODUCIBILITY_AND_SCHEMAS.md) for the authority chain (REQ → IR → artifact contract → verifier).
 
-This document:
-- Describes the system exactly as implemented at `nlc-v1.13.0`
-- Is factual and deterministic (no speculation, no roadmap)
-- Documents all proven guarantees with evidence
-- Explicitly lists what is NOT implemented
-- Is the authoritative reference for v1 system behavior
+## Verification
 
-## Usage
+- Run `./scripts/proof/run_clean_proof_v1.sh` on a clean tree; verification succeeds when `out/proof_hashes.json` matches `dcs/expected_proof_hashes_v1.json`.
+- See [EXTERNAL_VERIFICATION.md](EXTERNAL_VERIFICATION.md) for independent reproduction.
 
-- For v1 system understanding: read `docs/CURRENT_STATE.md` (or `docs/CURRENT_STATE_v1.13.0.md` for the exact frozen version)
-- For future versions: new freeze documents will be created (e.g., `CURRENT_STATE_v2.0.0.md`)
-- The frozen copy (`CURRENT_STATE_v1.13.0.md`) is immutable and will not be updated
+## Freeze rules
 
-## Freeze Rules
-
-- The frozen copy (`CURRENT_STATE_v1.13.0.md`) must not be modified
-- `CURRENT_STATE.md` may be updated for future versions, but v1 description remains frozen
-- Any changes to v1 behavior require a new version tag and new freeze document
+- The freeze manifest and expected proof hashes define the v1 baseline. Changing proof inputs or golden hashes requires an intentional re-baseline and governance decision.
+- Schema and contract files referenced by the freeze manifest are part of the frozen spec set for v1.
+- For release tagging: use a commit where `governance/freeze_manifest_v1.json` and `dcs/expected_proof_hashes_v1.json` are in the intended state; see [REPRODUCIBILITY_AND_SCHEMAS.md](REPRODUCIBILITY_AND_SCHEMAS.md).
