@@ -334,7 +334,7 @@ def main():
     run([sys.executable, "scripts/verify_step13.py", "--knowledge-snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--request-id", "STEP13-AUDIT", "--policy", "v1"] + _req_root_args())
 
     # Step 16 proof: first real PASS usage with a non-example .dcs request.
-    run([sys.executable, "scripts/verify_step16.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--spec", "examples/hello_world.dcs"] + _req_root_args())
+    run([sys.executable, "scripts/verify_step16.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--spec", "examples/real_pass.dcs"] + _req_root_args())
 
     # Step 17 proof: deterministic NL -> pinned .dcs intake compile (no gates).
     run([sys.executable, "scripts/verify_step17.py", "--snapshot-id", AUDIT_CLOSURE_SNAPSHOT, "--text", "build a python cli that counts from 1 to 5", "--out-a", "/tmp/step17_audit_a.dcs", "--out-b", "/tmp/step17_audit_b.dcs"])

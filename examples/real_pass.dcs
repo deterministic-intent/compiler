@@ -1,0 +1,9 @@
+{
+  "request_id": "REAL_PASS",
+  "policy_version": "v1",
+  "knowledge_snapshot_id": "20260215T120000Z",
+  "objective": "Make a CLI that counts from 1 to 5 by 1",
+  "constraints": ["Python 3.8+", "Standard library only"],
+  "non_goals": ["No GUI", "No web interface"],
+  "dod": ["Script runs successfully", "Outputs numbers 1 to 5"]
+}
