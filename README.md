@@ -56,6 +56,7 @@ This repository is an **implementation tree**, not a single Python package at th
 
 - [Whitepaper](docs/DCS_WHITEPAPER.md) — architecture and design principles
 - [External Verification](docs/EXTERNAL_VERIFICATION.md) — independent proof reproduction
+- [Reproducibility and schemas](docs/REPRODUCIBILITY_AND_SCHEMAS.md) — release tag → freeze manifest → proof hashes; schema authority chain (REQ → IR → artifact contract → verifier)
 - [CLI Reference](docs/CLI.md) — command interface
 - [Paths](docs/paths.md) — directory layout and conventions
 
