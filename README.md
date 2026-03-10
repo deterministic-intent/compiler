@@ -103,6 +103,8 @@ Replay mode (`dcs replay`) enforces strict determinism:
 - **No UX effects** - Banner, spinner, and color are forcibly disabled
 - **Byte-identical outputs** - Replay must produce identical verifier outputs
 
+For independent replay instructions, see [docs/EXTERNAL_VERIFICATION.md](docs/EXTERNAL_VERIFICATION.md).
+
 ## Project Structure
 
 ### State Directories (Request-Scoped)
@@ -184,4 +186,4 @@ Replay mode (`dcs replay`) enforces strict determinism:
 
 ## Contributing
 
-See `docs/project_map.md` for the canonical project structure and entrypoints.
+See the Project Structure section above for the canonical directory layout and entrypoints.
