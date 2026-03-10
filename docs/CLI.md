@@ -1,6 +1,6 @@
 # DCS CLI Reference
 
-Command-line interface for the Deterministic Compiler System.
+Command-line interface for Deterministic Compiler Systems.
 
 ## Installation
 

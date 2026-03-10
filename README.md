@@ -1,4 +1,4 @@
-# Deterministic Compiler System (DCS)
+# Deterministic Compiler Systems (DCS)
 
 A deterministic compiler that transforms structured requests into verified artifacts.
 
@@ -9,17 +9,15 @@ DCS is a compiler system where:
 - **Inputs are deterministic**: Requests (REQ) specify intent, language, and parameters
 - **Outputs are reproducible**: The same REQ always produces the same artifact
 - **Verification is built-in**: Every artifact passes machine-checkable verification
-- **LLMs are untrusted adapters**: Generation is isolated; verification is authoritative
+- **External generators are untrusted**: Only validated REQ specifications enter the deterministic pipeline
 
 ## Pipeline
 
 ```
-REQ.json  →  IR (Internal Representation)  →  Artifact
-   ↓              ↓                              ↓
-intent        snapshot-pinned              verified output
-params        manifest-bound               proof bundle
-language      deterministic selection      checksums
+REQ  →  IR  →  Artifact
 ```
+
+A request (REQ) specifies intent, language, and parameters. The compiler transforms this into an internal representation (IR) bound to a snapshot-pinned manifest, then produces a verified artifact with a proof bundle.
 
 ## Usage
 
@@ -29,7 +27,9 @@ Build an artifact from a request specification:
 dcs build --req request.json
 ```
 
-The request file specifies intent, language, and parameters. On success, DCS produces:
+Example request specifications are available in the `examples/` directory.
+
+On success, DCS produces:
 
 - `dist/artifact.zip` — the generated artifact
 - `dist/proof_bundle.zip` — verification evidence
