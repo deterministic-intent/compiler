@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_rust__rust_cli",
-  "snapshot_resolution_sha256": "237ae1ef87fbb7fba7a5e39d0fc5ab997ff9351f120176d7a02788e6db822c77",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

@@ -32,6 +32,16 @@ if ! touch "$REQUESTS_DIR/.proof_write_test_$$" 2>/dev/null; then
 fi
 rm -f "$REQUESTS_DIR/.proof_write_test_$$"
 
+# 0d) Guard: no root-owned files under out/proof (from prior Docker runs)
+if [[ -d "$STATE_ROOT" ]]; then
+  bad=$(find "$STATE_ROOT" -not -user "$(id -u)" -print -quit 2>/dev/null || true)
+  if [[ -n "$bad" ]]; then
+    echo "PROOF_OUT_PROOF_ROOT_OWNED: out/proof contains root-owned files from a previous Docker run." >&2
+    echo "Run: sudo chown -R \$(id -u):\$(id -g) $STATE_ROOT" >&2
+    exit 2
+  fi
+fi
+
 # 1) Verify repo root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT_INIT="$(cd "$SCRIPT_DIR/../.." && pwd)"

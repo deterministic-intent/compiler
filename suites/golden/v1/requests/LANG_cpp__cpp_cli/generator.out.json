@@ -1,9 +1,0 @@
-{
-  "request_id": "LANG_cpp__cpp_cli",
-  "artifact_class": "cpp_cli",
-  "files_written": {
-    "src/main.cpp": "ef2708b3ab95bd44d62eb3ada01356eacd89c525fdcbcd95e0b9c9b802193501",
-    "README.md": "6f7ecb7d9d1272f7b9ae24cdda1814357ad8f2c785a7b33c41059be397410315"
-  },
-  "generated_at": "2026-02-27T00:10:59+00:00Z"
-}

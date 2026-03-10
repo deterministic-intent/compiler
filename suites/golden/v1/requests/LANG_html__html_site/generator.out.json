@@ -1,9 +1,0 @@
-{
-  "request_id": "LANG_html__html_site",
-  "artifact_class": "html_site",
-  "files_written": {
-    "index.html": "ca89c12e7aebb0c585d63adf888515a1ea541a937c03ff58399d8f69e15a41bd",
-    "README.md": "37c30e2c6b0fe51eee3359d31e49923fc02f3b0b5c8224908c2cf3b6ea857fd8"
-  },
-  "generated_at": "2026-02-27T00:11:09+00:00Z"
-}

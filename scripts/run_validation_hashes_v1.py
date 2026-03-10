@@ -92,13 +92,9 @@ def main() -> int:
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     blob = json.dumps(out, sort_keys=True)
-    print(f"VH_OUT_PATH={out_path}")
-    print(f"VH_PREWRITE_TMP_COUNT={blob.count('/tmp/stab_run')}")
     if "/tmp/stab_run" in blob:
         raise SystemExit("VALIDATION_HASH_PATH_NOT_NORMALIZED")
     out_path.write_text(json.dumps(out, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    written = out_path.read_text(encoding="utf-8", errors="replace")
-    print(f"VH_POSTWRITE_TMP_COUNT={written.count('/tmp/stab_run')}")
     return 0
 
 

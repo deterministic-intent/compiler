@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_bash__bash_cli",
-  "snapshot_resolution_sha256": "c0c63e6a51c3e4dd73614da68f9fa8cabc9a721d2e2beba1ae29b226c7b34fb5",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

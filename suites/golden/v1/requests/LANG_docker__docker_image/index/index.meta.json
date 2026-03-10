@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_docker__docker_image",
-  "snapshot_resolution_sha256": "52cd8c0172bcf91c47f9b5c7a157261e44ec7db208c90e2580871411f3e13558",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

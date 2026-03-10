@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_yaml__yaml_config",
-  "snapshot_resolution_sha256": "23d7964594d7aca162adf5cbba5110116fac869ea72f84db75844922e8164009",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

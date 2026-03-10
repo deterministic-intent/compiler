@@ -1,9 +1,0 @@
-{
-  "request_id": "LANG_kotlin__kotlin_cli",
-  "artifact_class": "kotlin_cli",
-  "files_written": {
-    "src/Main.kt": "ae1184ef1b7b3f2af46d78c3c18e04c3701738dbf9628f90c372e7749a37ac1f",
-    "README.md": "9fe250a5b84da00beebcc999192310d115cfeb0ceff90fde2a97dc6aaf7f48cf"
-  },
-  "generated_at": "2026-02-27T00:11:14+00:00Z"
-}

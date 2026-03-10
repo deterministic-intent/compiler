@@ -1,9 +1,0 @@
-{
-  "request_id": "LANG_yaml__yaml_config",
-  "artifact_class": "yaml_config",
-  "files_written": {
-    "src/config.yaml": "d510276be7f318afbe3864371053fb37d180a08e14a155bd2419501f44e8611e",
-    "README.md": "7339ec7a0244e74e59ce97809bca585f1f7f4a6e45efe5f7cd564c6eabd33019"
-  },
-  "generated_at": "2026-02-27T00:11:35+00:00Z"
-}

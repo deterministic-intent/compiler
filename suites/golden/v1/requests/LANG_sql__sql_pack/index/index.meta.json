@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_sql__sql_pack",
-  "snapshot_resolution_sha256": "c4989e580e7a1900ada55f160608f82de62fad66bdc96c1e6fb0ff146c3e4ef5",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_ruby__ruby_cli",
-  "snapshot_resolution_sha256": "bcbef265c54a7d6c110ef9017d5085532f408e949bbc339af6bdde06683d5c5e",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

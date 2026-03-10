@@ -1,8 +1,0 @@
-{
-  "request_id": "LANG_php__php_cli",
-  "snapshot_resolution_sha256": "1d171faef6339a8f99c147513190d11d07e5e55b5613cfc867b384dd7b0a7e21",
-  "sources": [],
-  "timestamp_fields_ignored": [
-    "sources.fetch_timestamp"
-  ]
-}

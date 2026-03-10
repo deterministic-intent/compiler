@@ -1,9 +1,0 @@
-{
-  "request_id": "LANG_solidity__solidity_contract",
-  "artifact_class": "solidity_contract",
-  "files_written": {
-    "src/main.sol": "983dbc23b18f2d46051618775ce5ae1401a729b8ed752b4f52b2dba396bd43dc",
-    "README.md": "3b194c40de0e3d52b0f7edec96e4b913bf92d5f02e53c59ab038a7dc4573f03e"
-  },
-  "generated_at": "2026-02-27T00:11:28+00:00Z"
-}

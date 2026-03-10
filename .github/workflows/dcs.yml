@@ -131,6 +131,24 @@ jobs:
           export NLC_DB_SNAPSHOT_ID="${SNAPSHOT_ID}"
           bash proof/run_proof.sh "${SNAPSHOT_ID}" "${GITHUB_WORKSPACE}/out/proof"
 
+      - name: Ensure out/proof not root-owned (avoid breaking local runs)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          if [[ -d out/proof ]]; then
+            chown -R 1001:1001 out/proof 2>/dev/null || true
+          fi
+
+      - name: Assert no raw paths in proof artifacts
+        shell: bash
+        env:
+          SNAPSHOT_ID: 20260215T120000Z
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          bash scripts/ci/assert_no_raw_paths_in_proof.sh
+
       - name: Compare proof hashes (atomic)
         shell: bash
         run: |
