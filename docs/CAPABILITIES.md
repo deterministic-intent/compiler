@@ -1,8 +1,6 @@
 # CAPABILITIES (deterministic “supported intent language”)
-#
-# This document is authoritative: if a prompt falls outside these patterns, the
-# compiler MUST deterministically BLOCK (it will not guess).
-#
+
+ This document is authoritative: if a prompt falls outside these patterns, the compiler MUST deterministically BLOCK (it will not guess).
 
 ## General rules
 
